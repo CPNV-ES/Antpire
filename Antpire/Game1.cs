@@ -42,7 +42,7 @@ namespace Antpire
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Pink);
+            GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
 
