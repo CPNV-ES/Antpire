@@ -1,35 +1,41 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.Screens;
+using MonoGame.Extended.Screens.Transitions;
+
 
 namespace Antpire;
 public class Antpire : Game {
     private GraphicsDeviceManager graphics;
     private SpriteBatch spriteBatch;
+    private readonly ScreenManager screenManager;
 
     public Antpire() {
+        Window.AllowUserResizing = true;
         graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
+        screenManager = new ScreenManager();
+        Components.Add(screenManager);
     }
 
     protected override void Initialize() {
-        // TODO: Add your initialization logic here
-
         base.Initialize();
+        loadLogoScreen();
     }
 
     protected override void LoadContent() {
         spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        // TODO: use this.Content to load your game content here
     }
 
     protected override void Update(GameTime gameTime) {
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        // TODO: Add your update logic here
+        screenManager.Update(gameTime);
+
 
         base.Update(gameTime);
     }
@@ -37,8 +43,12 @@ public class Antpire : Game {
     protected override void Draw(GameTime gameTime) {
         GraphicsDevice.Clear(Color.Black);
 
-        // TODO: Add your drawing code here
+        screenManager.Draw(gameTime);
 
         base.Draw(gameTime);
+    }
+
+    private void loadLogoScreen() {
+        screenManager.LoadScreen(new Screens.LogoScreen(this), new FadeTransition(GraphicsDevice, Color.White));
     }
 }
