@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Antpire.Screens;
+using Antpire.Drawing;
 
 namespace Antpire.Systems {
     internal class SimulationRenderSystem : EntityDrawSystem {
@@ -17,9 +18,10 @@ namespace Antpire.Systems {
         private readonly SpriteBatch spriteBatch;
         private readonly SimulationState simulationState;
 
-        private ComponentMapper<SimulationPosition> simPositionMapper;
+        private ComponentMapper<SimulationPosition> simPositionMapper; 
+        private ComponentMapper<Renderable> renderableMapper;
 
-        public SimulationRenderSystem(GraphicsDevice graphicsDevice, SimulationState state) : base(Aspect.All(typeof(SimulationPosition))) {
+        public SimulationRenderSystem(GraphicsDevice graphicsDevice, SimulationState state) : base(Aspect.All(typeof(SimulationPosition), typeof(Renderable))) {
             this.graphicsDevice = graphicsDevice;
             simulationState = state;
             spriteBatch = new SpriteBatch(graphicsDevice);
@@ -27,6 +29,7 @@ namespace Antpire.Systems {
 
         public override void Initialize(IComponentMapperService mapperService) {
             simPositionMapper = mapperService.GetMapper<SimulationPosition>();
+            renderableMapper = mapperService.GetMapper<Renderable>();
         }
 
         public override void Draw(GameTime gameTime) {
@@ -34,11 +37,13 @@ namespace Antpire.Systems {
             
             foreach (var entityId in ActiveEntities) {
                 var pos = simPositionMapper.Get(entityId);
+                var render = renderableMapper.Get(entityId);
+ 
                 if (pos.WorldSpace == WorldSpace.Anthill && simulationState.CurrentWorldSpace == WorldSpace.Anthill) {
-                    spriteBatch.DrawCircle(new CircleF(new Point2(pos.Position.X, pos.Position.Y), 10f), 64, Color.Black);
+                    render.RenderItem.Render(spriteBatch, pos.Position);
                 }
                 else if (pos.WorldSpace == WorldSpace.Garden && simulationState.CurrentWorldSpace == WorldSpace.Garden) {
-                    spriteBatch.DrawCircle(new CircleF(new Point2(pos.Position.X, pos.Position.Y), 10f), 64, Color.Red);
+                    render.RenderItem.Render(spriteBatch, pos.Position);
                 }
             }
 
