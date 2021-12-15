@@ -49,6 +49,6 @@ public class Antpire : Game {
     }
 
     private void loadLogoScreen() {
-        screenManager.LoadScreen(new Screens.LogoScreen(this), new FadeTransition(GraphicsDevice, Color.White));
+        screenManager.LoadScreen(new Screens.SimulationScreen(this), new FadeTransition(GraphicsDevice, Color.White));
     }
 }
