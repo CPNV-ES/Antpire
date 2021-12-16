@@ -19,10 +19,12 @@ using Antpire.Utils;
 namespace Antpire.Screens {
     internal class SimulationState {
         public WorldSpace CurrentWorldSpace;
+        public Vector2 CurrentCameraPosition = new Vector2(0,0);
     }
 
     internal class SimulationScreen : GameScreen {
-        private SpriteBatch spriteBatch;
+        private readonly float CAMERA_SPEED = 400.0f;
+
         private World world;
         private SimulationState simState;
 
@@ -47,11 +49,26 @@ namespace Antpire.Screens {
 
         public override void Update(GameTime gameTime) {
             var keyboardState = Keyboard.GetState();
+            var dt = gameTime.GetElapsedSeconds();
+
             if(keyboardState.IsKeyDown(Keys.F1)) {
                 simState.CurrentWorldSpace = WorldSpace.Anthill;
             }
             if (keyboardState.IsKeyDown(Keys.F2)) {
                 simState.CurrentWorldSpace = WorldSpace.Garden;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.Left)) {
+                simState.CurrentCameraPosition -= new Vector2(1, 0) * dt * CAMERA_SPEED;
+            }
+            if (keyboardState.IsKeyDown(Keys.Right)) {
+                simState.CurrentCameraPosition += new Vector2(1, 0) * dt * CAMERA_SPEED;
+            }
+            if (keyboardState.IsKeyDown(Keys.Up)) {
+                simState.CurrentCameraPosition -= new Vector2(0, 1) * dt * CAMERA_SPEED;
+            }
+            if (keyboardState.IsKeyDown(Keys.Down)) {
+                simState.CurrentCameraPosition += new Vector2(0, 1) * dt * CAMERA_SPEED;
             }
 
             world.Update(gameTime);

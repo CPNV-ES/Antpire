@@ -11,12 +11,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Antpire.Screens;
 using Antpire.Drawing;
+using MonoGame.Extended.ViewportAdapters;
 
 namespace Antpire.Systems {
     internal class SimulationRenderSystem : EntityDrawSystem {
         private readonly GraphicsDevice graphicsDevice;
         private readonly SpriteBatch spriteBatch;
         private readonly SimulationState simulationState;
+        private readonly OrthographicCamera camera;
 
         private ComponentMapper<SimulationPosition> simPositionMapper; 
         private ComponentMapper<Renderable> renderableMapper;
@@ -25,6 +27,8 @@ namespace Antpire.Systems {
             this.graphicsDevice = graphicsDevice;
             simulationState = state;
             spriteBatch = new SpriteBatch(graphicsDevice);
+
+            camera = new OrthographicCamera(graphicsDevice);
         }
 
         public override void Initialize(IComponentMapperService mapperService) {
@@ -33,8 +37,17 @@ namespace Antpire.Systems {
         }
 
         public override void Draw(GameTime gameTime) {
-            spriteBatch.Begin();
+            camera.Position = simulationState.CurrentCameraPosition;
             
+            var transformMatrix = camera.GetViewMatrix();
+            spriteBatch.Begin(transformMatrix: transformMatrix);
+            if(simulationState.CurrentWorldSpace == WorldSpace.Anthill) {
+                graphicsDevice.Clear(Color.SaddleBrown);
+            }
+            else {
+                graphicsDevice.Clear(Color.ForestGreen);
+            }
+
             foreach (var entityId in ActiveEntities) {
                 var pos = simPositionMapper.Get(entityId);
                 var render = renderableMapper.Get(entityId);
