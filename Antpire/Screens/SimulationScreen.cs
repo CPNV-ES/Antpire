@@ -92,6 +92,17 @@ namespace Antpire.Screens {
                     }
                 });
             }
+
+            // Init trunks in the garden
+            var treeTrunks = new List<Point>() { new(120, 650), new(140, 370), new(320, 335), new(950, 620), new(800, 220) };
+            foreach (var pos in treeTrunks) {
+                var trunk = world.CreateEntity();
+                var trunkWidth = r.Next(20, 30);
+                trunk.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+                trunk.Attach(new Renderable {
+                    RenderItem = new RectangleRenderable(size: new(trunkWidth, (float)(trunkWidth * (r.NextDouble()*3+2))), (float)(r.NextDouble()*Math.PI*2), Color.Brown)
+                });
+            }
         }
     }
 }
