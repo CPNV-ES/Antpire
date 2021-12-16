@@ -13,6 +13,8 @@ using Antpire.Components;
 using MonoGame.Extended;
 using Antpire.Drawing;
 using MonoGame.Extended.Shapes;
+using Microsoft.Xna.Framework.Input;
+using Antpire.Utils;
 
 namespace Antpire.Screens {
     internal class SimulationState {
@@ -31,18 +33,7 @@ namespace Antpire.Screens {
                 .Build();
             Game.Components.Add(world);
 
-            var test = world.CreateEntity();
-            test.Attach(new SimulationPosition { Position = new Point(10, 10), WorldSpace = WorldSpace.Garden });
-            test.Attach(new Renderable { RenderItem = new CircleRenderable { Color = Color.Black, Radius = 10, Sides = 32 } });
-
-            var test2 = world.CreateEntity();
-            test2.Attach(new SimulationPosition { Position = new Point(10, 10), WorldSpace = WorldSpace.Anthill });
-            test2.Attach(new Renderable { 
-                RenderItem = new PolygonRenderable { 
-                    Color = Color.Black, 
-                    Polygon = new Polygon(new List<Vector2> { new (10, 10), new (20, 20), new (30, 75), new (23, 0) } ) 
-                } 
-            });
+            initTestMap();
         }
 
         public override void LoadContent() {
@@ -55,7 +46,35 @@ namespace Antpire.Screens {
         }
 
         public override void Update(GameTime gameTime) {
+            var keyboardState = Keyboard.GetState();
+            if(keyboardState.IsKeyDown(Keys.F1)) {
+                simState.CurrentWorldSpace = WorldSpace.Anthill;
+            }
+            if (keyboardState.IsKeyDown(Keys.F2)) {
+                simState.CurrentWorldSpace = WorldSpace.Garden;
+            }
+
             world.Update(gameTime);
+        }
+
+        /// <summary>
+        /// Initialize a test map with every kind of entity
+        /// </summary>
+        private void initTestMap() {
+            var r = new Random();
+
+            // Init rocks in the garden
+            var rockPositions = new List<Point>() { new(87, 120), new(340, 234), new(620, 435), new(300, 420), new(500, 120)};
+            foreach(var pos in rockPositions) {
+                var rock = world.CreateEntity();
+                rock.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+                rock.Attach(new Renderable {
+                    RenderItem = new PolygonRenderable {
+                        Color = Color.DarkGray,
+                        Polygon = new Polygon(ShapeUtils.GenerateConvexPolygon(r.Next(5, 10), r.Next(30, 70)))
+                    }
+                });
+            }
         }
     }
 }
