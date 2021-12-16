@@ -81,7 +81,7 @@ namespace Antpire.Screens {
             var r = new Random();
 
             // Init rocks in the garden
-            var rockPositions = new List<Point>() { new(87, 120), new(340, 234), new(620, 435), new(300, 420), new(500, 120)};
+            var rockPositions = new List<Point>() { new(87, 120), new(340, 234), new(620, 680), new(1000, 320), new(1000, 120)};
             foreach(var pos in rockPositions) {
                 var rock = world.CreateEntity();
                 rock.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
