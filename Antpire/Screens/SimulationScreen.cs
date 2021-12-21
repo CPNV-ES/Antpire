@@ -111,10 +111,7 @@ namespace Antpire.Screens {
                 var ahid = world.CreateEntity();
                 var aphidWidth = r.Next(20, 30);
                 ahid.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
-                ahid.Attach(new Renderable
-                {
-                    RenderItem = new RectangleRenderable(size: new(aphidWidth, (float)(aphidWidth * (r.NextDouble() * 3 + 2))), (float)(r.NextDouble() * Math.PI * 2), Color.DeepPink)
-                });
+                ahid.Attach(new Aphid(new Vector2(pos.X, pos.Y)));
             }
         }
     }
