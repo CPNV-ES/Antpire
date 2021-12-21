@@ -103,6 +103,19 @@ namespace Antpire.Screens {
                     RenderItem = new RectangleRenderable(size: new(trunkWidth, (float)(trunkWidth * (r.NextDouble()*3+2))), (float)(r.NextDouble()*Math.PI*2), Color.Brown)
                 });
             }
+
+            // Init aphids inside the garden
+            var aphids = new List<Point>() { new(200, 200), new(300, 300) };
+            foreach (var pos in aphids)
+            {
+                var ahid = world.CreateEntity();
+                var aphidWidth = r.Next(20, 30);
+                ahid.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+                ahid.Attach(new Renderable
+                {
+                    RenderItem = new RectangleRenderable(size: new(aphidWidth, (float)(aphidWidth * (r.NextDouble() * 3 + 2))), (float)(r.NextDouble() * Math.PI * 2), Color.DeepPink)
+                });
+            }
         }
     }
 }
