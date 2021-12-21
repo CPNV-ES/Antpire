@@ -29,7 +29,7 @@ namespace Antpire.Screens {
         private SimulationState simState;
 
         public SimulationScreen(Game game) : base(game) {
-            simState = new SimulationState { CurrentWorldSpace = WorldSpace.Anthill };
+            simState = new SimulationState { CurrentWorldSpace = WorldSpace.Garden };
             world = new WorldBuilder()
                 .AddSystem(new SimulationRenderSystem(GraphicsDevice, simState))
                 .Build();
