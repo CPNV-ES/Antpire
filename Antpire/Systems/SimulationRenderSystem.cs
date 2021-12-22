@@ -38,7 +38,8 @@ namespace Antpire.Systems {
 
         public override void Draw(GameTime gameTime) {
             camera.Position = simulationState.CurrentCameraPosition;
-            
+            camera.Zoom = simulationState.ZoomCamera;    
+
             var transformMatrix = camera.GetViewMatrix();
             spriteBatch.Begin(transformMatrix: transformMatrix);
             if(simulationState.CurrentWorldSpace == WorldSpace.Anthill) {

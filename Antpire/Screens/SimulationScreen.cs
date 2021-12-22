@@ -20,6 +20,8 @@ namespace Antpire.Screens {
     internal class SimulationState {
         public WorldSpace CurrentWorldSpace;
         public Vector2 CurrentCameraPosition = new Vector2(0,0);
+        public float ZoomCamera = 1f;
+
     }
 
     internal class SimulationScreen : GameScreen {
@@ -68,6 +70,15 @@ namespace Antpire.Screens {
             if (keyboardState.IsKeyDown(Keys.F2)) {
                 simState.CurrentWorldSpace = WorldSpace.Garden;
             }
+            if (keyboardState.IsKeyDown(Keys.F3)) {
+                simState.ZoomCamera += 0.05f;
+            }
+            if (keyboardState.IsKeyDown(Keys.F4)) {
+                simState.ZoomCamera -= 0.05f;
+            }
+            if (keyboardState.IsKeyDown(Keys.F5)) {
+                simState.ZoomCamera = 1f;
+            }
 
             if (keyboardState.IsKeyDown(Keys.Left)) {
                 simState.CurrentCameraPosition -= new Vector2(1, 0) * dt * CAMERA_SPEED;
@@ -81,6 +92,7 @@ namespace Antpire.Screens {
             if (keyboardState.IsKeyDown(Keys.Down)) {
                 simState.CurrentCameraPosition += new Vector2(0, 1) * dt * CAMERA_SPEED;
             }
+
 
             world.Update(gameTime);
         }
