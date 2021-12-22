@@ -31,6 +31,7 @@ namespace Antpire.Screens {
         // Textures
         private Texture2D aphidAliveTexture;
         private Texture2D aphidDeadTexture;
+        private Texture2D antAliveTexture;
 
         public SimulationScreen(Game game) : base(game) {
             simState = new SimulationState { CurrentWorldSpace = WorldSpace.Garden };
@@ -43,6 +44,7 @@ namespace Antpire.Screens {
         public override void LoadContent() {
             aphidAliveTexture = Content.Load<Texture2D>("aphid/alive");
             aphidDeadTexture = Content.Load<Texture2D>("aphid/dead");
+            antAliveTexture = Content.Load<Texture2D>("ant/alive");
             initTestMap();
             base.LoadContent();
         }
@@ -109,7 +111,7 @@ namespace Antpire.Screens {
                 });
             }
 
-            // Init aphids inside the garden
+            // Init aphids(alive) inside the garden
             var aphidsAlive = new List<Point>() { new(200, 200), new(300, 300) };
             foreach (var pos in aphidsAlive)
             {
@@ -122,7 +124,7 @@ namespace Antpire.Screens {
                 });
             }
 
-            // Init aphids inside the garden
+            // Init aphids(dead) inside the garden
             var aphidsDeads = new List<Point>() { new(600, 0), new(800, 0) };
             foreach (var pos in aphidsDeads)
             {
@@ -132,6 +134,19 @@ namespace Antpire.Screens {
                 aphidsDead.Attach(new Renderable
                 {
                     RenderItem = new SpriteRenderable(100, aphidDeadTexture)
+                });
+            }    
+            
+            // Init ants inside the garden
+            var ants = new List<Point>() { new(400, 400), new(420, 400), new(440, 400), new(460, 400) };
+            foreach (var pos in ants)
+            {
+                var ant = world.CreateEntity();
+                ant.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+
+                ant.Attach(new Renderable
+                {
+                    RenderItem = new SpriteRenderable(100, antAliveTexture)
                 });
             }
         }
