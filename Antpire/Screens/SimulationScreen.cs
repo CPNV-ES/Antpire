@@ -118,7 +118,7 @@ namespace Antpire.Screens {
                 ahid.Attach(new Renderable
                 {
                     RenderItem = new SpriteRenderable(100, aphidTexture)
-                }); ;
+                });
             }
         }
     }
