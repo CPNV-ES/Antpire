@@ -16,7 +16,7 @@ namespace Antpire.Utils {
         /// <returns></returns>
         public static Vector2[] GenerateConvexPolygon(int verticesCount, float radius) {
             var r = new Random();
-            return Enumerable.Repeat(0, verticesCount / 2)
+            return Enumerable.Repeat(0, verticesCount)
                 .Select(i => r.NextDouble()*Math.PI*2)
                 .OrderBy(i => i)
                 .Select(x => new Vector2((float)Math.Sin(x)*radius, (float)Math.Cos(x)*radius))
