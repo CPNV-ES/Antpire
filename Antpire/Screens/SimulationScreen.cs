@@ -167,6 +167,31 @@ namespace Antpire.Screens {
                 t.Attach(new SimulationPosition { Position = pos, WorldSpace = WorldSpace.Garden });
                 t.Attach(new Renderable { RenderItem = new LineStackRenderable { Segments = ShapeUtils.GenerateLineStack(20, 25), Color = Color.SandyBrown, Thickness = 1.0f } });
             }
+
+            // Init bushes
+            var bushesPositions = new Point[] { new (180, 560), new(410, 70), new(1150, 500) };
+            foreach (var pos in bushesPositions) {
+                // Generate the bush's leaves
+                var leavesPositions = new List<Vector2>() { new(0, 0) };
+                for (int i = 0; i < r.Next(6, 18); i++) {
+                    var a = r.NextDouble() * 2 * Math.PI;
+                    var ray = 50 * Math.Sqrt(r.NextDouble());
+                    leavesPositions.Add(new Vector2((float)(ray * Math.Cos(a)), (float)(ray * Math.Sin(a))));
+                }
+                
+                var bush = world.CreateEntity();
+                bush.Attach(new SimulationPosition { Position = pos, WorldSpace= WorldSpace.Garden });
+                bush.Attach(new Renderable {
+                    RenderItem = new RenderablesGroup {
+                        Children = leavesPositions.Select(x => 
+                            (
+                                new CircleRenderable { Sides = 32, Color = Color.DarkGreen, Thickness = 50.0f, Radius = 50 - (int)Math.Sqrt(x.X*x.X + x.Y*x.Y)/3 } as IRenderable,
+                                x.ToPoint()
+                            )
+                        ).ToArray()
+                    }
+                });
+            }
         }
     }
 }
