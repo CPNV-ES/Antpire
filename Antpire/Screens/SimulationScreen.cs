@@ -35,6 +35,7 @@ namespace Antpire.Screens {
         private Texture2D aphidDeadTexture;
         private Texture2D antAliveTexture;
         private Texture2D antDeadTexture;
+        private Texture2D anthillTexture;
 
         public SimulationScreen(Game game) : base(game) {
             simState = new SimulationState { CurrentWorldSpace = WorldSpace.Garden };
@@ -49,6 +50,8 @@ namespace Antpire.Screens {
             aphidDeadTexture = Content.Load<Texture2D>("aphid/dead");
             antAliveTexture = Content.Load<Texture2D>("ant/alive");
             antDeadTexture = Content.Load<Texture2D>("ant/alive");
+            anthillTexture = Content.Load<Texture2D>("anthill/anthill");
+
             initTestMap();
             base.LoadContent();
         }
@@ -165,6 +168,18 @@ namespace Antpire.Screens {
                         RenderItem = new SpriteRenderable(100, antDeadTexture)
                     });
                 }
+            }
+
+            // Init the anthill
+            var anthills = new List<Point>() { new(500, 400) };
+
+            foreach (var pos in anthills) {
+                var anthill = world.CreateEntity();
+                anthill.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+
+                anthill.Attach(new Renderable {
+                    RenderItem = new SpriteRenderable(100, anthillTexture)
+                });
             }
 
             // Init river
