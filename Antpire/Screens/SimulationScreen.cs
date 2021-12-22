@@ -29,7 +29,8 @@ namespace Antpire.Screens {
         private SimulationState simState;
         
         // Textures
-        private Texture2D aphidTexture;
+        private Texture2D aphidAliveTexture;
+        private Texture2D aphidDeadTexture;
 
         public SimulationScreen(Game game) : base(game) {
             simState = new SimulationState { CurrentWorldSpace = WorldSpace.Garden };
@@ -40,7 +41,8 @@ namespace Antpire.Screens {
         }
 
         public override void LoadContent() {
-            aphidTexture = Content.Load<Texture2D>("AphidAliveDemo");
+            aphidAliveTexture = Content.Load<Texture2D>("AphidAliveDemo");
+            aphidDeadTexture = Content.Load<Texture2D>("AphidDeadDemo");
             initTestMap();
             base.LoadContent();
         }
@@ -108,16 +110,28 @@ namespace Antpire.Screens {
             }
 
             // Init aphids inside the garden
-            var aphids = new List<Point>() { new(200, 200), new(500, 500) };
-
-            foreach (var pos in aphids)
+            var aphidsAlive = new List<Point>() { new(200, 200), new(300, 300) };
+            foreach (var pos in aphidsAlive)
             {
                 var ahid = world.CreateEntity();
                 ahid.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
 
                 ahid.Attach(new Renderable
                 {
-                    RenderItem = new SpriteRenderable(100, aphidTexture)
+                    RenderItem = new SpriteRenderable(100, aphidAliveTexture)
+                });
+            }
+
+            // Init aphids inside the garden
+            var aphidsDeads = new List<Point>() { new(600, 0), new(800, 0) };
+            foreach (var pos in aphidsDeads)
+            {
+                var aphidsDead = world.CreateEntity();
+                aphidsDead.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+
+                aphidsDead.Attach(new Renderable
+                {
+                    RenderItem = new SpriteRenderable(100, aphidDeadTexture)
                 });
             }
         }
