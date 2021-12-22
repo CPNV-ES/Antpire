@@ -124,6 +124,16 @@ namespace Antpire.Screens {
             var river = world.CreateEntity();
             river.Attach(new SimulationPosition { Position = new Point(0, 0), WorldSpace = WorldSpace.Garden });
             river.Attach(new Renderable { RenderItem = new PathRenderable { Color = Color.Blue, Segments = riverSegments, Thickness = 15 } });
+
+            // Init piles of twigs
+            var twigStackSegments = new Vector2[] { new(0, 0), new(30, 0), new(0, 4), new(30, 4), new(0, 8), new(30, 8), new(0, 12), new(30, 12) };
+            var twigPositions = new Point[] { new(140, 160), new(300, 300), new(850, 300) };
+
+            foreach(var pos in twigPositions) {
+                var t = world.CreateEntity();
+                t.Attach(new SimulationPosition { Position = pos, WorldSpace = WorldSpace.Garden });
+                t.Attach(new Renderable { RenderItem = new LineStackRenderable { Segments = ShapeUtils.GenerateLineStack(20, 25), Color = Color.SandyBrown, Thickness = 1.0f } });
+            }
         }
     }
 }
