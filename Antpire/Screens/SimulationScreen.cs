@@ -113,38 +113,39 @@ namespace Antpire.Screens {
                 });
             }
 
-            // Init aphids(alive) inside the garden
-            var aphidsAlive = new List<Point>() { new(200, 200), new(300, 300) };
-            foreach (var pos in aphidsAlive)
+            // Init aphids inside the garden
+            var aphids = new List<Point>() { new(600, 0), new(800, 0), new(200, 200), new(300, 300)  };
+            foreach (var pos in aphids)
             {
-                var ahid = world.CreateEntity();
-                ahid.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+                var aphid = world.CreateEntity();
+                aphid.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
 
-                ahid.Attach(new Renderable
+                //50% that the aphid appears as deadborn
+                if (r.Next(0, 2) != 0)
                 {
-                    RenderItem = new SpriteRenderable(100, aphidAliveTexture)
-                });
+                    aphid.Attach(new Renderable
+                    {
+                        RenderItem = new SpriteRenderable(100, aphidAliveTexture)
+                    });
+                }
+                else
+                {
+                    aphid.Attach(new Renderable
+                    {
+                        RenderItem = new SpriteRenderable(100, aphidDeadTexture)
+                    });
+                }
             }
 
-            // Init aphids(dead) inside the garden
-            var aphidsDeads = new List<Point>() { new(600, 0), new(800, 0) };
-            foreach (var pos in aphidsDeads)
-            {
-                var aphidsDead = world.CreateEntity();
-                aphidsDead.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
 
-                aphidsDead.Attach(new Renderable
-                {
-                    RenderItem = new SpriteRenderable(100, aphidDeadTexture)
-                });
-            }    
-            
             // Init ants inside the garden
             var ants = new List<Point>() { new(400, 400), new(420, 400), new(440, 400), new(460, 400) };
+
             foreach (var pos in ants)
             {
                 var ant = world.CreateEntity();
                 ant.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+
 
                 ant.Attach(new Renderable
                 {
