@@ -45,6 +45,8 @@ namespace Antpire.Screens {
         public override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.White);
             world.Draw(gameTime);
+
+            System.Diagnostics.Debug.WriteLine(Mouse.GetState().Position.ToString());
         }
 
         public override void Update(GameTime gameTime) {
@@ -116,6 +118,12 @@ namespace Antpire.Screens {
                     RenderItem = new Aphid(100, Content)
                 }); ;
             }
+
+            // Init river
+            var riverSegments = new Vector2[] { new(550, 250), new(510, 330), new(520, 430), new(490, 500), new(480, 610), new(530, 720) };
+            var river = world.CreateEntity();
+            river.Attach(new SimulationPosition { Position = new Point(0, 0), WorldSpace = WorldSpace.Garden });
+            river.Attach(new Renderable { RenderItem = new PathRenderable { Color = Color.Blue, Segments = riverSegments, Thickness = 15 } });
         }
     }
 }
