@@ -25,7 +25,7 @@
 /processorParam:TextureFormat=Color
 /build:ant/alive.png
 
-#begin anthill/anthill.jpg
+#begin anthill/Anthill.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -35,7 +35,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:anthill/anthill.jpg
+/build:anthill/Anthill.png
 
 #begin aphid/alive.png
 /importer:TextureImporter

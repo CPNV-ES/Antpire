@@ -180,7 +180,7 @@ namespace Antpire.Screens {
                 anthill.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
 
                 anthill.Attach(new Renderable {
-                    RenderItem = new SpriteRenderable(100, anthillTexture)
+                    RenderItem = new SpriteRenderable(500, anthillTexture)
                 });
             }
 
