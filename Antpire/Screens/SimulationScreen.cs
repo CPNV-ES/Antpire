@@ -116,24 +116,19 @@ namespace Antpire.Screens {
             }
 
             // Init aphids inside the garden
-            var aphids = new List<Point>() { new(600, 0), new(800, 0), new(200, 200), new(300, 300)  };
-            foreach (var pos in aphids)
-            {
+            var aphids = new List<Point>() { new(600, 0), new(800, 0), new(200, 200), new(300, 300) };
+            foreach (var pos in aphids) {
                 var aphid = world.CreateEntity();
                 aphid.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
 
                 //50% that the aphid appears as deadborn
-                if (r.Next(0, 2) != 0)
-                {
-                    aphid.Attach(new Renderable
-                    {
+                if (r.Next(0, 2) != 0) {
+                    aphid.Attach(new Renderable {
                         RenderItem = new SpriteRenderable(100, aphidAliveTexture)
                     });
                 }
-                else
-                {
-                    aphid.Attach(new Renderable
-                    {
+                else {
+                    aphid.Attach(new Renderable {
                         RenderItem = new SpriteRenderable(100, aphidDeadTexture)
                     });
                 }
@@ -143,23 +138,18 @@ namespace Antpire.Screens {
             // Init ants inside the garden
             var ants = new List<Point>() { new(400, 400), new(420, 400), new(440, 400), new(460, 400) };
 
-            foreach (var pos in ants)
-            {
+            foreach (var pos in ants) {
                 var ant = world.CreateEntity();
                 ant.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
 
                 //50% that the aphid appears as deadborn
-                if (r.Next(0, 2) != 0)
-                {
-                    ant.Attach(new Renderable
-                    {
+                if (r.Next(0, 2) != 0) {
+                    ant.Attach(new Renderable {
                         RenderItem = new SpriteRenderable(100, antAliveTexture)
                     });
                 }
-                else
-                {
-                    ant.Attach(new Renderable
-                    {
+                else {
+                    ant.Attach(new Renderable {
                         RenderItem = new SpriteRenderable(100, antDeadTexture)
                     });
                 }
