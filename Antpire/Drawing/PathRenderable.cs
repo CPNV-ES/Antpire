@@ -15,7 +15,7 @@ namespace Antpire.Drawing {
         public float Thickness = 2.0f;
 
         public void Render(SpriteBatch spriteBatch, Point position) {
-            Segments.Window(2).ForEach(p => spriteBatch.DrawLine(p[0], p[1], Color, Thickness));
+            Segments.Window(2).ForEach(p => spriteBatch.DrawLine(p[0] + position.ToVector2(), p[1] + position.ToVector2(), Color, Thickness));
         }
     }
 }
