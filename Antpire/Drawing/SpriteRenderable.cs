@@ -9,12 +9,12 @@ using MonoGame.Extended;
 using MonoGame.Extended.Shapes;
 
 namespace Antpire.Drawing {
-    internal class Aphid : IRenderable{
+    internal class SpriteRenderable : IRenderable{
         private Texture2D texture;
         private int size;
 
-        public Aphid(int size, Microsoft.Xna.Framework.Content.ContentManager content) {
-            texture = content.Load<Texture2D>("AphidAliveDemo");
+        public SpriteRenderable(int size, Texture2D texture) {
+            this.texture = texture;
             this.size = size;
         }
 
