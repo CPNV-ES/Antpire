@@ -27,6 +27,9 @@ namespace Antpire.Screens {
 
         private World world;
         private SimulationState simState;
+        
+        // Textures
+        private Texture2D aphidTexture;
 
         public SimulationScreen(Game game) : base(game) {
             simState = new SimulationState { CurrentWorldSpace = WorldSpace.Garden };
@@ -34,11 +37,11 @@ namespace Antpire.Screens {
                 .AddSystem(new SimulationRenderSystem(GraphicsDevice, simState))
                 .Build();
             Game.Components.Add(world);
-
-            initTestMap();
         }
 
         public override void LoadContent() {
+            aphidTexture = Content.Load<Texture2D>("AphidAliveDemo");
+            initTestMap();
             base.LoadContent();
         }
 
@@ -106,6 +109,7 @@ namespace Antpire.Screens {
 
             // Init aphids inside the garden
             var aphids = new List<Point>() { new(200, 200), new(500, 500) };
+
             foreach (var pos in aphids)
             {
                 var ahid = world.CreateEntity();
@@ -113,7 +117,7 @@ namespace Antpire.Screens {
 
                 ahid.Attach(new Renderable
                 {
-                    RenderItem = new Aphid(100, Content)
+                    RenderItem = new SpriteRenderable(100, aphidTexture)
                 }); ;
             }
         }
