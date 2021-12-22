@@ -11,15 +11,15 @@ using MonoGame.Extended.Shapes;
 namespace Antpire.Drawing {
     internal class Aphid : IRenderable{
         private Texture2D texture;
-        private Vector2 position;
-        public Aphid(Vector2 position, Microsoft.Xna.Framework.Content.ContentManager content) {
+        private int size;
+
+        public Aphid(int size, Microsoft.Xna.Framework.Content.ContentManager content) {
             texture = content.Load<Texture2D>("AphidAliveDemo");
-            this.position = position;
+            this.size = size;
         }
 
         public void Render(SpriteBatch spriteBatch, Point pos) {
-            spriteBatch.Draw(texture, new Vector2(pos.X, pos.Y), Color.White);
+            spriteBatch.Draw(texture, new Rectangle(pos, new Point(size, size)), Color.White);
         }
-
     }
 }

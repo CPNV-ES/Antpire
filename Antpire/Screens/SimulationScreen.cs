@@ -113,7 +113,7 @@ namespace Antpire.Screens {
 
                 ahid.Attach(new Renderable
                 {
-                    RenderItem = new Aphid(new Vector2(pos.X, pos.Y), Content)
+                    RenderItem = new Aphid(100, Content)
                 }); ;
             }
         }
