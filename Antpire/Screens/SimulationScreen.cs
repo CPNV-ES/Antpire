@@ -41,8 +41,8 @@ namespace Antpire.Screens {
         }
 
         public override void LoadContent() {
-            aphidAliveTexture = Content.Load<Texture2D>("AphidAliveDemo");
-            aphidDeadTexture = Content.Load<Texture2D>("AphidDeadDemo");
+            aphidAliveTexture = Content.Load<Texture2D>("aphid/alive");
+            aphidDeadTexture = Content.Load<Texture2D>("aphid/dead");
             initTestMap();
             base.LoadContent();
         }
