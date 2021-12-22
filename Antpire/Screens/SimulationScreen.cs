@@ -32,6 +32,7 @@ namespace Antpire.Screens {
         private Texture2D aphidAliveTexture;
         private Texture2D aphidDeadTexture;
         private Texture2D antAliveTexture;
+        private Texture2D antDeadTexture;
 
         public SimulationScreen(Game game) : base(game) {
             simState = new SimulationState { CurrentWorldSpace = WorldSpace.Garden };
@@ -45,6 +46,7 @@ namespace Antpire.Screens {
             aphidAliveTexture = Content.Load<Texture2D>("aphid/alive");
             aphidDeadTexture = Content.Load<Texture2D>("aphid/dead");
             antAliveTexture = Content.Load<Texture2D>("ant/alive");
+            antDeadTexture = Content.Load<Texture2D>("ant/alive");
             initTestMap();
             base.LoadContent();
         }
@@ -146,11 +148,21 @@ namespace Antpire.Screens {
                 var ant = world.CreateEntity();
                 ant.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
 
-
-                ant.Attach(new Renderable
+                //50% that the aphid appears as deadborn
+                if (r.Next(0, 2) != 0)
                 {
-                    RenderItem = new SpriteRenderable(100, antAliveTexture)
-                });
+                    ant.Attach(new Renderable
+                    {
+                        RenderItem = new SpriteRenderable(100, antAliveTexture)
+                    });
+                }
+                else
+                {
+                    ant.Attach(new Renderable
+                    {
+                        RenderItem = new SpriteRenderable(100, antDeadTexture)
+                    });
+                }
             }
 
             // Init river
