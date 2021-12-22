@@ -77,7 +77,9 @@ namespace Antpire.Screens {
                 simState.ZoomCamera += 0.05f;
             }
             if (keyboardState.IsKeyDown(Keys.F4)) {
-                simState.ZoomCamera -= 0.05f;
+                if (simState.ZoomCamera >= 0.5f) {
+                    simState.ZoomCamera -= 0.05f;
+                }
             }
             if (keyboardState.IsKeyDown(Keys.F5)) {
                 simState.ZoomCamera = 1f;
