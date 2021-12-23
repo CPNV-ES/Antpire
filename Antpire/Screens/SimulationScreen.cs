@@ -75,10 +75,12 @@ namespace Antpire.Screens {
                 simState.CurrentWorldSpace = WorldSpace.Garden;
             }
             if (keyboardState.IsKeyDown(Keys.F3)) {
-                simState.ZoomCamera *= 1.02f * dt * 60.0f;
+                if (simState.ZoomCamera <= 4.5f) {
+                    simState.ZoomCamera *= 1.02f * dt * 60.0f;
+                }
             }
             if (keyboardState.IsKeyDown(Keys.F4)) {
-                if (simState.ZoomCamera <= 4.5f) {
+                if (simState.ZoomCamera >= 0.6f) {
                     simState.ZoomCamera *= 0.98f * dt * 60.0f;
                 }
             }
