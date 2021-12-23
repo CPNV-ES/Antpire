@@ -17,16 +17,19 @@ using Microsoft.Xna.Framework.Input;
 using Antpire.Utils;
 
 namespace Antpire.Screens {
-    internal class SimulationState {
-        public WorldSpace CurrentWorldSpace;
-        public Vector2 CurrentCameraPosition = new Vector2(0,0);
-        public float ZoomCamera = 1f;
+    internal record CameraState {
+        public Vector2 Position { get; set; } = new();
+        public float Zoom { get; set; } = 1.0f;
+    }
 
+    internal class SimulationState {
+        public CameraState GardenCameraState { get; set; } = new();
+        public CameraState AnthillCameraState { get; set; } = new();
+        public CameraState CurrentCameraState => CurrentWorldSpace == WorldSpace.Anthill ? AnthillCameraState : GardenCameraState;
+        public WorldSpace CurrentWorldSpace;
     }
 
     internal class SimulationScreen : GameScreen {
-        private readonly float CAMERA_SPEED = 400.0f;
-
         private World world;
         public SimulationState SimulationState;
         
@@ -42,6 +45,7 @@ namespace Antpire.Screens {
             SimulationState = new SimulationState { CurrentWorldSpace = WorldSpace.Garden };
             world = new WorldBuilder()
                 .AddSystem(new SimulationRenderSystem(GraphicsDevice, SimulationState))
+                .AddSystem(new UserInputsSystem(SimulationState))
                 .Build();
             Game.Components.Add(world);
         }
@@ -67,40 +71,6 @@ namespace Antpire.Screens {
         public override void Update(GameTime gameTime) {
             var keyboardState = Keyboard.GetState();
             var dt = gameTime.GetElapsedSeconds();
-
-            if(keyboardState.IsKeyDown(Keys.F1)) {
-                SimulationState.CurrentWorldSpace = WorldSpace.Anthill;
-            }
-            if (keyboardState.IsKeyDown(Keys.F2)) {
-                SimulationState.CurrentWorldSpace = WorldSpace.Garden;
-            }
-            if (keyboardState.IsKeyDown(Keys.F3)) {
-                if (SimulationState.ZoomCamera <= 4.5f) {
-                    SimulationState.ZoomCamera *= 1.02f * dt * 60.0f;
-                }
-            }
-            if (keyboardState.IsKeyDown(Keys.F4)) {
-                if (SimulationState.ZoomCamera >= 0.6f) {
-                    SimulationState.ZoomCamera *= 0.98f * dt * 60.0f;
-                }
-            }
-            if (keyboardState.IsKeyDown(Keys.F5)) {
-                SimulationState.ZoomCamera = 1f;
-            }
-
-            if (keyboardState.IsKeyDown(Keys.Left)) {
-                SimulationState.CurrentCameraPosition -= new Vector2(1, 0) * dt * CAMERA_SPEED * (1/SimulationState.ZoomCamera);
-            }
-            if (keyboardState.IsKeyDown(Keys.Right)) {
-                SimulationState.CurrentCameraPosition += new Vector2(1, 0) * dt * CAMERA_SPEED * (1 / SimulationState.ZoomCamera);
-            }
-            if (keyboardState.IsKeyDown(Keys.Up)) {
-                SimulationState.CurrentCameraPosition -= new Vector2(0, 1) * dt * CAMERA_SPEED * (1 / SimulationState.ZoomCamera);
-            }
-            if (keyboardState.IsKeyDown(Keys.Down)) {
-                SimulationState.CurrentCameraPosition += new Vector2(0, 1) * dt * CAMERA_SPEED * (1 / SimulationState.ZoomCamera);
-            }
-
 
             world.Update(gameTime);
         }
