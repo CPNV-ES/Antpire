@@ -28,7 +28,7 @@ namespace Antpire.Screens {
         private readonly float CAMERA_SPEED = 400.0f;
 
         private World world;
-        private SimulationState simState;
+        public SimulationState SimulationState;
         
         // Textures
         private Texture2D aphidAliveTexture;

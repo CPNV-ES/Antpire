@@ -3,13 +3,14 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Screens.Transitions;
-
+using System.Linq;
 
 namespace Antpire;
 public class Antpire : Game {
     private GraphicsDeviceManager graphics;
     private SpriteBatch spriteBatch;
     private readonly ScreenManager screenManager;
+    private Screens.SimulationScreen simulationScreen;
 
     public Antpire() {
         Window.AllowUserResizing = true;
@@ -21,12 +22,26 @@ public class Antpire : Game {
     }
 
     protected override void Initialize() {
+        base.Initialize();
+
         graphics.PreferredBackBufferWidth = 1280;
         graphics.PreferredBackBufferHeight = 720;
         graphics.ApplyChanges();
 
-        base.Initialize();
-        loadLogoScreen();
+        simulationScreen = new Screens.SimulationScreen(this);
+
+        var args = System.Environment.GetCommandLineArgs()[1..];
+        if(args.Contains("--start=test_anthill")) {
+            loadSimulationScreen();
+            simulationScreen.SimulationState.CurrentWorldSpace = WorldSpace.Anthill;
+        }
+        if (args.Contains("--start=test_garden")) {
+            loadSimulationScreen();
+            simulationScreen.SimulationState.CurrentWorldSpace = WorldSpace.Garden;
+        }
+        else {
+            // TODO: Start the game normally, show main menu ...
+        }
     }
 
     protected override void LoadContent() {
@@ -40,7 +55,6 @@ public class Antpire : Game {
 
         screenManager.Update(gameTime);
 
-
         base.Update(gameTime);
     }
 
@@ -52,7 +66,7 @@ public class Antpire : Game {
         base.Draw(gameTime);
     }
 
-    private void loadLogoScreen() {
-        screenManager.LoadScreen(new Screens.SimulationScreen(this), new FadeTransition(GraphicsDevice, Color.White));
+    private void loadSimulationScreen() {
+        screenManager.LoadScreen(simulationScreen, new FadeTransition(GraphicsDevice, Color.White));
     }
 }
