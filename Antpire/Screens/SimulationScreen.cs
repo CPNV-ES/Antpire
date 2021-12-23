@@ -37,6 +37,7 @@ namespace Antpire.Screens {
         private Texture2D antDeadTexture;
         private Texture2D anthillTexture;
 
+
         public SimulationScreen(Game game) : base(game) {
             simState = new SimulationState { CurrentWorldSpace = WorldSpace.Garden };
             world = new WorldBuilder()
@@ -74,10 +75,12 @@ namespace Antpire.Screens {
                 simState.CurrentWorldSpace = WorldSpace.Garden;
             }
             if (keyboardState.IsKeyDown(Keys.F3)) {
-                simState.ZoomCamera += 0.05f;
+                if (simState.ZoomCamera <= 4.5f) {
+                    simState.ZoomCamera += 0.05f;
+                }
             }
             if (keyboardState.IsKeyDown(Keys.F4)) {
-                if (simState.ZoomCamera >= 0.5f) {
+                if (simState.ZoomCamera >= 0.6f) {
                     simState.ZoomCamera -= 0.05f;
                 }
             }
