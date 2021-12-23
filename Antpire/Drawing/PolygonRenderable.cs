@@ -12,9 +12,10 @@ namespace Antpire.Drawing {
     internal class PolygonRenderable : IRenderable {
         public Polygon Polygon;
         public Color Color = Color.White;
+        public float Thickness = 1.0f;
 
         public void Render(SpriteBatch spriteBatch, Point position) {
-            spriteBatch.DrawPolygon(new Vector2(position.X, position.Y), Polygon, Color);
+            spriteBatch.DrawPolygon(new Vector2(position.X, position.Y), Polygon, Color, Thickness);
         }
     }
 }

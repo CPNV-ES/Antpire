@@ -116,7 +116,8 @@ namespace Antpire.Screens {
                 rock.Attach(new Renderable {
                     RenderItem = new PolygonRenderable {
                         Color = Color.DarkGray,
-                        Polygon = new Polygon(ShapeUtils.GenerateConvexPolygon(r.Next(5, 10), r.Next(30, 70)))
+                        Polygon = new Polygon(ShapeUtils.GenerateConvexPolygon(r.Next(5, 10), r.Next(30, 70))),
+                        Thickness = 5.0f
                     }
                 });
             }
@@ -128,7 +129,12 @@ namespace Antpire.Screens {
                 var trunkWidth = r.Next(20, 30);
                 trunk.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
                 trunk.Attach(new Renderable {
-                    RenderItem = new RectangleRenderable(size: new(trunkWidth, (float)(trunkWidth * (r.NextDouble()*3+2))), (float)(r.NextDouble()*Math.PI*2), Color.Brown)
+                    RenderItem = new RectangleRenderable(
+                        size: new(trunkWidth, (float)(trunkWidth * (r.NextDouble()*3+2))), 
+                        rotation: (float)(r.NextDouble()*Math.PI*2), 
+                        color: Color.Brown,
+                        thickness: 15.0f
+                    )
                 });
             }
 
