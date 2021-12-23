@@ -112,7 +112,7 @@ namespace Antpire.Screens {
                     RenderItem = new RectangleRenderable(
                         size: new(trunkWidth, (float)(trunkWidth * (r.NextDouble()*3+2))), 
                         rotation: (float)(r.NextDouble()*Math.PI*2), 
-                        color: Color.Brown,
+                        color: Color.SaddleBrown,
                         thickness: 15.0f
                     )
                 });
