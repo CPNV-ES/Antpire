@@ -86,16 +86,16 @@ namespace Antpire.Screens {
             }
 
             if (keyboardState.IsKeyDown(Keys.Left)) {
-                simState.CurrentCameraPosition -= new Vector2(1, 0) * dt * CAMERA_SPEED;
+                simState.CurrentCameraPosition -= new Vector2(1, 0) * dt * CAMERA_SPEED * (1/simState.ZoomCamera);
             }
             if (keyboardState.IsKeyDown(Keys.Right)) {
-                simState.CurrentCameraPosition += new Vector2(1, 0) * dt * CAMERA_SPEED;
+                simState.CurrentCameraPosition += new Vector2(1, 0) * dt * CAMERA_SPEED * (1 / simState.ZoomCamera);
             }
             if (keyboardState.IsKeyDown(Keys.Up)) {
-                simState.CurrentCameraPosition -= new Vector2(0, 1) * dt * CAMERA_SPEED;
+                simState.CurrentCameraPosition -= new Vector2(0, 1) * dt * CAMERA_SPEED * (1 / simState.ZoomCamera);
             }
             if (keyboardState.IsKeyDown(Keys.Down)) {
-                simState.CurrentCameraPosition += new Vector2(0, 1) * dt * CAMERA_SPEED;
+                simState.CurrentCameraPosition += new Vector2(0, 1) * dt * CAMERA_SPEED * (1 / simState.ZoomCamera);
             }
 
 
