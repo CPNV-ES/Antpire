@@ -229,12 +229,13 @@ namespace Antpire.Screens {
                         ).ToArray()
                     }
                 });
+                var colors = new Color[] { Color.Red, Color.GreenYellow, Color.OrangeRed };
                 fruits.Attach(new SimulationPosition { Position = pos, WorldSpace = WorldSpace.Garden });
                 fruits.Attach(new Renderable {
                     RenderItem = new RenderablesGroup {
                         Children = fruitsPositions.Select(x =>
                             (
-                                new CircleRenderable { Sides = 32, Color = Color.Red, Thickness = 5.0f, Radius = r.Next(4, 8) } as IRenderable,
+                                new CircleRenderable { Sides = 32, Color = colors[r.Next(0, 3)], Thickness = 8.0f, Radius = r.Next(4, 8) } as IRenderable,
                                 x.ToPoint()
                             )
                         ).ToArray()
