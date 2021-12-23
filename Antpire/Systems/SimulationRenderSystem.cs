@@ -41,7 +41,7 @@ namespace Antpire.Systems {
             camera.Zoom = simulationState.ZoomCamera;    
 
             var transformMatrix = camera.GetViewMatrix();
-            spriteBatch.Begin(transformMatrix: transformMatrix);
+            spriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
             if(simulationState.CurrentWorldSpace == WorldSpace.Anthill) {
                 graphicsDevice.Clear(Color.SaddleBrown);
             }
