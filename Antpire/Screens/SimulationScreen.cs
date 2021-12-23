@@ -205,19 +205,36 @@ namespace Antpire.Screens {
             foreach (var pos in bushesPositions) {
                 // Generate the bush's leaves
                 var leavesPositions = new List<Vector2>() { new(0, 0) };
+                var fruitsPositions = new List<Vector2>();
+
                 for (int i = 0; i < r.Next(6, 18); i++) {
-                    var a = r.NextDouble() * 2 * Math.PI;
-                    var ray = 50 * Math.Sqrt(r.NextDouble());
-                    leavesPositions.Add(new Vector2((float)(ray * Math.Cos(a)), (float)(ray * Math.Sin(a))));
+                    leavesPositions.Add(ShapeUtils.GetRandomPointInCircle(50));
+                    
+                    // Generate fruits
+                    for (int f = 0; f < r.Next(0, 5); f++) {
+                        fruitsPositions.Add(ShapeUtils.GetRandomPointInCircle(40) + leavesPositions.Last());                
+                    }
                 }
                 
                 var bush = world.CreateEntity();
+                var fruits = world.CreateEntity();
                 bush.Attach(new SimulationPosition { Position = pos, WorldSpace= WorldSpace.Garden });
                 bush.Attach(new Renderable {
                     RenderItem = new RenderablesGroup {
                         Children = leavesPositions.Select(x => 
                             (
                                 new CircleRenderable { Sides = 32, Color = Color.DarkGreen, Thickness = 50.0f, Radius = 50 - (int)Math.Sqrt(x.X*x.X + x.Y*x.Y)/3 } as IRenderable,
+                                x.ToPoint()
+                            )
+                        ).ToArray()
+                    }
+                });
+                fruits.Attach(new SimulationPosition { Position = pos, WorldSpace = WorldSpace.Garden });
+                fruits.Attach(new Renderable {
+                    RenderItem = new RenderablesGroup {
+                        Children = fruitsPositions.Select(x =>
+                            (
+                                new CircleRenderable { Sides = 32, Color = Color.Red, Thickness = 5.0f, Radius = r.Next(4, 8) } as IRenderable,
                                 x.ToPoint()
                             )
                         ).ToArray()

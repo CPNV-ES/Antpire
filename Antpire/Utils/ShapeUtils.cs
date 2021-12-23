@@ -36,5 +36,18 @@ namespace Antpire.Utils {
                 .Select(x => new Vector2((float)Math.Sin(x) * radius, (float)Math.Cos(x) * radius))
                 .ToArray();
         }
+
+        /// <summary>
+        /// Returns a random <c>Vector2</c> in a circle of the specified <c>radius</c>
+        /// </summary>
+        /// <param name="radius">The radius of the circle to pick a point in</param>
+        /// <returns></returns>
+        public static Vector2 GetRandomPointInCircle(float radius) {
+            var rand = new Random();
+            var a = rand.NextDouble() * 2 * Math.PI;
+            var r = radius * Math.Sqrt(rand.NextDouble());
+
+            return new Vector2((float)(r * Math.Cos(a)), (float)(r * Math.Sin(a)));
+        }
     }
 }
