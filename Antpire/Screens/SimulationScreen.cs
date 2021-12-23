@@ -39,29 +39,29 @@ namespace Antpire.Screens {
 
 
         public SimulationScreen(Game game) : base(game) {
-            simState = new SimulationState { CurrentWorldSpace = WorldSpace.Garden };
+            SimulationState = new SimulationState { CurrentWorldSpace = WorldSpace.Garden };
             world = new WorldBuilder()
-                .AddSystem(new SimulationRenderSystem(GraphicsDevice, simState))
+                .AddSystem(new SimulationRenderSystem(GraphicsDevice, SimulationState))
                 .Build();
             Game.Components.Add(world);
         }
 
         public override void LoadContent() {
+            base.LoadContent();
+
             aphidAliveTexture = Content.Load<Texture2D>("aphid/alive");
             aphidDeadTexture = Content.Load<Texture2D>("aphid/dead");
             antAliveTexture = Content.Load<Texture2D>("ant/alive");
             antDeadTexture = Content.Load<Texture2D>("ant/alive");
             anthillTexture = Content.Load<Texture2D>("anthill/anthill");
 
-            initTestMap();
-            base.LoadContent();
+            initTestMapGarden();
+            initTestMapAnthill();
         }
 
         public override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.White);
             world.Draw(gameTime);
-
-            System.Diagnostics.Debug.WriteLine(Mouse.GetState().Position.ToString());
         }
 
         public override void Update(GameTime gameTime) {
@@ -69,46 +69,53 @@ namespace Antpire.Screens {
             var dt = gameTime.GetElapsedSeconds();
 
             if(keyboardState.IsKeyDown(Keys.F1)) {
-                simState.CurrentWorldSpace = WorldSpace.Anthill;
+                SimulationState.CurrentWorldSpace = WorldSpace.Anthill;
             }
             if (keyboardState.IsKeyDown(Keys.F2)) {
-                simState.CurrentWorldSpace = WorldSpace.Garden;
+                SimulationState.CurrentWorldSpace = WorldSpace.Garden;
             }
             if (keyboardState.IsKeyDown(Keys.F3)) {
-                if (simState.ZoomCamera <= 4.5f) {
-                    simState.ZoomCamera *= 1.02f * dt * 60.0f;
+                if (SimulationState.ZoomCamera <= 4.5f) {
+                    SimulationState.ZoomCamera *= 1.02f * dt * 60.0f;
                 }
             }
             if (keyboardState.IsKeyDown(Keys.F4)) {
-                if (simState.ZoomCamera >= 0.6f) {
-                    simState.ZoomCamera *= 0.98f * dt * 60.0f;
+                if (SimulationState.ZoomCamera >= 0.6f) {
+                    SimulationState.ZoomCamera *= 0.98f * dt * 60.0f;
                 }
             }
             if (keyboardState.IsKeyDown(Keys.F5)) {
-                simState.ZoomCamera = 1f;
+                SimulationState.ZoomCamera = 1f;
             }
 
             if (keyboardState.IsKeyDown(Keys.Left)) {
-                simState.CurrentCameraPosition -= new Vector2(1, 0) * dt * CAMERA_SPEED * (1/simState.ZoomCamera);
+                SimulationState.CurrentCameraPosition -= new Vector2(1, 0) * dt * CAMERA_SPEED * (1/SimulationState.ZoomCamera);
             }
             if (keyboardState.IsKeyDown(Keys.Right)) {
-                simState.CurrentCameraPosition += new Vector2(1, 0) * dt * CAMERA_SPEED * (1 / simState.ZoomCamera);
+                SimulationState.CurrentCameraPosition += new Vector2(1, 0) * dt * CAMERA_SPEED * (1 / SimulationState.ZoomCamera);
             }
             if (keyboardState.IsKeyDown(Keys.Up)) {
-                simState.CurrentCameraPosition -= new Vector2(0, 1) * dt * CAMERA_SPEED * (1 / simState.ZoomCamera);
+                SimulationState.CurrentCameraPosition -= new Vector2(0, 1) * dt * CAMERA_SPEED * (1 / SimulationState.ZoomCamera);
             }
             if (keyboardState.IsKeyDown(Keys.Down)) {
-                simState.CurrentCameraPosition += new Vector2(0, 1) * dt * CAMERA_SPEED * (1 / simState.ZoomCamera);
+                SimulationState.CurrentCameraPosition += new Vector2(0, 1) * dt * CAMERA_SPEED * (1 / SimulationState.ZoomCamera);
             }
 
 
             world.Update(gameTime);
         }
 
-        /// <summary>
-        /// Initialize a test map with every kind of entity
-        /// </summary>
-        private void initTestMap() {
+        // Initialize the garden part of the test map with every kind of entity
+        private void initTestMapAnthill() {
+            var sky = world.CreateEntity();
+            sky.Attach(new SimulationPosition { Position = new(), WorldSpace = WorldSpace.Anthill });
+            sky.Attach(new Renderable {
+                RenderItem = new RectangleRenderable(new(10000, 300), 0.0f, Color.SkyBlue, 300.9f)
+            });
+        }
+
+        // Initialize the garden part of the test map with every kind of entity
+        private void initTestMapGarden() {
             var r = new Random();
 
             // Init rocks in the garden
