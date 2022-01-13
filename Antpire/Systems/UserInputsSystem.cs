@@ -13,9 +13,12 @@ namespace Antpire.Systems {
     internal class UserInputsSystem : UpdateSystem {
         private readonly float CAMERA_SPEED = 400.0f;
         private readonly SimulationState simulationState;
+        private Point mouseLastPosition;
+        private float scrollWheelLastValue;
 
         public UserInputsSystem(SimulationState state) {
             simulationState = state;
+            mouseLastPosition = new Point();
         }
 
         public override void Update(GameTime gameTime) {
@@ -29,14 +32,10 @@ namespace Antpire.Systems {
                 simulationState.CurrentWorldSpace = WorldSpace.Garden;
             }
             if (keyboardState.IsKeyDown(Keys.F3)) {
-                if (simulationState.CurrentCameraState.Zoom <= 4.5f) {
-                    simulationState.CurrentCameraState.Zoom *= 1.02f * dt * 60.0f;
-                }
+                simulationState.CurrentCameraState.Zoom *= 1.02f * dt * 60.0f;
             }
             if (keyboardState.IsKeyDown(Keys.F4)) {
-                if (simulationState.CurrentCameraState.Zoom >= 0.6f) {
-                    simulationState.CurrentCameraState.Zoom *= 0.98f * dt * 60.0f;
-                }
+                simulationState.CurrentCameraState.Zoom *= 0.98f * dt * 60.0f;
             }
             if (keyboardState.IsKeyDown(Keys.F5)) {
                 simulationState.CurrentCameraState.Zoom = 1f;
@@ -54,6 +53,20 @@ namespace Antpire.Systems {
             if (keyboardState.IsKeyDown(Keys.Down)) {
                 simulationState.CurrentCameraState.Position += new Vector2(0, 1) * dt * CAMERA_SPEED * (1 / simulationState.CurrentCameraState.Zoom);
             }
+
+            var mouseState = Mouse.GetState();
+            if(mouseState.RightButton == ButtonState.Pressed) {
+                simulationState.CurrentCameraState.Position += (mouseLastPosition.ToVector2() - mouseState.Position.ToVector2()) * (1 / simulationState.CurrentCameraState.Zoom);
+            }
+    
+            
+            if(scrollWheelLastValue != mouseState.ScrollWheelValue) {
+                simulationState.CurrentCameraState.Zoom += (mouseState.ScrollWheelValue - scrollWheelLastValue) / 10.0f * dt;
+            }
+    
+
+            scrollWheelLastValue = mouseState.ScrollWheelValue;
+            mouseLastPosition = mouseState.Position;
         }
     }
 }

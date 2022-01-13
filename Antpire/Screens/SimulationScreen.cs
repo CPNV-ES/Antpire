@@ -18,8 +18,15 @@ using Antpire.Utils;
 
 namespace Antpire.Screens {
     internal record CameraState {
+        private float zoom = 1.0f;
         public Vector2 Position { get; set; } = new();
-        public float Zoom { get; set; } = 1.0f;
+        public float Zoom {
+            get => zoom;
+            set {
+                if (value <= 4.5f && value >= 0.5f)
+                    zoom = value;
+            }
+        }
     }
 
     internal class SimulationState {
