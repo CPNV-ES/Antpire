@@ -34,6 +34,7 @@ namespace Antpire.Screens {
         public CameraState AnthillCameraState { get; set; } = new();
         public CameraState CurrentCameraState => CurrentWorldSpace == WorldSpace.Anthill ? AnthillCameraState : GardenCameraState;
         public WorldSpace CurrentWorldSpace;
+        public AnthillInteriorGridMap AnthillInteriorGridMap { get; set; }
     }
 
     internal class SimulationScreen : GameScreen {
@@ -46,6 +47,8 @@ namespace Antpire.Screens {
         private Texture2D antAliveTexture;
         private Texture2D antDeadTexture;
         private Texture2D anthillTexture;
+        private Texture2D anthillDugTileTexture;
+        private Texture2D anthillWallTileTexture;
 
 
         public SimulationScreen(Game game) : base(game) {
@@ -65,6 +68,17 @@ namespace Antpire.Screens {
             antAliveTexture = Content.Load<Texture2D>("ant/alive");
             antDeadTexture = Content.Load<Texture2D>("ant/alive");
             anthillTexture = Content.Load<Texture2D>("anthill/anthill");
+            anthillDugTileTexture = Content.Load<Texture2D>("anthill_interior/dug_tile");
+            anthillWallTileTexture = Content.Load<Texture2D>("anthill_interior/wall_tile");
+
+            SimulationState.AnthillInteriorGridMap = new AnthillInteriorGridMap {
+                Grid = new AnthillInteriorGridMap.TileState[256, 256],
+                TilesRenderables = new Dictionary<AnthillInteriorGridMap.TileState, IRenderable> {
+                    { AnthillInteriorGridMap.TileState.Dug, new SpriteRenderable(128, anthillDugTileTexture) },
+                    { AnthillInteriorGridMap.TileState.Wall, new SpriteRenderable(128, anthillWallTileTexture) },
+                },
+                TileWidth = 128
+            };
 
             initTestMapGarden();
             initTestMapAnthill();
@@ -85,9 +99,15 @@ namespace Antpire.Screens {
         // Initialize the garden part of the test map with every kind of entity
         private void initTestMapAnthill() {
             var sky = world.CreateEntity();
-            sky.Attach(new SimulationPosition { Position = new(), WorldSpace = WorldSpace.Anthill });
+            sky.Attach(new SimulationPosition { Position = new(0, -500), WorldSpace = WorldSpace.Anthill });
             sky.Attach(new Renderable {
-                RenderItem = new RectangleRenderable(new(10000, 300), 0.0f, Color.SkyBlue, 300.9f)
+                RenderItem = new RectangleRenderable(new(10000, 500), 0.0f, Color.SkyBlue, 300.9f)
+            });
+
+            var gridmap = world.CreateEntity();
+            gridmap.Attach(new SimulationPosition { Position = new(0, 0), WorldSpace = WorldSpace.Anthill });
+            gridmap.Attach(new Renderable {
+                RenderItem = new AnthillInteriorGridmapRenderable { GridMap = SimulationState.AnthillInteriorGridMap }
             });
         }
 
