@@ -13,6 +13,7 @@ namespace Antpire.Drawing {
         public Color Color = Color.White;
         private Polygon polygon;
         private float Thickness = 1.0f;
+        private Rectangle boundingBox;
 
         public RectangleRenderable(Vector2 size, float rotation, Color color, float thickness = 1.0f) {
             Color = color;
@@ -24,10 +25,12 @@ namespace Antpire.Drawing {
             });
             polygon.Rotate(rotation);
             Thickness = thickness;
+            boundingBox = polygon.BoundingRectangle.ToRectangle();
         }
 
-        public void Render(SpriteBatch spriteBatch, Point position) {
-            spriteBatch.DrawPolygon(new Vector2(position.X, position.Y), polygon, Color, Thickness);
+        public void Render(SpriteBatch spriteBatch, Point position, Rectangle viewRegion) {
+            if(viewRegion.Intersects(new Rectangle { Location = boundingBox.Location + position, Size = boundingBox.Size }))
+                spriteBatch.DrawPolygon(new Vector2(position.X, position.Y), polygon, Color, Thickness);
         }
     }
 }
