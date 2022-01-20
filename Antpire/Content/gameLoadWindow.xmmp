@@ -1,0 +1,19 @@
+<Project>
+  <Project.ExportOptions Namespace="Antpire.Screens.Windows" Class="MainMenuScreenGameLoadWindow" OutputPath="C:\Users\dimitri.imfeld\Documents\Projects\Antpire\Antpire\Screens\Windows" />
+  <Window Title="Charger une partie" Left="314" Top="32" MinWidth="400" MaxWidth="700" MinHeight="250" MaxHeight="300" Id="Win">
+    <ScrollViewer>
+      <VerticalStackPanel Spacing="5" Padding="5">
+        <ImageTextButton Text="maSuperColonie - 2022-01-19 12:05:05" Padding="5" HorizontalAlignment="Stretch" />
+        <ImageTextButton Text="maSuperColonie - 2022-01-18 16:00:34" Padding="5" HorizontalAlignment="Stretch" />
+        <ImageTextButton Text="maSuperColonie - 2021-01-15 17:31:12" Padding="5" HorizontalAlignment="Stretch" />
+        <ImageTextButton Text="maSuperColonie - 2021-01-15 17:31:12" Padding="5" HorizontalAlignment="Stretch" />
+        <ImageTextButton Text="maSuperColonie - 2021-01-15 17:31:12" Padding="5" HorizontalAlignment="Stretch" />
+        <ImageTextButton Text="maSuperColonie - 2021-01-15 17:31:12" Padding="5" HorizontalAlignment="Stretch" />
+        <ImageTextButton Text="maSuperColonie - 2021-01-15 17:31:12" Padding="5" HorizontalAlignment="Stretch" />
+        <ImageTextButton Text="maSuperColonie - 2021-01-15 17:31:12" Padding="5" HorizontalAlignment="Stretch" />
+        <ImageTextButton Text="maSuperColonie - 2021-01-15 17:31:12" Padding="5" HorizontalAlignment="Stretch" />
+        <ImageTextButton Text="maSuperColonie - 2021-01-15 17:31:12" Padding="5" HorizontalAlignment="Stretch" />
+      </VerticalStackPanel>
+    </ScrollViewer>
+  </Window>
+</Project>

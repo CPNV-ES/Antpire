@@ -1,0 +1,12 @@
+<Project>
+  <Project.ExportOptions Namespace="Antpire.Screens.Windows" Class="MainMenuScreenMainMenuWindow" OutputPath="C:\Users\dimitri.imfeld\Documents\Projects\Antpire\Antpire\Screens\Windows" />
+  <Window Title="" Left="379" Top="42" Id="Win">
+    <VerticalStackPanel Spacing="15" Padding="15">
+      <Label Text="ANTPIRE" HorizontalAlignment="Center" />
+      <Label />
+      <ImageTextButton Text="Nouvelle Partie" ContentHorizontalAlignment="Center" ContentVerticalAlignment="Center" Padding="20, 10" HorizontalAlignment="Stretch" Id="NewGameBtn" />
+      <ImageTextButton Text="Charger Partie" ContentHorizontalAlignment="Center" ContentVerticalAlignment="Center" Padding="20, 10" HorizontalAlignment="Stretch" Id="LoadGameBtn" />
+      <ImageTextButton Text="Quitter" ContentHorizontalAlignment="Center" ContentVerticalAlignment="Center" Padding="20, 10" HorizontalAlignment="Stretch" Id="QuitBtn" />
+    </VerticalStackPanel>
+  </Window>
+</Project>

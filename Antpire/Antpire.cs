@@ -11,6 +11,7 @@ public class Antpire : Game {
     private SpriteBatch spriteBatch;
     private readonly ScreenManager screenManager;
     private Screens.SimulationScreen simulationScreen;
+    private Screens.MainMenuScreen mainMenuScreen;
 
     public Antpire() {
         Window.AllowUserResizing = true;
@@ -29,6 +30,7 @@ public class Antpire : Game {
         graphics.ApplyChanges();
 
         simulationScreen = new Screens.SimulationScreen(this);
+        mainMenuScreen = new Screens.MainMenuScreen(this);
 
         var args = System.Environment.GetCommandLineArgs()[1..];
         if(args.Contains("--start=test_anthill")) {
@@ -40,7 +42,7 @@ public class Antpire : Game {
             simulationScreen.SimulationState.CurrentWorldSpace = WorldSpace.Garden;
         }
         else {
-            // TODO: Start the game normally, show main menu ...
+            screenManager.LoadScreen(mainMenuScreen);
         }
     }
 

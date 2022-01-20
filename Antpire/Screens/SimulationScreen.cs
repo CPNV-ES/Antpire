@@ -60,7 +60,6 @@ namespace Antpire.Screens {
                 .AddSystem(new SimulationRenderSystem(GraphicsDevice, SimulationState))
                 .AddSystem(new UserInputsSystem(SimulationState))
                 .Build();
-            Game.Components.Add(world);
         }
 
         public override void LoadContent() {
