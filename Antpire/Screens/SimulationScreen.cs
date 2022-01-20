@@ -17,16 +17,27 @@ using Microsoft.Xna.Framework.Input;
 using Antpire.Utils;
 
 namespace Antpire.Screens {
-    internal class SimulationState {
-        public WorldSpace CurrentWorldSpace;
-        public Vector2 CurrentCameraPosition = new Vector2(0,0);
-        public float ZoomCamera = 1f;
+    internal record CameraState {
+        private float zoom = 1.0f;
+        public Vector2 Position { get; set; } = new();
+        public float Zoom {
+            get => zoom;
+            set {
+                if (value <= 4.5f && value >= 0.5f)
+                    zoom = value;
+            }
+        }
+    }
 
+    internal class SimulationState {
+        public CameraState GardenCameraState { get; set; } = new();
+        public CameraState AnthillCameraState { get; set; } = new();
+        public CameraState CurrentCameraState => CurrentWorldSpace == WorldSpace.Anthill ? AnthillCameraState : GardenCameraState;
+        public WorldSpace CurrentWorldSpace;
+        public AnthillInteriorGridMap AnthillInteriorGridMap { get; set; }
     }
 
     internal class SimulationScreen : GameScreen {
-        private readonly float CAMERA_SPEED = 400.0f;
-
         private World world;
         public SimulationState SimulationState;
         
@@ -36,14 +47,19 @@ namespace Antpire.Screens {
         private Texture2D antAliveTexture;
         private Texture2D antDeadTexture;
         private Texture2D anthillTexture;
+        private Texture2D anthillDugTileTexture;
+        private Texture2D anthillWallTileTexture;
+        private Texture2D eggTexture;
+        private Texture2D queenAliveTexture;
+ 
 
 
         public SimulationScreen(Game game) : base(game) {
             SimulationState = new SimulationState { CurrentWorldSpace = WorldSpace.Garden };
             world = new WorldBuilder()
                 .AddSystem(new SimulationRenderSystem(GraphicsDevice, SimulationState))
+                .AddSystem(new UserInputsSystem(SimulationState))
                 .Build();
-            Game.Components.Add(world);
         }
 
         public override void LoadContent() {
@@ -54,6 +70,20 @@ namespace Antpire.Screens {
             antAliveTexture = Content.Load<Texture2D>("ant/alive");
             antDeadTexture = Content.Load<Texture2D>("ant/alive");
             anthillTexture = Content.Load<Texture2D>("anthill/anthill");
+            anthillDugTileTexture = Content.Load<Texture2D>("anthill_interior/dug_tile");
+            anthillWallTileTexture = Content.Load<Texture2D>("anthill_interior/wall_tile");
+            eggTexture = Content.Load<Texture2D>("anthill_interior/egg");
+            queenAliveTexture = Content.Load<Texture2D>("queen/alive");
+      
+
+            SimulationState.AnthillInteriorGridMap = new AnthillInteriorGridMap {
+                Grid = new AnthillInteriorGridMap.TileState[256, 256],
+                TilesRenderables = new Dictionary<AnthillInteriorGridMap.TileState, IRenderable> {
+                    { AnthillInteriorGridMap.TileState.Dug, new SpriteRenderable(64, anthillDugTileTexture) },
+                    { AnthillInteriorGridMap.TileState.Wall, new SpriteRenderable(64, anthillWallTileTexture) },
+                },
+                TileWidth = 64
+            };
 
             initTestMapGarden();
             initTestMapAnthill();
@@ -68,49 +98,96 @@ namespace Antpire.Screens {
             var keyboardState = Keyboard.GetState();
             var dt = gameTime.GetElapsedSeconds();
 
-            if(keyboardState.IsKeyDown(Keys.F1)) {
-                SimulationState.CurrentWorldSpace = WorldSpace.Anthill;
-            }
-            if (keyboardState.IsKeyDown(Keys.F2)) {
-                SimulationState.CurrentWorldSpace = WorldSpace.Garden;
-            }
-            if (keyboardState.IsKeyDown(Keys.F3)) {
-                if (SimulationState.ZoomCamera <= 4.5f) {
-                    SimulationState.ZoomCamera *= 1.02f * dt * 60.0f;
-                }
-            }
-            if (keyboardState.IsKeyDown(Keys.F4)) {
-                if (SimulationState.ZoomCamera >= 0.6f) {
-                    SimulationState.ZoomCamera *= 0.98f * dt * 60.0f;
-                }
-            }
-            if (keyboardState.IsKeyDown(Keys.F5)) {
-                SimulationState.ZoomCamera = 1f;
-            }
-
-            if (keyboardState.IsKeyDown(Keys.Left)) {
-                SimulationState.CurrentCameraPosition -= new Vector2(1, 0) * dt * CAMERA_SPEED * (1/SimulationState.ZoomCamera);
-            }
-            if (keyboardState.IsKeyDown(Keys.Right)) {
-                SimulationState.CurrentCameraPosition += new Vector2(1, 0) * dt * CAMERA_SPEED * (1 / SimulationState.ZoomCamera);
-            }
-            if (keyboardState.IsKeyDown(Keys.Up)) {
-                SimulationState.CurrentCameraPosition -= new Vector2(0, 1) * dt * CAMERA_SPEED * (1 / SimulationState.ZoomCamera);
-            }
-            if (keyboardState.IsKeyDown(Keys.Down)) {
-                SimulationState.CurrentCameraPosition += new Vector2(0, 1) * dt * CAMERA_SPEED * (1 / SimulationState.ZoomCamera);
-            }
-
-
             world.Update(gameTime);
         }
 
         // Initialize the garden part of the test map with every kind of entity
         private void initTestMapAnthill() {
+            var r = new Random();
+
             var sky = world.CreateEntity();
-            sky.Attach(new SimulationPosition { Position = new(), WorldSpace = WorldSpace.Anthill });
+            sky.Attach(new SimulationPosition { Position = new(0, -500), WorldSpace = WorldSpace.Anthill });
             sky.Attach(new Renderable {
-                RenderItem = new RectangleRenderable(new(10000, 300), 0.0f, Color.SkyBlue, 300.9f)
+                RenderItem = new RectangleRenderable(new(10000, 500), 0.0f, Color.SkyBlue, 300.9f)
+            });
+
+            var gridmap = world.CreateEntity();
+            gridmap.Attach(new SimulationPosition { Position = new(0, 0), WorldSpace = WorldSpace.Anthill });
+            gridmap.Attach(new Renderable {
+                RenderItem = new AnthillInteriorGridmapRenderable { GridMap = SimulationState.AnthillInteriorGridMap }
+            });
+
+            // Entrance hall
+            SimulationState.AnthillInteriorGridMap.FillRectangle(new Rectangle(new(8, 3), new(5, 3)), AnthillInteriorGridMap.TileState.Dug);
+
+            // Entrance tunnel
+            SimulationState.AnthillInteriorGridMap.FillRectangle(new Rectangle(new(10, 0), new(1, 3)), AnthillInteriorGridMap.TileState.Dug);
+
+            // Main tunnel
+            SimulationState.AnthillInteriorGridMap.FillRectangle(new Rectangle(new(10, 6), new(1, 6)), AnthillInteriorGridMap.TileState.Dug);
+
+            // Warehouse
+            SimulationState.AnthillInteriorGridMap.FillRectangle(new Rectangle(new(14, 3), new(5, 3)), AnthillInteriorGridMap.TileState.Dug);
+
+            // Food in warehouse
+            var foodPositions = new Point[] { new Point(14 * 64 + 32, 3 * 64 + 32), new Point(15 * 64 + 32, 3 * 64 + 32), new Point(16 * 64 + 32, 3 * 64 + 32), new Point(17 * 64 + 32, 3 * 64 + 32) };
+            foreach (var foodPos in foodPositions) {
+                var food = world.CreateEntity();
+                var radius = r.Next(4, 28);
+                food.Attach(new SimulationPosition { Position = new Point(foodPos.X, foodPos.Y), WorldSpace = WorldSpace.Anthill });
+                food.Attach(new Renderable {
+                    RenderItem = new CircleRenderable { Sides = 32, Color = Color.DarkOliveGreen, Thickness = radius, Radius = radius }
+                });
+            }
+
+            // Materials in warehouse
+            var materialsPositions = new Point[] { new Point(18 * 64 + 32, 3 * 64 + 32), new Point(18 * 64 + 32, 4 * 64 + 32), new Point(17 * 64 + 32, 4 * 64 + 32) };
+            foreach (var materialPos in materialsPositions) {
+                var food = world.CreateEntity();
+                var radius = r.Next(4, 28);
+                food.Attach(new SimulationPosition { Position = new Point(materialPos.X, materialPos.Y), WorldSpace = WorldSpace.Anthill });
+                food.Attach(new Renderable {
+                    RenderItem = new CircleRenderable { Sides = 32, Color = Color.SaddleBrown, Thickness = radius, Radius = radius }
+                });
+            }
+
+            // Entrance to warehouse
+            SimulationState.AnthillInteriorGridMap.FillRectangle(new Rectangle(new(13, 4), new(1, 1)), AnthillInteriorGridMap.TileState.Dug);
+
+            // Queens room
+            SimulationState.AnthillInteriorGridMap.FillRectangle(new Rectangle(new(15, 7), new(7, 6)), AnthillInteriorGridMap.TileState.Dug);
+
+            // Queen in queens room
+            var queen = world.CreateEntity();
+            queen.Attach(new SimulationPosition { Position = new Point(17*64, 9*64), WorldSpace = WorldSpace.Anthill });
+            queen.Attach(new Renderable {
+                RenderItem = new SpriteRenderable(150, queenAliveTexture)
+            });
+
+            // Entrance to warehouse
+            SimulationState.AnthillInteriorGridMap.FillRectangle(new Rectangle(new(11, 8), new(4, 1)), AnthillInteriorGridMap.TileState.Dug);
+
+            // Nursery 
+            SimulationState.AnthillInteriorGridMap.FillRectangle(new Rectangle(new(12, 10), new(2, 3)), AnthillInteriorGridMap.TileState.Dug);
+
+            // Entrance to nursery
+            SimulationState.AnthillInteriorGridMap.FillRectangle(new Rectangle(new(14, 11), new(1, 1)), AnthillInteriorGridMap.TileState.Dug);
+
+            // Egg in nursery
+            var eggPositions = new Point[] { new Point(12 * 64, 10 * 64), new Point(12 * 64 + 16, 10 * 64), new Point(12 * 64, 10 * 64 + 16), new Point(13 * 64, 10 * 64) };
+            foreach(var eggPos in eggPositions) {
+                var egg = world.CreateEntity();
+                egg.Attach(new SimulationPosition { Position = new Point(eggPos.X, eggPos.Y), WorldSpace = WorldSpace.Anthill });
+                egg.Attach(new Renderable {
+                    RenderItem = new SpriteRenderable(20, eggTexture)
+                });
+            }
+
+            // Ant 
+            var ant = world.CreateEntity();
+            ant.Attach(new SimulationPosition { Position = new Point(10 * 64, 8 * 64), WorldSpace = WorldSpace.Anthill });
+            ant.Attach(new Renderable {
+                RenderItem = new SpriteRenderable(75, antAliveTexture)
             });
         }
 
@@ -142,7 +219,7 @@ namespace Antpire.Screens {
                     RenderItem = new RectangleRenderable(
                         size: new(trunkWidth, (float)(trunkWidth * (r.NextDouble()*3+2))), 
                         rotation: (float)(r.NextDouble()*Math.PI*2), 
-                        color: Color.Brown,
+                        color: Color.SaddleBrown,
                         thickness: 15.0f
                     )
                 });

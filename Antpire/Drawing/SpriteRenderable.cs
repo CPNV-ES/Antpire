@@ -18,8 +18,9 @@ namespace Antpire.Drawing {
             this.size = size;
         }
 
-        public void Render(SpriteBatch spriteBatch, Point pos) {
-            spriteBatch.Draw(texture, new Rectangle(pos, new Point(size, size)), Color.White);
+        public void Render(SpriteBatch spriteBatch, Point pos, Rectangle viewRegion) {
+            if(viewRegion.Intersects(new Rectangle { Location = pos, Width = size, Height = size }))
+                spriteBatch.Draw(texture, new Rectangle(pos, new Point(size, size)), Color.White);
         }
     }
 }
