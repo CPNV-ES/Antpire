@@ -49,15 +49,8 @@ namespace Antpire.Systems {
                 graphicsDevice.Clear(Color.ForestGreen);
             }
 
-            var zoomMagnification = 1 / simulationState.CurrentCameraState.Zoom;
-            var zoomScale = simulationState.CurrentCameraState.Zoom - 1;
-            var viewRegion = new Rectangle { 
-                X = (int)(simulationState.CurrentCameraState.Position.X + zoomScale * graphicsDevice.Viewport.Bounds.Size.X * zoomMagnification / 2),
-                Y = (int)(simulationState.CurrentCameraState.Position.Y + zoomScale * graphicsDevice.Viewport.Bounds.Size.Y * zoomMagnification / 2), 
-                Width = (int)(graphicsDevice.Viewport.Bounds.Size.X * zoomMagnification),
-                Height = (int)(graphicsDevice.Viewport.Bounds.Size.Y * zoomMagnification),
-            };
-
+            var viewRegion = camera.BoundingRectangle.ToRectangle();
+            
             foreach (var entityId in ActiveEntities) {
                 var pos = simPositionMapper.Get(entityId);
                 var render = renderableMapper.Get(entityId);
