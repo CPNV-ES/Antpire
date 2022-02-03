@@ -45,6 +45,7 @@ namespace Antpire.Screens {
         private Texture2D aphidAliveTexture;
         private Texture2D aphidDeadTexture;
         private Texture2D antAliveTexture;
+        private Texture2D antAlive_v2_Texture;
         private Texture2D antDeadTexture;
         private Texture2D anthillTexture;
         private Texture2D anthillDugTileTexture;
@@ -59,6 +60,7 @@ namespace Antpire.Screens {
             world = new WorldBuilder()
                 .AddSystem(new SimulationRenderSystem(GraphicsDevice, SimulationState))
                 .AddSystem(new UserInputsSystem(SimulationState))
+                .AddSystem(new WalkingSystem())
                 .Build();
         }
 
@@ -68,6 +70,7 @@ namespace Antpire.Screens {
             aphidAliveTexture = Content.Load<Texture2D>("aphid/alive");
             aphidDeadTexture = Content.Load<Texture2D>("aphid/dead");
             antAliveTexture = Content.Load<Texture2D>("ant/alive");
+            antAlive_v2_Texture = Content.Load<Texture2D>("ant/alivev2");
             antDeadTexture = Content.Load<Texture2D>("ant/alive");
             anthillTexture = Content.Load<Texture2D>("anthill/anthill");
             anthillDugTileTexture = Content.Load<Texture2D>("anthill_interior/dug_tile");
@@ -252,7 +255,7 @@ namespace Antpire.Screens {
                 var ant = world.CreateEntity();
                 ant.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
 
-                //50% that the aphid appears as deadborn
+                //50% that the ant appears as deadborn
                 if (r.Next(0, 2) != 0) {
                     ant.Attach(new Renderable {
                         RenderItem = new SpriteRenderable(100, antAliveTexture)
@@ -263,6 +266,24 @@ namespace Antpire.Screens {
                         RenderItem = new SpriteRenderable(100, antDeadTexture)
                     });
                 }
+            }
+
+            // Init one wandering anthill
+            var wandering_ants = new List<Point>() { new(600, 600) };
+
+            foreach (var pos in wandering_ants)
+            {
+                var wandering_ant = world.CreateEntity();
+                wandering_ant.Attach(new Ant());
+
+                wandering_ant.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+
+                wandering_ant.Attach(new Renderable
+                {
+                    RenderItem = new SpriteRenderable(50, antAlive_v2_Texture)
+                });
+
+                wandering_ant.Attach(new WalkingSystem());
             }
 
             // Init the anthill
