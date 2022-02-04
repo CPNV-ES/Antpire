@@ -109,4 +109,9 @@ public class Antpire : Game {
         screenManager.LoadScreen(mainMenuScreen, new FadeTransition(GraphicsDevice, Color.Black, .33f));
     }
 
+    public void StartNewGame(GardenGenerator.GardenGenerationOptions gardenGenerationOptions) {
+        loadSimulationScreen();
+        simulationScreen.InitProcGen();
+        simulationScreen.SimulationState.CurrentWorldSpace = WorldSpace.Garden;
+    }
 }

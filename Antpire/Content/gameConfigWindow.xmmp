@@ -37,7 +37,7 @@
       <TabItem Text="test213" >
       </TabItem>
 </TabControl>
-<Button Text="OK" HorizontalAlignment="Right" ></Button>
+<Button Id="ConfirmGameParamsButton" Text="OK" HorizontalAlignment="Right" ></Button>
 </VerticalStackPanel>
 </Window>
 </Project>
