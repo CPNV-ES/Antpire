@@ -4,7 +4,8 @@ global using System.Linq;
 global using System.Threading.Tasks;
 global using System.Collections.Generic;
 global using Microsoft.Xna.Framework;
-
+using Antpire.Utils;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Screens.Transitions;
@@ -26,23 +27,46 @@ public class Antpire : Game {
         Services.AddService(screenManager);
     }
 
+    public class ContentProvider {
+        private Dictionary<string, object> content;
+
+        public ContentProvider(Dictionary<string, object> content) {
+            this.content = content;
+        } 
+        
+        public T Get<T>(string key) {
+            return (T)content[key];
+        }
+        
+        public void Add(string key, object value) {
+            content.Add(key, value);
+        }
+    }
+
     protected override void Initialize() {
         base.Initialize();
 
         graphics.PreferredBackBufferWidth = 1280;
         graphics.PreferredBackBufferHeight = 720;
         graphics.ApplyChanges();
-
+        
         simulationScreen = new Screens.SimulationScreen(this);
         mainMenuScreen = new Screens.MainMenuScreen(this);
 
         var args = System.Environment.GetCommandLineArgs()[1..];
         if(args.Contains("--start=test_anthill")) {
             loadSimulationScreen();
+            simulationScreen.InitTestMaps();
             simulationScreen.SimulationState.CurrentWorldSpace = WorldSpace.Anthill;
         }
         if (args.Contains("--start=test_garden")) {
             loadSimulationScreen();
+            simulationScreen.InitTestMaps();
+            simulationScreen.SimulationState.CurrentWorldSpace = WorldSpace.Garden;
+        }
+        if (args.Contains("--start=test_proc_gen")) {
+            loadSimulationScreen();
+            simulationScreen.InitProcGen();
             simulationScreen.SimulationState.CurrentWorldSpace = WorldSpace.Garden;
         }
         else {
@@ -53,6 +77,14 @@ public class Antpire : Game {
     protected override void LoadContent() {
         spriteBatch = new SpriteBatch(GraphicsDevice);
 
+        var folders = new string[] { "", "ant", "anthill", "anthill_interior", "aphid", "queen" };
+        var dict = new Dictionary<string, object>();
+
+        foreach(var f in folders) {
+            dict = dict.Concat(Content.LoadContent(f)).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        }
+
+        Services.AddService(new ContentProvider(dict));
     }
 
     protected override void Update(GameTime gameTime) {
@@ -76,4 +108,5 @@ public class Antpire : Game {
     public void GoToMainMenu() {
         screenManager.LoadScreen(mainMenuScreen, new FadeTransition(GraphicsDevice, Color.Black, .33f));
     }
+
 }

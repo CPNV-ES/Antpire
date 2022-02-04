@@ -86,9 +86,6 @@ namespace Antpire.Screens {
                 TileWidth = 64
             };
 
-            initTestMapGarden();
-            initTestMapAnthill();
-
             desktop = new Desktop();
             mainPanel = new Panel();
             desktop.Root = mainPanel;
@@ -124,6 +121,22 @@ namespace Antpire.Screens {
             world.Update(gameTime);
         }
 
+        public void InitProcGen() {
+            var gg = new GardenGenerator {Game = Game, GenerationOptions = new GardenGenerator.GardenGenerationOptions() };
+            
+            world = new WorldBuilder()
+                .AddSystem(new SimulationRenderSystem(GraphicsDevice, SimulationState))
+                .AddSystem(new UserInputsSystem(SimulationState))
+                .Build();
+
+            gg.GenerateGarden(world);
+        }
+
+        public void InitTestMaps() {
+            initTestMapAnthill();
+            initTestMapGarden();
+        }
+        
         // Initialize the garden part of the test map with every kind of entity
         private void initTestMapAnthill() {
             var r = new Random();
