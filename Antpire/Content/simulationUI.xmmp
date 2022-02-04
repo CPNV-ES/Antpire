@@ -1,0 +1,8 @@
+<Project>
+<Project.ExportOptions Namespace="Antpire.Screens.Windows" Class="SimulationUI" OutputPath="C:\Users\dimitri.imfeld\Documents\Projects\Antpire\Antpire\Screens\Windows" />
+<Panel>
+    <Panel VerticalAlignment="Top" Padding="5" Background="#202020FF" >
+          <Button Id="Pause" Text="Pause" LabelHorizontalAlignment="Center" HorizontalAlignment="Right" Padding="5"></Button>
+    </Panel>
+  </Panel>
+</Project>

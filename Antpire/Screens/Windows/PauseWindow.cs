@@ -13,18 +13,20 @@ public partial class PauseWindow {
 
 		this.desktop = desktop;
 
-		var hide = () => {
-			Visible = false;
-		};
+		CloseKey = Microsoft.Xna.Framework.Input.Keys.F24;
+		CloseButton.Visible = false;
 
 		var goToMainMenu = () => {
 			var g = (Antpire)MyraEnvironment.Game;
 			g.GoToMainMenu();
 		};
 
-		Continue.Click += (s, a) => hide();
+		Continue.Click += (s, a) => Close();
 
-		Closed += (s, a) => hide();
+		Closing += (s, a) => {
+			a.Cancel = true;
+			Visible = false;
+		};
 
 		Load.Click += (s, a) => {
 			var test = new MainMenuScreenGameLoadWindow();
@@ -36,7 +38,7 @@ public partial class PauseWindow {
 			desktop.Widgets.Add(test);
 		};
 
-		SaveAndQuit.Click += (s, a) => goToMainMenu();
+		SaveAndQuit.Click += (s, a) => goToMainMenu();		
 
 		Quit.Click += (s, a) => goToMainMenu();
 	}

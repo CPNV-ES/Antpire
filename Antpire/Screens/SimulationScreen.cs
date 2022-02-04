@@ -42,8 +42,10 @@ namespace Antpire.Screens {
 
     internal class SimulationScreen : GameScreen {
         private World world;
-        private Desktop pauseMenuDesktop;
+        private Desktop desktop;
         private Window mainPauseWindow;
+        private SimulationUI ui;
+        private Panel mainPanel;
 
         public SimulationState SimulationState;
         
@@ -94,15 +96,25 @@ namespace Antpire.Screens {
             initTestMapGarden();
             initTestMapAnthill();
 
-            pauseMenuDesktop = new Desktop();
-            CreateMainPauseWindow();
-            mainPauseWindow.Close();
+            desktop = new Desktop();
+            mainPanel = new Panel();
+            desktop.Root = mainPanel;
+
+            mainPauseWindow = new PauseWindow(desktop);
+            mainPauseWindow.ZIndex = 1;
+            mainPanel.AddChild(mainPauseWindow);
+
+            ui = new SimulationUI(desktop);
+            ui.ZIndex = 2;
+            mainPanel.AddChild(ui);
+
+            mainPauseWindow.Visible = false;
         }
 
         public override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.White);
             world.Draw(gameTime);
-            pauseMenuDesktop.Render();
+            desktop.Render();
         }
 
         public override void Update(GameTime gameTime) {
@@ -110,19 +122,13 @@ namespace Antpire.Screens {
             var dt = gameTime.GetElapsedSeconds();
 
             if (Keyboard.GetState().IsKeyDown(Keys.Escape)) {
-                if (!mainPauseWindow.Visible) 
-                    CreateMainPauseWindow();
+                if (!mainPauseWindow.Visible)
+                    mainPauseWindow.Visible = true;
             }
 
             SimulationState.TimeScale = mainPauseWindow.Visible ? 0 : SimulationState.TimeScale;
 
             world.Update(gameTime);
-        }
-
-        private void CreateMainPauseWindow() {
-            mainPauseWindow = new PauseWindow(pauseMenuDesktop);
-            pauseMenuDesktop.Root = mainPauseWindow;
-            mainPauseWindow.CenterOnDesktop();
         }
 
         // Initialize the garden part of the test map with every kind of entity
