@@ -107,15 +107,18 @@ namespace Antpire.Screens {
             var keyboardState = Keyboard.GetState();
             var dt = gameTime.GetElapsedSeconds();
 
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape)) {
+                if (!mainPauseWindow.Visible)
+                    CreateMainPauseWindow();
+            }
+
             world.Update(gameTime);
         }
 
         private void CreateMainPauseWindow() {
             mainPauseWindow = new PauseWindow(pauseMenuDesktop);
-            mainPauseWindow.Closed += (sender, args) => {
-                CreateMainPauseWindow();
-            };
             pauseMenuDesktop.Root = mainPauseWindow;
+            mainPauseWindow.CenterOnDesktop();
         }
 
         // Initialize the garden part of the test map with every kind of entity

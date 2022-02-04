@@ -16,6 +16,10 @@ public partial class PauseWindow {
 			Visible = false;
 		};
 
+		Closed += (s, a) => {
+			Visible = false;
+		};
+
 		Load.Click += (s, a) => {
 			var test = new MainMenuScreenGameLoadWindow();
 			desktop.Widgets.Add(test);
