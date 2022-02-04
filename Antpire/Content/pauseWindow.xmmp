@@ -1,0 +1,15 @@
+<Project>
+  <Project.ExportOptions Namespace="Antpire.Screens.Windows" Class="PauseWindow" OutputPath="C:\Users\dimitri.imfeld\Documents\Projects\Antpire\Antpire\Screens\Windows" />
+  <Window Title="Sauvegarder" Left="389" Top="34" MinWidth="250" MaxWidth="700" MinHeight="0" Id="Win">
+    <VerticalStackPanel Spacing="10" Padding="10">
+      <ImageTextButton Text="Reprendre" ContentHorizontalAlignment="Center" Padding="4" HorizontalAlignment="Stretch" Id="Continue" />
+      <Label Height="8" />
+      <ImageTextButton Text="Sauvegarder" ContentHorizontalAlignment="Center" Padding="4" HorizontalAlignment="Stretch" Id="Save" />
+      <ImageTextButton Text="Sauvegarder Sous ..." ContentHorizontalAlignment="Center" Padding="4" HorizontalAlignment="Stretch" Id="SaveAs" />
+      <ImageTextButton Text="Charger ..." ContentHorizontalAlignment="Center" Padding="4" HorizontalAlignment="Stretch" Id="Load" />
+      <Label Height="8" />
+      <ImageTextButton Text="Sauvegarder et Quitter" ContentHorizontalAlignment="Center" Padding="4" HorizontalAlignment="Stretch" Id="SaveAndQuit" />
+      <ImageTextButton Text="Quitter sans Sauvegarder" ContentHorizontalAlignment="Center" Padding="4" HorizontalAlignment="Stretch" Id="Quit" />
+    </VerticalStackPanel>
+  </Window>
+</Project>

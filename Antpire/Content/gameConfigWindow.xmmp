@@ -1,43 +1,15 @@
 <Project>
 <Project.ExportOptions Namespace="Antpire.Screens.Windows" Class="MainMenuScreenGameConfigWindow" OutputPath="C:\Users\dimitri.imfeld\Documents\Projects\Antpire\Antpire\Screens\Windows" />
-<Window Title="Configuration de la partie" Left="379" Top="42" MinWidth="400" MaxWidth="700" MinHeight="250"  Id="Win" >
- <VerticalStackPanel Spacing="10" >
-<TabControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="200" MaxHeight="300" >
-      <TabItem Text="test213" >
-      <ScrollViewer>
-              
-              <Grid ColumnSpacing="10" RowSpacing="10" Padding="5" >
-              <Grid.ColumnsProportions>
-              <Proportion/>
-              <Proportion Type="Fill"/>
-              </Grid.ColumnsProportions>
-            <Grid.RowsProportions>
-              <Proportion/>
-              <Proportion/>
-            </Grid.RowsProportions>
-    
-                 <Label Text="boolean"/>
-                 <CheckBox ContentHorizontalAlignment="Right" HorizontalAlignment="Right" GridColumn="1" />
-            
-                 <Label Text="text" GridRow="1"/>
-                 <TextBox HorizontalAlignment="Right" GridRow="1" GridColumn="1" MinWidth="200" />
-            
-                 <Label Text="number" GridRow="2"/>
-                 <SpinButton HorizontalAlignment="Right" GridRow="2" GridColumn="1" MinWidth="200" />
-            
-                 <Label Text="combobox" GridRow="3"/>
-                 <ComboBox HorizontalAlignment="Right" GridRow="3" GridColumn="1" >
-                      <ListItem Text="option1" />
-                       <ListItem Text="option2" />
-                 </ComboBox>
-       
-              </Grid>
-      </ScrollViewer>
-      </TabItem>
-      <TabItem Text="test213" >
-      </TabItem>
-</TabControl>
-<Button Text="OK" HorizontalAlignment="Right" ></Button>
+<Window Title="Sauvegarder" Left="379" Top="42" MinWidth="250" MaxWidth="700" MinHeight="0"  Id="Win" >
+<VerticalStackPanel Spacing="10" Padding="10" >
+<Button Text="Reprendre" ContentHorizontalAlignment="Center" Padding="4" HorizontalAlignment="Stretch" />
+<Label Height="8" ></Label>
+<Button Text="Sauvegarder" ContentHorizontalAlignment="Center" Padding="4" HorizontalAlignment="Stretch" />
+<Button Text="Sauvegarder Sous ..." ContentHorizontalAlignment="Center" Padding="4" HorizontalAlignment="Stretch" />
+<Button Text="Charger ..." ContentHorizontalAlignment="Center" Padding="4" HorizontalAlignment="Stretch" />
+<Label Height="8" ></Label>
+<Button Text="Sauvegarder et Quitter" ContentHorizontalAlignment="Center" Padding="4" HorizontalAlignment="Stretch" />
+<Button Text="Quitter sans Sauvegarder" ContentHorizontalAlignment="Center" Padding="4" HorizontalAlignment="Stretch" />
 </VerticalStackPanel>
 </Window>
 </Project>

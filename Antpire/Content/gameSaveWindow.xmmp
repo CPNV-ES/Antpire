@@ -1,0 +1,29 @@
+<Project>
+  <Project.ExportOptions Namespace="Antpire.Screens.Windows" Class="GameSaveWindow" OutputPath="C:\Users\dimitri.imfeld\Documents\Projects\Antpire\Antpire\Screens\Windows" />
+  <Window Title="Sauvegarder Sous ..." Left="314" Top="36" MinWidth="400" MaxWidth="700" MinHeight="250" MaxHeight="300" Id="Win">
+    <VerticalStackPanel>
+      <HorizontalStackPanel Spacing="8" Top="1" Margin="6, 0, 4, 8">
+        <HorizontalStackPanel.Proportions>
+          <Proportion Type="Auto" />
+          <Proportion Type="Fill" />
+        </HorizontalStackPanel.Proportions>
+        <ImageTextButton Text="Sauvegarder" Padding="3" />
+        <TextBox HintText="Nom de la sauvegarde" VerticalAlignment="Center" />
+      </HorizontalStackPanel>
+      <ScrollViewer>
+        <VerticalStackPanel Spacing="5" Padding="5">
+          <ImageTextButton Text="maSuperColonie - 2022-01-19 12:05:05" Toggleable="True" Padding="5" HorizontalAlignment="Stretch" />
+          <ImageTextButton Text="maSuperColonie - 2022-01-18 16:00:34" Toggleable="True" Padding="5" HorizontalAlignment="Stretch" />
+          <ImageTextButton Text="maSuperColonie - 2021-01-15 17:31:12" Toggleable="True" Padding="5" HorizontalAlignment="Stretch" />
+          <ImageTextButton Text="maSuperColonie - 2021-01-15 17:31:12" Toggleable="True" Padding="5" HorizontalAlignment="Stretch" />
+          <ImageTextButton Text="maSuperColonie - 2021-01-15 17:31:12" Toggleable="True" Padding="5" HorizontalAlignment="Stretch" />
+          <ImageTextButton Text="maSuperColonie - 2021-01-15 17:31:12" Toggleable="True" Padding="5" HorizontalAlignment="Stretch" />
+          <ImageTextButton Text="maSuperColonie - 2021-01-15 17:31:12" Toggleable="True" Padding="5" HorizontalAlignment="Stretch" />
+          <ImageTextButton Text="maSuperColonie - 2021-01-15 17:31:12" Toggleable="True" Padding="5" HorizontalAlignment="Stretch" />
+          <ImageTextButton Text="maSuperColonie - 2021-01-15 17:31:12" Toggleable="True" Padding="5" HorizontalAlignment="Stretch" />
+          <ImageTextButton Text="maSuperColonie - 2021-01-15 17:31:12" Toggleable="True" Padding="5" HorizontalAlignment="Stretch" />
+        </VerticalStackPanel>
+      </ScrollViewer>
+    </VerticalStackPanel>
+  </Window>
+</Project>

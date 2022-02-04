@@ -15,6 +15,8 @@ using Antpire.Drawing;
 using MonoGame.Extended.Shapes;
 using Microsoft.Xna.Framework.Input;
 using Antpire.Utils;
+using Myra.Graphics2D.UI;
+using Antpire.Screens.Windows;
 
 namespace Antpire.Screens {
     internal record CameraState {
@@ -39,6 +41,9 @@ namespace Antpire.Screens {
 
     internal class SimulationScreen : GameScreen {
         private World world;
+        private Desktop pauseMenuDesktop;
+        private Window mainPauseWindow;
+
         public SimulationState SimulationState;
         
         // Textures
@@ -87,11 +92,15 @@ namespace Antpire.Screens {
 
             initTestMapGarden();
             initTestMapAnthill();
+
+            pauseMenuDesktop = new Desktop();
+            CreateMainPauseWindow();
         }
 
         public override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.White);
             world.Draw(gameTime);
+            pauseMenuDesktop.Render();
         }
 
         public override void Update(GameTime gameTime) {
@@ -99,6 +108,14 @@ namespace Antpire.Screens {
             var dt = gameTime.GetElapsedSeconds();
 
             world.Update(gameTime);
+        }
+
+        private void CreateMainPauseWindow() {
+            mainPauseWindow = new PauseWindow(pauseMenuDesktop);
+            mainPauseWindow.Closed += (sender, args) => {
+                CreateMainPauseWindow();
+            };
+            pauseMenuDesktop.Root = mainPauseWindow;
         }
 
         // Initialize the garden part of the test map with every kind of entity
