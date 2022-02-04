@@ -37,6 +37,7 @@ namespace Antpire.Screens {
         public CameraState CurrentCameraState => CurrentWorldSpace == WorldSpace.Anthill ? AnthillCameraState : GardenCameraState;
         public WorldSpace CurrentWorldSpace;
         public AnthillInteriorGridMap AnthillInteriorGridMap { get; set; }
+        public float TimeScale { get; set; } = 1.0f;
     }
 
     internal class SimulationScreen : GameScreen {
@@ -95,6 +96,7 @@ namespace Antpire.Screens {
 
             pauseMenuDesktop = new Desktop();
             CreateMainPauseWindow();
+            mainPauseWindow.Close();
         }
 
         public override void Draw(GameTime gameTime) {
@@ -108,11 +110,15 @@ namespace Antpire.Screens {
             var dt = gameTime.GetElapsedSeconds();
 
             if (Keyboard.GetState().IsKeyDown(Keys.Escape)) {
-                if (!mainPauseWindow.Visible)
+                if (!mainPauseWindow.Visible) 
                     CreateMainPauseWindow();
             }
 
-            world.Update(gameTime);
+            var gt = gameTime;
+            var ts = mainPauseWindow.Visible ? 0 : SimulationState.TimeScale;
+            gt.ElapsedGameTime *= ts;
+
+            world.Update(gt);
         }
 
         private void CreateMainPauseWindow() {
