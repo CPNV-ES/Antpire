@@ -280,7 +280,7 @@ namespace Antpire.Screens {
 
                 wandering_ant.Attach(new Renderable
                 {
-                    RenderItem = new SpriteRenderable(50, antAlive_v2_Texture)
+                    RenderItem = new SpriteRenderable(new Point(40, 70), antAlive_v2_Texture)
                 });
 
                 wandering_ant.Attach(new WalkingSystem());
