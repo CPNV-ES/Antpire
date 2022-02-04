@@ -1,9 +1,13 @@
-﻿using Microsoft.Xna.Framework;
+﻿global using System;
+global using System.Text;
+global using System.Linq;
+global using System.Threading.Tasks;
+global using System.Collections.Generic;
+global using Microsoft.Xna.Framework;
+
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Screens.Transitions;
-using System.Linq;
 
 namespace Antpire;
 public class Antpire : Game {

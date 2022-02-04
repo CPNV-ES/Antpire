@@ -1,12 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MoreLinq;
-
-namespace Antpire.Utils {
+﻿namespace Antpire.Utils {
     internal class ShapeUtils {
         /// <summary>
         /// Generates a random polyon containing <c>verticesCount</c> vertices restrained into a circle of radius <c>radius</c>

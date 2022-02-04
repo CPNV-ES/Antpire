@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
-using MonoGame.Extended.Shapes;
+﻿using Microsoft.Xna.Framework.Graphics;
 
 namespace Antpire.Drawing {
     internal class SpriteRenderable : IRenderable{

@@ -1,14 +1,8 @@
 ﻿using Antpire.Components;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Antpire.Systems {
     internal class BouncingLogoRenderSystem : EntityDrawSystem {

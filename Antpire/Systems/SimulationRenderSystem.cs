@@ -1,17 +1,9 @@
 ﻿using Antpire.Components;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Antpire.Screens;
-using Antpire.Drawing;
-using MonoGame.Extended.ViewportAdapters;
 
 namespace Antpire.Systems {
     internal class SimulationRenderSystem : EntityDrawSystem {

@@ -1,7 +1,5 @@
 using Myra.Graphics2D.UI;
-using Microsoft.Xna.Framework;
 using Myra;
-using MonoGame.Extended.Screens;
 
 namespace Antpire.Screens.Windows;
 
