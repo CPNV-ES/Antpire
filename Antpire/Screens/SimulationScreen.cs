@@ -114,11 +114,9 @@ namespace Antpire.Screens {
                     CreateMainPauseWindow();
             }
 
-            var gt = gameTime;
-            var ts = mainPauseWindow.Visible ? 0 : SimulationState.TimeScale;
-            gt.ElapsedGameTime *= ts;
+            SimulationState.TimeScale = mainPauseWindow.Visible ? 0 : SimulationState.TimeScale;
 
-            world.Update(gt);
+            world.Update(gameTime);
         }
 
         private void CreateMainPauseWindow() {
