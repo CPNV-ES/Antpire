@@ -233,7 +233,7 @@ namespace Antpire.Screens {
             foreach (var pos in aphids) {
                 var aphid = world.CreateEntity();
                 aphid.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
-
+                
                 //50% that the aphid appears as deadborn
                 if (r.Next(0, 2) != 0) {
                     aphid.Attach(new Renderable {
@@ -254,6 +254,8 @@ namespace Antpire.Screens {
             foreach (var pos in ants) {
                 var ant = world.CreateEntity();
                 ant.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+                ant.Attach(new Ant());
+                ant.Attach(new Insect());
 
                 //50% that the ant appears as deadborn
                 if (r.Next(0, 2) != 0) {
@@ -275,6 +277,7 @@ namespace Antpire.Screens {
             {
                 var wandering_ant = world.CreateEntity();
                 wandering_ant.Attach(new Ant());
+                wandering_ant.Attach(new Insect());
 
                 wandering_ant.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
 

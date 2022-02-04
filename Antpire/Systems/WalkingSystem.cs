@@ -15,8 +15,9 @@ namespace Antpire.Systems
     internal class WalkingSystem : EntityUpdateSystem
     {
         private ComponentMapper<SimulationPosition> simulationPosition;
+        private ComponentMapper<Insect> insectMapper;
 
-        public WalkingSystem() : base(Aspect.All(typeof(Ant), typeof(SimulationPosition)))
+        public WalkingSystem() : base(Aspect.All(typeof(Insect), typeof(SimulationPosition)))
         {
 
         }
@@ -24,27 +25,33 @@ namespace Antpire.Systems
         public override void Initialize(IComponentMapperService mapperService)
         {
             simulationPosition = mapperService.GetMapper<SimulationPosition>();
+            insectMapper = mapperService.GetMapper<Insect>();
         }
 
         public override void Update(GameTime gameTime)
         {
             foreach (var entityId in ActiveEntities)
             {
-                var newPosition = simulationPosition.Get(entityId);
+                var entity = simulationPosition.Get(entityId);
+                var insect = insectMapper.Get(entityId);
 
-                /*
-                var going = new Transform2(transform.Position.X + bouncingLogo.Velocity.X, transform.Position.Y + bouncingLogo.Velocity.Y);
-                if (going.Position.X < 0 || going.Position.X + bouncingLogo.Size.X > graphicsDevice.Viewport.Width) {
-                    bouncingLogo.Velocity.X *= -1;
+                //insect.changeDestinationTo(new Vector2(100, 100));
+
+
+                Vector2 location = new Vector2(entity.Position.X, entity.Position.Y);
+
+                if (insect.shouldChangeDestination)
+                {
+                    insect.velocity = Vector2.Subtract(location / insect.destination, location);
+                    insect.velocity.Normalize();
+                    insect.velocity = Vector2.Multiply(insect.velocity, 1);
+
+                    insect.shouldChangeDestination = false;
                 }
 
-                if (going.Position.Y < 0 || going.Position.Y + bouncingLogo.Size.Y > graphicsDevice.Viewport.Height) {
-                    bouncingLogo.Velocity.Y *= -1;
-                }
-                transform.Position = going.Position;
+                Vector2 newPosition = Vector2.Add(location, insect.velocity);
 
-                */
-                newPosition.Position = new Point(newPosition.Position.X + 1, newPosition.Position.Y + 1);
+                entity.Position = new Point((int)newPosition.X, (int)newPosition.Y);
             }
         }
     }
