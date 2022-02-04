@@ -19,7 +19,7 @@ public class Antpire : Game {
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
         screenManager = new ScreenManager();
-        Components.Add(screenManager);
+        Services.AddService(screenManager);
     }
 
     protected override void Initialize() {
@@ -66,6 +66,10 @@ public class Antpire : Game {
     }
 
     private void loadSimulationScreen() {
-        screenManager.LoadScreen(simulationScreen, new FadeTransition(GraphicsDevice, Color.White));
+        screenManager.LoadScreen(simulationScreen, new FadeTransition(GraphicsDevice, Color.Black));
+    }
+
+    public void GoToMainMenu() {
+        screenManager.LoadScreen(mainMenuScreen, new FadeTransition(GraphicsDevice, Color.Black, .33f));
     }
 }
