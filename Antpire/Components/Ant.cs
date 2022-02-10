@@ -9,5 +9,13 @@ using MonoGame.Extended.Entities;
 
 namespace Antpire.Components {
     internal class Ant {
+        public enum State {
+            Idle,
+            Attacking,
+            Scouting,
+            Dying
+        }   
+
+        public State actualState = State.Idle;
     }
 }

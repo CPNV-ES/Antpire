@@ -36,43 +36,11 @@ namespace Antpire.Systems
                 var insect = insectMapper.Get(entityId);
                 Vector2 location = new Vector2(entity.Position.X, entity.Position.Y);
 
-
-                scouting(entity, insect, location, gameTime);
-
                 if (insect.shouldChangeDestination)
                     changeDirection(insect, location);
 
                 walks(entity, insect, location);
             }
-        }
-
-        private void scouting(SimulationPosition entity, Insect insect, Vector2 location, GameTime gameTime)
-        {
-            /* Should I set this code inside the WalkingSystem or inside the Insect (or ant) component ?
-
-
-            */
-
-            /*
-            int counter = 1;
-            int limit = 50;
-            float countDuration = 2f; //every  2s.
-            float currentTime = 0f;
-
-            currentTime += (float)gameTime.ElapsedGameTime.TotalSeconds; //Time passed since last Update() 
-
-            if (currentTime >= countDuration)
-            {
-                counter++;
-                currentTime -= countDuration; // "use up" the time
-                                              //any actions to perform
-            }
-            if (counter >= limit)
-            {
-                insect.changeDestinationTo(new Vector2(50, 50));
-                counter = 0;//Reset the counter;
-                            //any actions to perform
-            }*/
         }
 
         private void walks(SimulationPosition entity, Insect insect, Vector2 location)
