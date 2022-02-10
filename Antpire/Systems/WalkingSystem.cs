@@ -9,6 +9,7 @@ using MonoGame.Extended.Entities.Systems;
 using Antpire.Components;
 using MonoGame.Extended;
 using Microsoft.Xna.Framework.Graphics;
+using System.Diagnostics;
 
 namespace Antpire.Systems
 {
@@ -45,15 +46,14 @@ namespace Antpire.Systems
 
         private void walks(SimulationPosition entity, Insect insect, Vector2 location)
         {
-            Vector2 newPosition = Vector2.Add(location, insect.velocity);
+            Vector2 newPosition = Vector2.Add(location, Vector2.Multiply(insect.velocity, 2f));
             entity.Position = new Point((int)newPosition.X, (int)newPosition.Y);
         }
 
         private void changeDirection(Insect insect, Vector2 location)
         {
-            insect.velocity = Vector2.Subtract(location / insect.destination, location);
+            insect.velocity = Vector2.Subtract(insect.destination, location);
             insect.velocity.Normalize();
-            insect.velocity = Vector2.Multiply(insect.velocity, 1);
 
             insect.shouldChangeDestination = false;
         }

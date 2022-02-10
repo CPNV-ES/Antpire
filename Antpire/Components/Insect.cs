@@ -11,7 +11,7 @@ namespace Antpire.Components {
     internal class Insect {
         public bool shouldChangeDestination = false;
         public Vector2 velocity = new Vector2();
-        public Vector2 destination = new Vector2();
+        public Vector2 destination = new Vector2(1, 1);
 
         public void changeDestinationTo(Vector2 d)
         {

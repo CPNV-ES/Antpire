@@ -61,6 +61,7 @@ namespace Antpire.Screens {
                 .AddSystem(new SimulationRenderSystem(GraphicsDevice, SimulationState))
                 .AddSystem(new UserInputsSystem(SimulationState))
                 .AddSystem(new WalkingSystem())
+                .AddSystem(new AntLogicSystem())
                 .Build();
         }
 
@@ -255,7 +256,6 @@ namespace Antpire.Screens {
                 var ant = world.CreateEntity();
                 ant.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
                 ant.Attach(new Ant());
-                ant.Attach(new Insect());
 
                 //50% that the ant appears as deadborn
                 if (r.Next(0, 2) != 0) {
@@ -270,7 +270,7 @@ namespace Antpire.Screens {
                 }
             }
 
-            // Init one wandering anthill
+            // Init one wandering ant
             var wandering_ants = new List<Point>() { new(600, 600) };
 
             foreach (var pos in wandering_ants)
@@ -285,8 +285,6 @@ namespace Antpire.Screens {
                 {
                     RenderItem = new SpriteRenderable(new Point(40, 70), antAlive_v2_Texture)
                 });
-
-                wandering_ant.Attach(new WalkingSystem());
             }
 
             // Init the anthill
