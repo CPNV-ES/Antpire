@@ -151,7 +151,7 @@ public class GardenGenerator {
     }
     
     private void PlaceTrunksInChunk(Point chunk, World world) {
-        for(var i = 0; i < random.Next(GenerationOptions.RocksPerChunk); i++) {
+        for(var i = 0; i < random.Next(GenerationOptions.TrunksPerChunk); i++) {
             var pos = GetRandomPointInChunk(chunk); 
             var trunk = world.CreateEntity();
             var trunkWidth = random.Next(20, 30);
@@ -177,7 +177,7 @@ public class GardenGenerator {
     }
 
     private void PlaceBushesInChunk(Point chunk, World world) {
-        for(var i = 0; i < random.Next(GenerationOptions.RocksPerChunk); i++) {
+        for(var i = 0; i < random.Next(GenerationOptions.BushesPerChunk); i++) {
             var pos = GetRandomPointInChunk(chunk); 
             // Generate the bush's leaves
             var leavesPositions = new List<Vector2>() { new(0, 0) };
