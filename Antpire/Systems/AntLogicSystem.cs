@@ -83,7 +83,12 @@ namespace Antpire.Systems
                 int newX = rand.Next(-100, 100);
                 int newY = rand.Next(-100, 100);
 
-                insect.changeDestinationTo(new Vector2(entity.Position.X + newX, entity.Position.Y + newY));
+                var rot = (float)rand.NextDouble() * MathF.PI/2;
+                rot = entity.Rotation + rot - MathF.PI/4;
+                entity.Rotation = rot;
+                var vec = Vector2.One.Rotate(rot);
+
+                insect.changeDestinationTo(entity.Position.ToVector2() + vec*100);
 
                 // If the ant found somehing
                 // -> Add the founded-thing and drop a home-drop 
