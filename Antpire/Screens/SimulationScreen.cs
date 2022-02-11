@@ -10,6 +10,8 @@ using Microsoft.Xna.Framework.Input;
 using Antpire.Utils;
 using Myra.Graphics2D.UI;
 using Antpire.Screens.Windows;
+using Microsoft.Xna.Framework.Content;
+using static Antpire.Antpire;
 
 namespace Antpire.Screens {
     internal record CameraState {
@@ -39,49 +41,27 @@ namespace Antpire.Screens {
         private Window mainPauseWindow;
         private SimulationUI ui;
         private Panel mainPanel;
+        private ContentProvider contentProvider;
 
         public SimulationState SimulationState;
         
-        // Textures
-        private Texture2D aphidAliveTexture;
-        private Texture2D aphidDeadTexture;
-        private Texture2D antAliveTexture;
-        private Texture2D antDeadTexture;
-        private Texture2D anthillTexture;
-        private Texture2D anthillDugTileTexture;
-        private Texture2D anthillWallTileTexture;
-        private Texture2D eggTexture;
-        private Texture2D queenAliveTexture;
- 
-
-
         public SimulationScreen(Game game) : base(game) {
             SimulationState = new SimulationState { CurrentWorldSpace = WorldSpace.Garden };
             world = new WorldBuilder()
                 .AddSystem(new SimulationRenderSystem(GraphicsDevice, SimulationState))
                 .AddSystem(new UserInputsSystem(SimulationState))
                 .Build();
+            contentProvider = game.Services.GetService<ContentProvider>();
         }
 
         public override void LoadContent() {
             base.LoadContent();
-
-            aphidAliveTexture = Content.Load<Texture2D>("aphid/alive");
-            aphidDeadTexture = Content.Load<Texture2D>("aphid/dead");
-            antAliveTexture = Content.Load<Texture2D>("ant/alive");
-            antDeadTexture = Content.Load<Texture2D>("ant/alive");
-            anthillTexture = Content.Load<Texture2D>("anthill/anthill");
-            anthillDugTileTexture = Content.Load<Texture2D>("anthill_interior/dug_tile");
-            anthillWallTileTexture = Content.Load<Texture2D>("anthill_interior/wall_tile");
-            eggTexture = Content.Load<Texture2D>("anthill_interior/egg");
-            queenAliveTexture = Content.Load<Texture2D>("queen/alive");
-      
-
+            
             SimulationState.AnthillInteriorGridMap = new AnthillInteriorGridMap {
                 Grid = new AnthillInteriorGridMap.TileState[256, 256],
                 TilesRenderables = new Dictionary<AnthillInteriorGridMap.TileState, IRenderable> {
-                    { AnthillInteriorGridMap.TileState.Dug, new SpriteRenderable(64, anthillDugTileTexture) },
-                    { AnthillInteriorGridMap.TileState.Wall, new SpriteRenderable(64, anthillWallTileTexture) },
+                    { AnthillInteriorGridMap.TileState.Dug, new SpriteRenderable(64, contentProvider.Get<Texture2D>("anthill_interior/dug_tile")) },
+                    { AnthillInteriorGridMap.TileState.Wall, new SpriteRenderable(64, contentProvider.Get<Texture2D>("anthill_interior/wall_tile")) },
                 },
                 TileWidth = 64
             };
@@ -197,7 +177,7 @@ namespace Antpire.Screens {
             var queen = world.CreateEntity();
             queen.Attach(new SimulationPosition { Position = new Point(17*64, 9*64), WorldSpace = WorldSpace.Anthill });
             queen.Attach(new Renderable {
-                RenderItem = new SpriteRenderable(150, queenAliveTexture)
+                RenderItem = new SpriteRenderable(150, contentProvider.Get<Texture2D>("queen/alive"))
             });
 
             // Entrance to warehouse
@@ -215,7 +195,7 @@ namespace Antpire.Screens {
                 var egg = world.CreateEntity();
                 egg.Attach(new SimulationPosition { Position = new Point(eggPos.X, eggPos.Y), WorldSpace = WorldSpace.Anthill });
                 egg.Attach(new Renderable {
-                    RenderItem = new SpriteRenderable(20, eggTexture)
+                    RenderItem = new SpriteRenderable(20, contentProvider.Get<Texture2D>("anthill_interior/egg"))
                 });
             }
 
@@ -223,7 +203,7 @@ namespace Antpire.Screens {
             var ant = world.CreateEntity();
             ant.Attach(new SimulationPosition { Position = new Point(10 * 64, 8 * 64), WorldSpace = WorldSpace.Anthill });
             ant.Attach(new Renderable {
-                RenderItem = new SpriteRenderable(75, antAliveTexture)
+                RenderItem = new SpriteRenderable(75, contentProvider.Get<Texture2D>("ant/alive"))
             });
         }
 
@@ -270,12 +250,12 @@ namespace Antpire.Screens {
                 //50% that the aphid appears as deadborn
                 if (r.Next(0, 2) != 0) {
                     aphid.Attach(new Renderable {
-                        RenderItem = new SpriteRenderable(100, aphidAliveTexture)
+                        RenderItem = new SpriteRenderable(100, contentProvider.Get<Texture2D>("aphid/alive"))
                     });
                 }
                 else {
                     aphid.Attach(new Renderable {
-                        RenderItem = new SpriteRenderable(100, aphidDeadTexture)
+                        RenderItem = new SpriteRenderable(100, contentProvider.Get<Texture2D>("aphid/dead"))
                     });
                 }
             }
@@ -291,12 +271,12 @@ namespace Antpire.Screens {
                 //50% that the aphid appears as deadborn
                 if (r.Next(0, 2) != 0) {
                     ant.Attach(new Renderable {
-                        RenderItem = new SpriteRenderable(100, antAliveTexture)
+                        RenderItem = new SpriteRenderable(100, contentProvider.Get<Texture2D>("ant/alive"))
                     });
                 }
                 else {
                     ant.Attach(new Renderable {
-                        RenderItem = new SpriteRenderable(100, antDeadTexture)
+                        RenderItem = new SpriteRenderable(100, contentProvider.Get<Texture2D>("ant/alive"))
                     });
                 }
             }
@@ -309,7 +289,7 @@ namespace Antpire.Screens {
                 anthill.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
 
                 anthill.Attach(new Renderable {
-                    RenderItem = new SpriteRenderable(500, anthillTexture)
+                    RenderItem = new SpriteRenderable(500, contentProvider.Get<Texture2D>("anthill/Anthill"))
                 });
             }
 

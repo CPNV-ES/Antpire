@@ -56,11 +56,13 @@ public class Antpire : Game {
         var args = System.Environment.GetCommandLineArgs()[1..];
         if(args.Contains("--start=test_anthill")) {
             loadSimulationScreen();
+            simulationScreen.LoadContent();
             simulationScreen.InitTestMaps();
             simulationScreen.SimulationState.CurrentWorldSpace = WorldSpace.Anthill;
         }
         if (args.Contains("--start=test_garden")) {
             loadSimulationScreen();
+            simulationScreen.LoadContent();
             simulationScreen.InitTestMaps();
             simulationScreen.SimulationState.CurrentWorldSpace = WorldSpace.Garden;
         }
