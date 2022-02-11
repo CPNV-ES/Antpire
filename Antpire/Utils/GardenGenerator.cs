@@ -40,28 +40,28 @@ public class GardenGenerator {
     public GardenGenerationOptions GenerationOptions { get; init; }
     public Game Game { get; init; }
 
-    private Random random = new Random();
+    private readonly Random random = new Random();
    
     public void GenerateGarden(World world) {
         var content = Game.Services.GetService<Antpire.ContentProvider>();
         
-        // Init the anthill
-        var anthills = new List<Point>() { new(500, 400) };
-
-        foreach (var pos in anthills) {
-            var anthill = world.CreateEntity();
-            anthill.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
-
-            anthill.Attach(new Renderable {
-                RenderItem = new SpriteRenderable(500, content.Get<Texture2D>("anthill/Anthill")),
-            });
-        }
-
         PlaceRiver(world);
+        PlaceAnthills(world);
 
         for(var y = 0; y < GenerationOptions.Height; y++) {
             for(var x = 0; x < GenerationOptions.Width; x++) {
                 PlaceRocksInChunk(new(x, y), world);
+
+                var rectangle = world.CreateEntity();
+                rectangle.Attach(new SimulationPosition { Position = new Point(x * GenerationOptions.ChunkSize, y*GenerationOptions.ChunkSize), WorldSpace = WorldSpace.Garden });
+                rectangle.Attach(new Renderable {
+                    RenderItem = new RectangleRenderable(
+                        size: new(GenerationOptions.ChunkSize, GenerationOptions.ChunkSize), 
+                        rotation: 0.0f, 
+                        color: Color.Red,
+                        thickness: 5.0f
+                    )
+                });
             }
         }
     }
@@ -72,11 +72,33 @@ public class GardenGenerator {
             random.Next(chunk.Y * GenerationOptions.ChunkSize, (chunk.Y + 1) * GenerationOptions.ChunkSize)
         );
 
+    private Point GetRandomCornerChunk() {
+        var x = random.Next(0, 2) == 0 ? 0 : GenerationOptions.Width - 1;
+        var y = random.Next(0, 2) == 0 ? 0 : GenerationOptions.Height - 1;
+        return new Point(x, y);
+    }
+    
+    private Point GetRandomEdgeChunk() {
+        var p = new Point();
+        p.X = random.Next(0, GenerationOptions.Width);
+        if(p.X == 0 || p.X == GenerationOptions.Width - 1) {
+            p.Y = random.Next(0, GenerationOptions.Height);
+        }
+        else {
+            p.Y = random.Next(0, 2) == 0 ? 0 : GenerationOptions.Height - 1;
+        }
+        
+        return p;
+    }
+
     private Point GetCenterChunk() => 
         new Point(
             GenerationOptions.Width / 2,
             GenerationOptions.Height / 2
-        ); 
+        );
+    
+    private int ChunkDistance(Point p1, Point p2) => 
+        Math.Abs(p1.X - p2.X) + Math.Abs(p1.Y - p2.Y);
     
     private bool IsPointOutsideBoundaries(Point point) =>
         point.X < 0 || point.Y < 0 || 
@@ -98,6 +120,28 @@ public class GardenGenerator {
         var river = world.CreateEntity();
         river.Attach(new SimulationPosition { Position = new Point(0, 0), WorldSpace = WorldSpace.Garden });
         river.Attach(new Renderable { RenderItem = new PathRenderable { Color = Color.Blue, Segments = segments.ToArray(), Thickness = 50 } });
+    }
+
+    private void PlaceAnthills(World world) {
+        var maxAnthills = (GenerationOptions.Width * 2 + GenerationOptions.Height * 2 - 4);
+        var anthillsToGenerate = GenerationOptions.Anthills > maxAnthills ? maxAnthills : GenerationOptions.Anthills;
+        
+       var inhabitedChunks = new List<Point>();
+       do {
+           var chunk = GetRandomCornerChunk();
+           if(!inhabitedChunks.Contains(chunk) && inhabitedChunks.Count(x => ChunkDistance(x, chunk) <= 2) == 0) {
+               inhabitedChunks.Add(chunk);
+           }
+       } while(inhabitedChunks.Count < anthillsToGenerate);
+       
+       foreach(var chunk in inhabitedChunks) {
+           var pos = GetRandomPointInChunk(chunk);
+           var anthill = world.CreateEntity();
+           anthill.Attach(new SimulationPosition { Position = new Point(pos.X - 250, pos.Y - 250), WorldSpace = WorldSpace.Garden });
+           anthill.Attach(new Renderable {
+               RenderItem = new SpriteRenderable(500, Game.Services.GetService<Antpire.ContentProvider>().Get<Texture2D>("anthill/Anthill")),
+           });
+       }
     }
 
     private void PlaceRocksInChunk(Point chunk, World world) {
