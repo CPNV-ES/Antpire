@@ -41,6 +41,7 @@ public class GardenGenerator {
                 PlaceRocksInChunk(new(x, y), world);
                 PlaceTrunksInChunk(new (x, y), world);
                 PlaceBushesInChunk(new (x, y), world);
+                PlaceTwigsInChunk(new (x, y), world);
 
                 var rectangle = world.CreateEntity();
                 rectangle.Attach(new SimulationPosition { Position = new Point(x * GenerationOptions.ChunkSize, y*GenerationOptions.ChunkSize), WorldSpace = WorldSpace.Garden });
@@ -163,6 +164,15 @@ public class GardenGenerator {
                     thickness: 30.0f
                 )
             });
+        }
+    }
+    
+    private void PlaceTwigsInChunk(Point chunk, World world) {
+        for(var i = 0; i < random.Next(GenerationOptions.RocksPerChunk); i++) {
+            var pos = GetRandomPointInChunk(chunk); 
+            var t = world.CreateEntity();
+            t.Attach(new SimulationPosition { Position = pos, WorldSpace = WorldSpace.Garden });
+            t.Attach(new Renderable { RenderItem = new LineStackRenderable { Segments = ShapeUtils.GenerateLineStack(20, 25), Color = Color.SandyBrown, Thickness = 1.0f } });
         }
     }
 
