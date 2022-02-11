@@ -21,20 +21,23 @@ public class GardenGenerator {
         public Range<int> BushesPerChunk = new(1, 1);
         public Range<int> FruitsPerBush = new(1, 3);
         public int Anthills = 2;
-        public int AliveAphids = 1;
-        public int DeadAphids = 1;
+        public Range<int> AliveAphids = new(1, 1);
+        public Range<int> DeadAphids = new(1, 1);
     }    
     
     public GardenGenerationOptions GenerationOptions { get; init; }
     public Game Game { get; init; }
 
     private readonly Random random = new Random();
+    private Antpire.ContentProvider contentProvider;
    
     public void GenerateGarden(World world) {
-        var content = Game.Services.GetService<Antpire.ContentProvider>();
+        contentProvider = Game.Services.GetService<Antpire.ContentProvider>();
         
         PlaceRiver(world);
         PlaceAnthills(world);
+        
+        PlaceAphids(world);
 
         for(var y = 0; y < GenerationOptions.Height; y++) {
             for(var x = 0; x < GenerationOptions.Width; x++) {
@@ -61,6 +64,12 @@ public class GardenGenerator {
         new Point(
             random.Next(chunk.X * GenerationOptions.ChunkSize, (chunk.X + 1) * GenerationOptions.ChunkSize),
             random.Next(chunk.Y * GenerationOptions.ChunkSize, (chunk.Y + 1) * GenerationOptions.ChunkSize)
+        );
+
+    private Point GetRandomPointInGarden() =>
+        new Point(
+            random.Next(0, GenerationOptions.Width * GenerationOptions.ChunkSize),
+            random.Next(0, GenerationOptions.Height * GenerationOptions.ChunkSize)
         );
 
     private Point GetRandomCornerChunk() {
@@ -130,7 +139,7 @@ public class GardenGenerator {
            var anthill = world.CreateEntity();
            anthill.Attach(new SimulationPosition { Position = new Point(pos.X - 250, pos.Y - 250), WorldSpace = WorldSpace.Garden });
            anthill.Attach(new Renderable {
-               RenderItem = new SpriteRenderable(500, Game.Services.GetService<Antpire.ContentProvider>().Get<Texture2D>("anthill/Anthill")),
+               RenderItem = new SpriteRenderable(500, contentProvider.Get<Texture2D>("anthill/Anthill")),
            });
        }
     }
@@ -168,12 +177,31 @@ public class GardenGenerator {
     }
     
     private void PlaceTwigsInChunk(Point chunk, World world) {
-        for(var i = 0; i < random.Next(GenerationOptions.RocksPerChunk); i++) {
+        for(var i = 0; i < random.Next(GenerationOptions.TwigsPerChunk); i++) {
             var pos = GetRandomPointInChunk(chunk); 
             var t = world.CreateEntity();
             t.Attach(new SimulationPosition { Position = pos, WorldSpace = WorldSpace.Garden });
             t.Attach(new Renderable { RenderItem = new LineStackRenderable { Segments = ShapeUtils.GenerateLineStack(20, 25), Color = Color.SandyBrown, Thickness = 1.0f } });
         }
+    }
+    
+    private void PlaceAphids(World world) {
+        void createAphid(bool dead) {
+            var tex = dead ? "aphid/dead" : "aphid/alive";
+            var aphid = world.CreateEntity();
+            var pos = GetRandomPointInGarden();
+            aphid.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+            aphid.Attach(new Renderable {
+                RenderItem = new SpriteRenderable(100, contentProvider.Get<Texture2D>(tex))
+            });
+        };
+        
+        for(var i = 0; i < random.Next(GenerationOptions.AliveAphids); i++) {
+            createAphid(dead: false);
+        }                      
+        for(var i = 0; i < random.Next(GenerationOptions.DeadAphids); i++) {
+            createAphid(dead: true);
+        }                      
     }
 
     private void PlaceBushesInChunk(Point chunk, World world) {
