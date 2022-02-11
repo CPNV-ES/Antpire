@@ -6,19 +6,7 @@ using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Shapes;
 
-namespace Antpire.Utils; 
-
-public static class RandomExtensions
-{
-    public static double NextDouble(
-        this Random random,
-        double minValue,
-        double maxValue)
-    {
-        return random.NextDouble() * (maxValue - minValue) + minValue;
-    }
-}
-
+namespace Antpire.Utils;
 
 public class GardenGenerator {
     public struct GardenGenerationOptions {
