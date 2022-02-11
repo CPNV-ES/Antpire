@@ -29,14 +29,17 @@ public class GardenGenerator {
     public Game Game { get; init; }
 
     private readonly Random random = new Random();
-    private Antpire.ContentProvider contentProvider;
-   
-    public void GenerateGarden(World world) {
+    private readonly Antpire.ContentProvider contentProvider;
+    
+    public GardenGenerator(Game game, GardenGenerationOptions options) {
+        Game = game;
+        GenerationOptions = options;
         contentProvider = Game.Services.GetService<Antpire.ContentProvider>();
-        
+    }
+    
+    public void GenerateGarden(World world) {
         PlaceRiver(world);
         PlaceAnthills(world);
-        
         PlaceAphids(world);
 
         for(var y = 0; y < GenerationOptions.Height; y++) {
@@ -46,6 +49,8 @@ public class GardenGenerator {
                 PlaceBushesInChunk(new (x, y), world);
                 PlaceTwigsInChunk(new (x, y), world);
 
+                
+                
                 var rectangle = world.CreateEntity();
                 rectangle.Attach(new SimulationPosition { Position = new Point(x * GenerationOptions.ChunkSize, y*GenerationOptions.ChunkSize), WorldSpace = WorldSpace.Garden });
                 rectangle.Attach(new Renderable {

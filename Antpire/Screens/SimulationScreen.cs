@@ -102,12 +102,8 @@ namespace Antpire.Screens {
         }
 
         public void InitProcGen() {
-            var gg = new GardenGenerator {Game = Game, GenerationOptions = new GardenGenerator.GardenGenerationOptions() };
-            
-            world = new WorldBuilder()
-                .AddSystem(new SimulationRenderSystem(GraphicsDevice, SimulationState))
-                .AddSystem(new UserInputsSystem(SimulationState))
-                .Build();
+            var genOpts = new GardenGenerator.GardenGenerationOptions(); // TODO: Get this from game config window
+            var gg = new GardenGenerator(Game, genOpts); 
 
             gg.GenerateGarden(world);
         }
