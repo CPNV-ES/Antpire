@@ -28,9 +28,9 @@ namespace Antpire.Drawing {
             boundingBox = polygon.BoundingRectangle.ToRectangle();
         }
 
-        public void Render(SpriteBatch spriteBatch, Point position, Rectangle viewRegion) {
-            if(viewRegion.Intersects(new Rectangle { Location = boundingBox.Location + position, Size = boundingBox.Size }))
-                spriteBatch.DrawPolygon(new Vector2(position.X, position.Y), polygon, Color, Thickness);
+        public void Render(SpriteBatch spriteBatch, Transform2 trans, Rectangle viewRegion) {
+            if(viewRegion.Intersects(new Rectangle { Location = boundingBox.Location + trans.Position.ToPoint(), Size = boundingBox.Size }))
+                spriteBatch.DrawPolygon(trans.Position, polygon, Color, Thickness);
         }
     }
 }

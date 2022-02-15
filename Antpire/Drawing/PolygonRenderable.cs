@@ -23,9 +23,9 @@ namespace Antpire.Drawing {
         public Color Color = Color.White;
         public float Thickness = 1.0f;
 
-        public void Render(SpriteBatch spriteBatch, Point position, Rectangle viewRegion) {
-            if(viewRegion.Intersects(new Rectangle { Location = boundingBox.Location + position, Size = boundingBox.Size }))
-                spriteBatch.DrawPolygon(new Vector2(position.X, position.Y), Polygon, Color, Thickness);
+        public void Render(SpriteBatch spriteBatch, Transform2 trans, Rectangle viewRegion) {
+            if(viewRegion.Intersects(new Rectangle { Location = boundingBox.Location + trans.Position.ToPoint(), Size = boundingBox.Size }))
+                spriteBatch.DrawPolygon(trans.Position, Polygon, Color, Thickness);
         }
     }
 }

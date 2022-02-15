@@ -24,10 +24,10 @@ namespace Antpire.Drawing {
             this.size = size;
         }
 
-        public void Render(SpriteBatch spriteBatch, Point pos, Rectangle viewRegion) {
-            if(viewRegion.Intersects(new Rectangle { Location = pos, Width = size.X, Height = size.Y }))
+        public void Render(SpriteBatch spriteBatch, Transform2 trans, Rectangle viewRegion) {
+            if(viewRegion.Intersects(new Rectangle { Location = trans.Position.ToPoint(), Width = size.X, Height = size.Y }))
             {
-                spriteBatch.Draw(texture, new Rectangle(pos, size), Color.White);
+                spriteBatch.Draw(texture, new Rectangle(trans.Position.ToPoint(), size), Color.White);
             }
         }
     }
