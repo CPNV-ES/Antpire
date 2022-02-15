@@ -23,7 +23,7 @@ namespace Antpire.Components {
         public State oldState;
         public int limit = 1;
         public int counter = 0;
-        public float countDuration = 2f; //every  2s.
+        public float countDuration = 0.5f;
         internal float currentTime;
     }
 }

@@ -75,6 +75,13 @@ namespace Antpire.Systems
                 ant.currentTime -= ant.countDuration; 
             }
 
+            float WrapAngle(float angle) {
+                // return Math.Abs(angle % 360);
+                while (angle > MathF.PI*2) { angle -= MathF.PI*2; }
+                while (angle < 0) { angle += MathF.PI*2; }
+                return angle;
+            }
+
             // Every x seconds the ants change the direction
             if (ant.counter >= ant.limit) {
                 ant.counter = 0;
@@ -84,11 +91,14 @@ namespace Antpire.Systems
                 int newY = rand.Next(-100, 100);
 
                 var rot = (float)rand.NextDouble() * MathF.PI/2;
-                rot = entity.Rotation + rot - MathF.PI/4;
-                entity.Rotation = rot;
-                var vec = Vector2.One.Rotate(rot);
+                rot = entity.Rotation + rot - MathF.PI/ 4;
 
-                insect.changeDestinationTo(entity.Position.ToVector2() + vec*100);
+                entity.Rotation = rot;
+                
+                var vec = Vector2.One.Rotate(rot);
+                vec = new Vector2((float)MathF.Cos(rot), (float)MathF.Sin(rot));
+
+                insect.changeDestinationTo(entity.Position + vec*100);
 
                 // If the ant found somehing
                 // -> Add the founded-thing and drop a home-drop 

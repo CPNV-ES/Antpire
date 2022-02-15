@@ -10,7 +10,8 @@ using MonoGame.Extended.Entities;
 namespace Antpire.Components {
     internal class SimulationPosition {
         public WorldSpace WorldSpace;
-        public Point Position;
+        public Vector2 Position;
         public float Rotation;
+       
     }
 }

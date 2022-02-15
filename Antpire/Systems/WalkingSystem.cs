@@ -47,7 +47,7 @@ namespace Antpire.Systems
         private void walks(SimulationPosition entity, Insect insect, Vector2 location)
         {
             Vector2 newPosition = Vector2.Add(location, Vector2.Multiply(insect.velocity, 2f));
-            entity.Position = new Point((int)newPosition.X, (int)newPosition.Y);
+            entity.Position = newPosition;
         }
 
         private void changeDirection(Insect insect, Vector2 location)
