@@ -62,6 +62,7 @@ namespace Antpire.Screens {
                 .AddSystem(new UserInputsSystem(SimulationState))
                 .AddSystem(new WalkingSystem())
                 .AddSystem(new AntLogicSystem())
+                .AddSystem(new LimitSystem())
                 .Build();
         }
 
@@ -286,6 +287,11 @@ namespace Antpire.Screens {
                     RenderItem = new SpriteRenderable(new Point(40, 70), antAlive_v2_Texture)
                 });
             }
+
+            // Init map borders
+            var border = world.CreateEntity();
+
+            border.Attach(new BorderLimit(0, 500, 0, 500));
 
             // Init the anthill
             var anthills = new List<Point>() { new(500, 400) };
