@@ -11,6 +11,7 @@ using MonoGame.Extended;
 using Microsoft.Xna.Framework.Graphics;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Antpire.Screens;
 
 namespace Antpire.Systems
 {
@@ -18,26 +19,24 @@ namespace Antpire.Systems
     {
         private ComponentMapper<SimulationPosition> simulationPosition;
         private ComponentMapper<Insect> insectMapper;
+        private SimulationState simState;
 
-        private int GARDEN_WIDTH = 800; // TODO: Get this from actual garden size
-        private int GARDEN_HEIGHT = 800; // TODO: Get this from actual garden size
+        private int GARDEN_WIDTH = 800; 
+        private int GARDEN_HEIGHT = 800;
 
-        public WalkingSystem(int garden_width, int garden_height) : base(Aspect.All(typeof(Insect), typeof(SimulationPosition)))
-        {
-            GARDEN_WIDTH = GARDEN_WIDTH;
-            GARDEN_HEIGHT = GARDEN_HEIGHT;
+        public WalkingSystem(SimulationState simState) : base(Aspect.All(typeof(Insect), typeof(SimulationPosition))) {
+            this.simState = simState;
+            GARDEN_WIDTH = simState.GardenGenerationOptions.Width * simState.GardenGenerationOptions.ChunkSize;
+            GARDEN_HEIGHT = simState.GardenGenerationOptions.Height * simState.GardenGenerationOptions.ChunkSize;
         }
 
-        public override void Initialize(IComponentMapperService mapperService)
-        {
+        public override void Initialize(IComponentMapperService mapperService) {
             simulationPosition = mapperService.GetMapper<SimulationPosition>();
             insectMapper = mapperService.GetMapper<Insect>();
         }
 
-        public override void Update(GameTime gameTime)
-        {
-            foreach (var entityId in ActiveEntities)
-            {
+        public override void Update(GameTime gameTime) {
+            foreach (var entityId in ActiveEntities) {
                 var entity = simulationPosition.Get(entityId);
                 var insect = insectMapper.Get(entityId);
                 Vector2 location = new Vector2(entity.Position.X, entity.Position.Y);
@@ -49,8 +48,7 @@ namespace Antpire.Systems
             }
         }
 
-        private void walks(SimulationPosition entity, Insect insect, Vector2 location)
-        {
+        private void walks(SimulationPosition entity, Insect insect, Vector2 location) {
             Vector2 newPosition = location + Vector2.Multiply(insect.velocity, 2f);
             
             // TODO: Clean this code up
@@ -67,8 +65,7 @@ namespace Antpire.Systems
             entity.Position = newPosition;
         }
 
-        private void changeDirection(Insect insect, Vector2 location)
-        {
+        private void changeDirection(Insect insect, Vector2 location) {
             insect.velocity = Vector2.Subtract(insect.destination, location);
             insect.velocity.Normalize();
 

@@ -33,6 +33,7 @@ namespace Antpire.Screens {
         public WorldSpace CurrentWorldSpace;
         public AnthillInteriorGridMap AnthillInteriorGridMap { get; set; }
         public float TimeScale { get; set; } = 1.0f;
+        public GardenGenerator.GardenGenerationOptions GardenGenerationOptions { get; set; } = new();
     }
 
     internal class SimulationScreen : GameScreen {
@@ -50,7 +51,7 @@ namespace Antpire.Screens {
             world = new WorldBuilder()
                 .AddSystem(new SimulationRenderSystem(GraphicsDevice, SimulationState))
                 .AddSystem(new UserInputsSystem(SimulationState))
-                .AddSystem(new WalkingSystem())
+                .AddSystem(new WalkingSystem(SimulationState))
                 .AddSystem(new AntLogicSystem())
                 .AddSystem(new LimitSystem())
                 .Build();
@@ -105,8 +106,7 @@ namespace Antpire.Screens {
         }
 
         public void InitProcGen() {
-            var genOpts = new GardenGenerator.GardenGenerationOptions(); // TODO: Get this from game config window
-            var gg = new GardenGenerator(Game, genOpts); 
+            var gg = new GardenGenerator(Game, SimulationState.GardenGenerationOptions); 
 
             gg.GenerateGarden(world);
         }
