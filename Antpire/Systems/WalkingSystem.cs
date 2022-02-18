@@ -22,9 +22,10 @@ namespace Antpire.Systems
         private int GARDEN_WIDTH = 800; // TODO: Get this from actual garden size
         private int GARDEN_HEIGHT = 800; // TODO: Get this from actual garden size
 
-        public WalkingSystem() : base(Aspect.All(typeof(Insect), typeof(SimulationPosition)))
+        public WalkingSystem(int garden_width, int garden_height) : base(Aspect.All(typeof(Insect), typeof(SimulationPosition)))
         {
-
+            GARDEN_WIDTH = GARDEN_WIDTH;
+            GARDEN_HEIGHT = GARDEN_HEIGHT;
         }
 
         public override void Initialize(IComponentMapperService mapperService)
