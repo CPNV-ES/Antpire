@@ -48,10 +48,10 @@ namespace Antpire.Systems {
                 var render = renderableMapper.Get(entityId);
  
                 if (pos.WorldSpace == WorldSpace.Anthill && simulationState.CurrentWorldSpace == WorldSpace.Anthill) {
-                    render.RenderItem.Render(spriteBatch, pos.Position, viewRegion);
+                    render.RenderItem.Render(spriteBatch, new Transform2(pos.Position), viewRegion);
                 }
                 else if (pos.WorldSpace == WorldSpace.Garden && simulationState.CurrentWorldSpace == WorldSpace.Garden) {
-                    render.RenderItem.Render(spriteBatch, pos.Position, viewRegion);
+                    render.RenderItem.Render(spriteBatch, new Transform2(pos.Position, pos.Rotation), viewRegion);
                 }
             }
 

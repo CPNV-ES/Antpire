@@ -45,18 +45,44 @@ namespace Antpire.Screens {
 
         public SimulationState SimulationState;
         
+        // Textures
+        private Texture2D aphidAliveTexture;
+        private Texture2D aphidDeadTexture;
+        private Texture2D antAliveTexture;
+        private Texture2D antAlive_v2_Texture;
+        private Texture2D antDeadTexture;
+        private Texture2D anthillTexture;
+        private Texture2D anthillDugTileTexture;
+        private Texture2D anthillWallTileTexture;
+        private Texture2D eggTexture;
+        private Texture2D queenAliveTexture;
+ 
         public SimulationScreen(Game game) : base(game) {
             SimulationState = new SimulationState { CurrentWorldSpace = WorldSpace.Garden };
             world = new WorldBuilder()
                 .AddSystem(new SimulationRenderSystem(GraphicsDevice, SimulationState))
                 .AddSystem(new UserInputsSystem(SimulationState))
+                .AddSystem(new WalkingSystem())
+                .AddSystem(new AntLogicSystem())
+                .AddSystem(new LimitSystem())
                 .Build();
             contentProvider = game.Services.GetService<ContentProvider>();
         }
 
         public override void LoadContent() {
             base.LoadContent();
-            
+
+            aphidAliveTexture = Content.Load<Texture2D>("aphid/alive");
+            aphidDeadTexture = Content.Load<Texture2D>("aphid/dead");
+            antAliveTexture = Content.Load<Texture2D>("ant/alive");
+            antAlive_v2_Texture = Content.Load<Texture2D>("ant/alivev2");
+            antDeadTexture = Content.Load<Texture2D>("ant/alive");
+            anthillTexture = Content.Load<Texture2D>("anthill/anthill");
+            anthillDugTileTexture = Content.Load<Texture2D>("anthill_interior/dug_tile");
+            anthillWallTileTexture = Content.Load<Texture2D>("anthill_interior/wall_tile");
+            eggTexture = Content.Load<Texture2D>("anthill_interior/egg");
+            queenAliveTexture = Content.Load<Texture2D>("queen/alive");
+      
             SimulationState.AnthillInteriorGridMap = new AnthillInteriorGridMap {
                 Grid = new AnthillInteriorGridMap.TileState[256, 256],
                 TilesRenderables = new Dictionary<AnthillInteriorGridMap.TileState, IRenderable> {
@@ -146,7 +172,7 @@ namespace Antpire.Screens {
             foreach (var foodPos in foodPositions) {
                 var food = world.CreateEntity();
                 var radius = r.Next(4, 28);
-                food.Attach(new SimulationPosition { Position = new Point(foodPos.X, foodPos.Y), WorldSpace = WorldSpace.Anthill });
+                food.Attach(new SimulationPosition { Position = new(foodPos.X, foodPos.Y), WorldSpace = WorldSpace.Anthill });
                 food.Attach(new Renderable {
                     RenderItem = new CircleRenderable { Sides = 32, Color = Color.DarkOliveGreen, Thickness = radius, Radius = radius }
                 });
@@ -157,7 +183,7 @@ namespace Antpire.Screens {
             foreach (var materialPos in materialsPositions) {
                 var food = world.CreateEntity();
                 var radius = r.Next(4, 28);
-                food.Attach(new SimulationPosition { Position = new Point(materialPos.X, materialPos.Y), WorldSpace = WorldSpace.Anthill });
+                food.Attach(new SimulationPosition { Position = new(materialPos.X, materialPos.Y), WorldSpace = WorldSpace.Anthill });
                 food.Attach(new Renderable {
                     RenderItem = new CircleRenderable { Sides = 32, Color = Color.SaddleBrown, Thickness = radius, Radius = radius }
                 });
@@ -171,7 +197,7 @@ namespace Antpire.Screens {
 
             // Queen in queens room
             var queen = world.CreateEntity();
-            queen.Attach(new SimulationPosition { Position = new Point(17*64, 9*64), WorldSpace = WorldSpace.Anthill });
+            queen.Attach(new SimulationPosition { Position = new(17*64, 9*64), WorldSpace = WorldSpace.Anthill });
             queen.Attach(new Renderable {
                 RenderItem = new SpriteRenderable(150, contentProvider.Get<Texture2D>("queen/alive"))
             });
@@ -189,7 +215,7 @@ namespace Antpire.Screens {
             var eggPositions = new Point[] { new Point(12 * 64, 10 * 64), new Point(12 * 64 + 16, 10 * 64), new Point(12 * 64, 10 * 64 + 16), new Point(13 * 64, 10 * 64) };
             foreach(var eggPos in eggPositions) {
                 var egg = world.CreateEntity();
-                egg.Attach(new SimulationPosition { Position = new Point(eggPos.X, eggPos.Y), WorldSpace = WorldSpace.Anthill });
+                egg.Attach(new SimulationPosition { Position = new(eggPos.X, eggPos.Y), WorldSpace = WorldSpace.Anthill });
                 egg.Attach(new Renderable {
                     RenderItem = new SpriteRenderable(20, contentProvider.Get<Texture2D>("anthill_interior/egg"))
                 });
@@ -197,7 +223,7 @@ namespace Antpire.Screens {
 
             // Ant 
             var ant = world.CreateEntity();
-            ant.Attach(new SimulationPosition { Position = new Point(10 * 64, 8 * 64), WorldSpace = WorldSpace.Anthill });
+            ant.Attach(new SimulationPosition { Position = new(10 * 64, 8 * 64), WorldSpace = WorldSpace.Anthill });
             ant.Attach(new Renderable {
                 RenderItem = new SpriteRenderable(75, contentProvider.Get<Texture2D>("ant/alive"))
             });
@@ -211,7 +237,7 @@ namespace Antpire.Screens {
             var rockPositions = new List<Point>() { new(87, 120), new(340, 234), new(620, 680), new(1000, 320), new(1000, 120)};
             foreach(var pos in rockPositions) {
                 var rock = world.CreateEntity();
-                rock.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+                rock.Attach(new SimulationPosition { Position = new (pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
                 rock.Attach(new Renderable {
                     RenderItem = new PolygonRenderable {
                         Color = Color.DarkGray,
@@ -226,7 +252,7 @@ namespace Antpire.Screens {
             foreach (var pos in treeTrunks) {
                 var trunk = world.CreateEntity();
                 var trunkWidth = r.Next(20, 30);
-                trunk.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+                trunk.Attach(new SimulationPosition { Position = new(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
                 trunk.Attach(new Renderable {
                     RenderItem = new RectangleRenderable(
                         size: new(trunkWidth, (float)(trunkWidth * (r.NextDouble()*3+2))), 
@@ -241,8 +267,8 @@ namespace Antpire.Screens {
             var aphids = new List<Point>() { new(600, 0), new(800, 0), new(200, 200), new(300, 300) };
             foreach (var pos in aphids) {
                 var aphid = world.CreateEntity();
-                aphid.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
-
+                aphid.Attach(new SimulationPosition { Position = new(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+                
                 //50% that the aphid appears as deadborn
                 if (r.Next(0, 2) != 0) {
                     aphid.Attach(new Renderable {
@@ -262,9 +288,10 @@ namespace Antpire.Screens {
 
             foreach (var pos in ants) {
                 var ant = world.CreateEntity();
-                ant.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+                ant.Attach(new SimulationPosition { Position = new(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+                ant.Attach(new Ant());
 
-                //50% that the aphid appears as deadborn
+                //50% that the ant appears as deadborn
                 if (r.Next(0, 2) != 0) {
                     ant.Attach(new Renderable {
                         RenderItem = new SpriteRenderable(100, contentProvider.Get<Texture2D>("ant/alive"))
@@ -277,12 +304,34 @@ namespace Antpire.Screens {
                 }
             }
 
+            // Init one wandering ant
+            var wandering_ants = new List<Point>() { new(600, 600), new(600, 600), new(600, 600), new(600, 600), new(600, 600), new(600, 600), new(600, 600), new(600, 600) };
+
+            foreach (var pos in wandering_ants)
+            {
+                var wandering_ant = world.CreateEntity();
+                wandering_ant.Attach(new Ant());
+                wandering_ant.Attach(new Insect());
+
+                wandering_ant.Attach(new SimulationPosition { Position = new(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+
+                wandering_ant.Attach(new Renderable
+                {
+                    RenderItem = new SpriteRenderable(new Point(40, 70), antAlive_v2_Texture)
+                });
+            }
+
+            // Init map borders
+            var border = world.CreateEntity();
+
+            border.Attach(new BorderLimit(0, 500, 0, 500));
+
             // Init the anthill
             var anthills = new List<Point>() { new(500, 400) };
 
             foreach (var pos in anthills) {
                 var anthill = world.CreateEntity();
-                anthill.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+                anthill.Attach(new SimulationPosition { Position = new(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
 
                 anthill.Attach(new Renderable {
                     RenderItem = new SpriteRenderable(500, contentProvider.Get<Texture2D>("anthill/Anthill"))
@@ -292,12 +341,12 @@ namespace Antpire.Screens {
             // Init river
             var riverSegments = new Vector2[] { new(550, 250), new(510, 330), new(520, 430), new(490, 500), new(480, 610), new(530, 720) };
             var river = world.CreateEntity();
-            river.Attach(new SimulationPosition { Position = new Point(0, 0), WorldSpace = WorldSpace.Garden });
+            river.Attach(new SimulationPosition { Position = new(0, 0), WorldSpace = WorldSpace.Garden });
             river.Attach(new Renderable { RenderItem = new PathRenderable { Color = Color.Blue, Segments = riverSegments, Thickness = 15 } });
 
             // Init piles of twigs
             var twigStackSegments = new Vector2[] { new(0, 0), new(30, 0), new(0, 4), new(30, 4), new(0, 8), new(30, 8), new(0, 12), new(30, 12) };
-            var twigPositions = new Point[] { new(140, 160), new(300, 300), new(850, 300) };
+            var twigPositions = new Vector2[] { new(140, 160), new(300, 300), new(850, 300) };
 
             foreach(var pos in twigPositions) {
                 var t = world.CreateEntity();
@@ -306,7 +355,7 @@ namespace Antpire.Screens {
             }
 
             // Init bushes
-            var bushesPositions = new Point[] { new (180, 560), new(410, 70), new(1150, 500) };
+            var bushesPositions = new Vector2[] { new (180, 560), new(410, 70), new(1150, 500) };
             foreach (var pos in bushesPositions) {
                 // Generate the bush's leaves
                 var leavesPositions = new List<Vector2>() { new(0, 0) };

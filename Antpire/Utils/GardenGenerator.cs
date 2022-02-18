@@ -110,7 +110,7 @@ public class GardenGenerator {
         } while(!IsPointOutsideBoundaries(currentPoint.ToPoint()));
         
         var river = world.CreateEntity();
-        river.Attach(new SimulationPosition { Position = new Point(0, 0), WorldSpace = WorldSpace.Garden });
+        river.Attach(new SimulationPosition { Position = new (0, 0), WorldSpace = WorldSpace.Garden });
         river.Attach(new Renderable { RenderItem = new PathRenderable { Color = Color.Blue, Segments = segments.ToArray(), Thickness = 50 } });
     }
 
@@ -129,7 +129,7 @@ public class GardenGenerator {
        foreach(var chunk in inhabitedChunks) {
            var pos = GetRandomPointInChunk(chunk);
            var anthill = world.CreateEntity();
-           anthill.Attach(new SimulationPosition { Position = new Point(pos.X - 250, pos.Y - 250), WorldSpace = WorldSpace.Garden });
+           anthill.Attach(new SimulationPosition { Position = new (pos.X - 250, pos.Y - 250), WorldSpace = WorldSpace.Garden });
            anthill.Attach(new Renderable {
                RenderItem = new SpriteRenderable(500, contentProvider.Get<Texture2D>("anthill/Anthill")),
            });
@@ -140,7 +140,7 @@ public class GardenGenerator {
         for(var i = 0; i < random.Next(GenerationOptions.RocksPerChunk); i++) {
             var pos = GetRandomPointInChunk(chunk); 
             var rock = world.CreateEntity();
-            rock.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+            rock.Attach(new SimulationPosition { Position = new (pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
             rock.Attach(new Renderable {
                 RenderItem = new PolygonRenderable {
                     Color = Color.DarkGray,
@@ -156,7 +156,7 @@ public class GardenGenerator {
             var pos = GetRandomPointInChunk(chunk); 
             var trunk = world.CreateEntity();
             var trunkWidth = random.Next(20, 30);
-            trunk.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+            trunk.Attach(new SimulationPosition { Position = new (pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
             trunk.Attach(new Renderable {
                 RenderItem = new RectangleRenderable(
                     size: new(trunkWidth, (float)(trunkWidth * (random.NextDouble()*3+2))), 
@@ -170,7 +170,7 @@ public class GardenGenerator {
     
     private void PlaceTwigsInChunk(Point chunk, World world) {
         for(var i = 0; i < random.Next(GenerationOptions.TwigsPerChunk); i++) {
-            var pos = GetRandomPointInChunk(chunk); 
+            var pos = GetRandomPointInChunk(chunk).ToVector2(); 
             var t = world.CreateEntity();
             t.Attach(new SimulationPosition { Position = pos, WorldSpace = WorldSpace.Garden });
             t.Attach(new Renderable { RenderItem = new LineStackRenderable { Segments = ShapeUtils.GenerateLineStack(20, 25), Color = Color.SandyBrown, Thickness = 1.0f } });
@@ -182,7 +182,7 @@ public class GardenGenerator {
             var tex = dead ? "aphid/dead" : "aphid/alive";
             var aphid = world.CreateEntity();
             var pos = GetRandomPointInGarden();
-            aphid.Attach(new SimulationPosition { Position = new Point(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+            aphid.Attach(new SimulationPosition { Position = new (pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
             aphid.Attach(new Renderable {
                 RenderItem = new SpriteRenderable(100, contentProvider.Get<Texture2D>(tex))
             });
@@ -198,7 +198,7 @@ public class GardenGenerator {
 
     private void PlaceBushesInChunk(Point chunk, World world) {
         for(var i = 0; i < random.Next(GenerationOptions.BushesPerChunk); i++) {
-            var pos = GetRandomPointInChunk(chunk); 
+            var pos = GetRandomPointInChunk(chunk).ToVector2(); 
             // Generate the bush's leaves
             var leavesPositions = new List<Vector2>() { new(0, 0) };
             var fruitsPositions = new List<Vector2>();
