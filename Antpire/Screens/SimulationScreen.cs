@@ -44,18 +44,6 @@ namespace Antpire.Screens {
         private ContentProvider contentProvider;
 
         public SimulationState SimulationState;
-        
-        // Textures
-        private Texture2D aphidAliveTexture;
-        private Texture2D aphidDeadTexture;
-        private Texture2D antAliveTexture;
-        private Texture2D antAlive_v2_Texture;
-        private Texture2D antDeadTexture;
-        private Texture2D anthillTexture;
-        private Texture2D anthillDugTileTexture;
-        private Texture2D anthillWallTileTexture;
-        private Texture2D eggTexture;
-        private Texture2D queenAliveTexture;
  
         public SimulationScreen(Game game) : base(game) {
             SimulationState = new SimulationState { CurrentWorldSpace = WorldSpace.Garden };
@@ -71,17 +59,6 @@ namespace Antpire.Screens {
 
         public override void LoadContent() {
             base.LoadContent();
-
-            aphidAliveTexture = Content.Load<Texture2D>("aphid/alive");
-            aphidDeadTexture = Content.Load<Texture2D>("aphid/dead");
-            antAliveTexture = Content.Load<Texture2D>("ant/alive");
-            antAlive_v2_Texture = Content.Load<Texture2D>("ant/alivev2");
-            antDeadTexture = Content.Load<Texture2D>("ant/alive");
-            anthillTexture = Content.Load<Texture2D>("anthill/anthill");
-            anthillDugTileTexture = Content.Load<Texture2D>("anthill_interior/dug_tile");
-            anthillWallTileTexture = Content.Load<Texture2D>("anthill_interior/wall_tile");
-            eggTexture = Content.Load<Texture2D>("anthill_interior/egg");
-            queenAliveTexture = Content.Load<Texture2D>("queen/alive");
       
             SimulationState.AnthillInteriorGridMap = new AnthillInteriorGridMap {
                 Grid = new AnthillInteriorGridMap.TileState[256, 256],
@@ -317,7 +294,7 @@ namespace Antpire.Screens {
 
                 wandering_ant.Attach(new Renderable
                 {
-                    RenderItem = new SpriteRenderable(new Point(40, 70), antAlive_v2_Texture)
+                    RenderItem = new SpriteRenderable(new Point(40/10, 70/10), contentProvider.Get<Texture2D>("ant/alivev2"))
                 });
             }
 
