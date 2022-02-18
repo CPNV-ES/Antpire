@@ -48,19 +48,6 @@ public class GardenGenerator {
                 PlaceTrunksInChunk(new (x, y), world);
                 PlaceBushesInChunk(new (x, y), world);
                 PlaceTwigsInChunk(new (x, y), world);
-
-                
-                
-                var rectangle = world.CreateEntity();
-                rectangle.Attach(new SimulationPosition { Position = new Point(x * GenerationOptions.ChunkSize, y*GenerationOptions.ChunkSize), WorldSpace = WorldSpace.Garden });
-                rectangle.Attach(new Renderable {
-                    RenderItem = new RectangleRenderable(
-                        size: new(GenerationOptions.ChunkSize, GenerationOptions.ChunkSize), 
-                        rotation: 0.0f, 
-                        color: Color.Red,
-                        thickness: 5.0f
-                    )
-                });
             }
         }
     }
