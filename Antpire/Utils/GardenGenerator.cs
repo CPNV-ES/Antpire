@@ -23,7 +23,7 @@ public class GardenGenerator {
         public int Anthills = 2;
         public Range<int> AliveAphids = new(1, 1);
         public Range<int> DeadAphids = new(1, 1);
-        public Range<int> WanderingAnts = new(1, 100);
+        public Range<int> WanderingAnts = new(4000, 5000);
     }    
     
     public GardenGenerationOptions GenerationOptions { get; init; }
@@ -206,7 +206,7 @@ public class GardenGenerator {
         void createWanderingAnt() {
             var tex = "ant/alivev2";
 
-            var pos = GetRandomPointInGarden();
+            var pos = new Vector2(0, 0);
             
             var wandering_ant = world.CreateEntity();
             wandering_ant.Attach(new Ant());
