@@ -10,7 +10,6 @@ using Microsoft.Xna.Framework.Input;
 using Antpire.Utils;
 using Myra.Graphics2D.UI;
 using Antpire.Screens.Windows;
-using Microsoft.Xna.Framework.Content;
 using static Antpire.Antpire;
 
 namespace Antpire.Screens {
@@ -53,7 +52,6 @@ namespace Antpire.Screens {
                 .AddSystem(new UserInputsSystem(SimulationState))
                 .AddSystem(new WalkingSystem(SimulationState))
                 .AddSystem(new AntLogicSystem())
-                .AddSystem(new LimitSystem())
                 .Build();
             contentProvider = game.Services.GetService<ContentProvider>();
         }
@@ -282,26 +280,21 @@ namespace Antpire.Screens {
             }
 
             // Init one wandering ant
-            var wandering_ants = new List<Point>() { new(600, 600), new(600, 600), new(600, 600), new(600, 600), new(600, 600), new(600, 600), new(600, 600), new(600, 600) };
+            var wanderingAnts = new List<Point>() { new(600, 600), new(600, 600), new(600, 600), new(600, 600), new(600, 600), new(600, 600), new(600, 600), new(600, 600) };
 
-            foreach (var pos in wandering_ants)
+            foreach (var pos in wanderingAnts)
             {
-                var wandering_ant = world.CreateEntity();
-                wandering_ant.Attach(new Ant());
-                wandering_ant.Attach(new Insect());
+                var wanderingAnt = world.CreateEntity();
+                wanderingAnt.Attach(new Ant());
+                wanderingAnt.Attach(new Insect());
 
-                wandering_ant.Attach(new SimulationPosition { Position = new(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+                wanderingAnt.Attach(new SimulationPosition { Position = new(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
 
-                wandering_ant.Attach(new Renderable
+                wanderingAnt.Attach(new Renderable
                 {
                     RenderItem = new SpriteRenderable(new Point(40/10, 70/10), contentProvider.Get<Texture2D>("ant/alivev2"))
                 });
             }
-
-            // Init map borders
-            var border = world.CreateEntity();
-
-            border.Attach(new BorderLimit(0, 500, 0, 500));
 
             // Init the anthill
             var anthills = new List<Point>() { new(500, 400) };
@@ -322,7 +315,6 @@ namespace Antpire.Screens {
             river.Attach(new Renderable { RenderItem = new PathRenderable { Color = Color.Blue, Segments = riverSegments, Thickness = 15 } });
 
             // Init piles of twigs
-            var twigStackSegments = new Vector2[] { new(0, 0), new(30, 0), new(0, 4), new(30, 4), new(0, 8), new(30, 8), new(0, 12), new(30, 12) };
             var twigPositions = new Vector2[] { new(140, 160), new(300, 300), new(850, 300) };
 
             foreach(var pos in twigPositions) {

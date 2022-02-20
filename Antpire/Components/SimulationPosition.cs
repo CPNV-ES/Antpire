@@ -3,6 +3,5 @@
         public WorldSpace WorldSpace;
         public Vector2 Position;
         public float Rotation;
-       
     }
 }

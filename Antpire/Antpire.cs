@@ -4,16 +4,14 @@ global using System.Linq;
 global using System.Threading.Tasks;
 global using System.Collections.Generic;
 global using Microsoft.Xna.Framework;
+
 using Antpire.Utils;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Screens.Transitions;
 
 namespace Antpire;
 public class Antpire : Game {
     private GraphicsDeviceManager graphics;
-    private SpriteBatch spriteBatch;
     private readonly ScreenManager screenManager;
     private Screens.SimulationScreen simulationScreen;
     private Screens.MainMenuScreen mainMenuScreen;
@@ -53,7 +51,7 @@ public class Antpire : Game {
         simulationScreen = new Screens.SimulationScreen(this);
         mainMenuScreen = new Screens.MainMenuScreen(this);
 
-        var args = System.Environment.GetCommandLineArgs()[1..];
+        var args = Environment.GetCommandLineArgs()[1..];
         if(args.Contains("--start=test_anthill")) {
             loadSimulationScreen();
             simulationScreen.LoadContent();
@@ -77,9 +75,7 @@ public class Antpire : Game {
     }
 
     protected override void LoadContent() {
-        spriteBatch = new SpriteBatch(GraphicsDevice);
-
-        var folders = new string[] { "", "ant", "anthill", "anthill_interior", "aphid", "queen" };
+        var folders = new [] { "", "ant", "anthill", "anthill_interior", "aphid", "queen" };
         var dict = new Dictionary<string, object>();
 
         foreach(var f in folders) {

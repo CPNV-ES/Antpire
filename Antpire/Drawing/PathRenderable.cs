@@ -8,7 +8,7 @@ namespace Antpire.Drawing {
         private Rectangle boundingBox = new();
 
         public Vector2[] Segments {
-            get { return segments; }
+            get => segments;
             set {
                 segments = value;
                 boundingBox.X = (int)segments.OrderBy(x => x.X).First().X;

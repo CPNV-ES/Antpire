@@ -3,12 +3,12 @@ using Microsoft.Xna.Framework.Content;
 
 namespace Antpire.Utils; 
 public static class MonogameExtensions {
-    
+
     /// <summary>
-    /// Returns a dictionnary of all available content in the specified directory 
+    /// Returns a dictionary of all available content in the specified directory 
     /// </summary>
+    /// <param name="contentManager">The content manager</param>
     /// <param name="contentFolder">The folder to search content in</param>
-    /// <typeparam name="T"></typeparam>
     /// <returns></returns>
     /// <remarks>From https://stackoverflow.com/a/4052657</remarks>
     /// <exception cref="DirectoryNotFoundException"></exception>

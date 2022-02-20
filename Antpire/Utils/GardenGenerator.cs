@@ -1,6 +1,5 @@
 ﻿using Antpire.Components;
 using Antpire.Drawing;
-using Antpire.Screens;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
@@ -54,14 +53,14 @@ public class GardenGenerator {
         }
     }
 
-    private Point GetRandomPointInChunk(Point chunk) => 
-        new Point(
+    private Vector2 GetRandomPointInChunk(Point chunk) => 
+        new Vector2(
             random.Next(chunk.X * GenerationOptions.ChunkSize, (chunk.X + 1) * GenerationOptions.ChunkSize),
             random.Next(chunk.Y * GenerationOptions.ChunkSize, (chunk.Y + 1) * GenerationOptions.ChunkSize)
         );
 
-    private Point GetRandomPointInGarden() =>
-        new Point(
+    private Vector2 GetRandomPointInGarden() =>
+        new Vector2(
             random.Next(0, GenerationOptions.Width * GenerationOptions.ChunkSize),
             random.Next(0, GenerationOptions.Height * GenerationOptions.ChunkSize)
         );
@@ -101,14 +100,15 @@ public class GardenGenerator {
     private void PlaceRiver(World world) {
         var segments = new List<Vector2>();
         var chunk = GetCenterChunk();
-        var currentPoint = GetRandomPointInChunk(chunk).ToVector2();
+        var currentPoint = GetRandomPointInChunk(chunk);
         var riverHeading = random.NextDouble() * Math.PI*2;
         segments.Add(currentPoint);
+        
+        // TODO: This could lead to infinite loop?
         do {
             riverHeading += random.NextDouble(-Math.PI/4, Math.PI/4);
             currentPoint += new Vector2(256).Rotate((float)riverHeading);
             segments.Add(currentPoint);
-            var v = new Vector2();
         } while(!IsPointOutsideBoundaries(currentPoint.ToPoint()));
         
         var river = world.CreateEntity();
@@ -174,7 +174,7 @@ public class GardenGenerator {
     
     private void PlaceTwigsInChunk(Point chunk, World world) {
         for(var i = 0; i < random.Next(GenerationOptions.TwigsPerChunk); i++) {
-            var pos = GetRandomPointInChunk(chunk).ToVector2(); 
+            var pos = GetRandomPointInChunk(chunk); 
             var t = world.CreateEntity();
             t.Attach(new SimulationPosition { Position = pos, WorldSpace = WorldSpace.Garden });
             t.Attach(new Renderable { RenderItem = new LineStackRenderable { Segments = ShapeUtils.GenerateLineStack(20, 25), Color = Color.SandyBrown, Thickness = 1.0f } });
@@ -190,7 +190,7 @@ public class GardenGenerator {
             aphid.Attach(new Renderable {
                 RenderItem = new SpriteRenderable(100, contentProvider.Get<Texture2D>(tex))
             });
-        };
+        }
         
         for(var i = 0; i < random.Next(GenerationOptions.AliveAphids); i++) {
             createAphid(dead: false);
@@ -198,21 +198,18 @@ public class GardenGenerator {
         for(var i = 0; i < random.Next(GenerationOptions.DeadAphids); i++) {
             createAphid(dead: true);
         }
-
-
     }
 
     private void PlaceWanderingAnts(World world) {
         void createWanderingAnt() {
             var tex = "ant/alivev2";
-
-            var pos = new Vector2(0, 0);
+            var pos = new Vector2(0,0);
             
-            var wandering_ant = world.CreateEntity();
-            wandering_ant.Attach(new Ant());
-            wandering_ant.Attach(new Insect());
-            wandering_ant.Attach(new SimulationPosition { Position = new(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
-            wandering_ant.Attach(new Renderable {
+            var wanderingAnt = world.CreateEntity();
+            wanderingAnt.Attach(new Ant());
+            wanderingAnt.Attach(new Insect());
+            wanderingAnt.Attach(new SimulationPosition { Position = pos, WorldSpace = WorldSpace.Garden });
+            wanderingAnt.Attach(new Renderable {
                 RenderItem = new SpriteRenderable(new Point(40, 70), contentProvider.Get<Texture2D>(tex))
             });
         }
@@ -224,7 +221,7 @@ public class GardenGenerator {
 
     private void PlaceBushesInChunk(Point chunk, World world) {
         for(var i = 0; i < random.Next(GenerationOptions.BushesPerChunk); i++) {
-            var pos = GetRandomPointInChunk(chunk).ToVector2(); 
+            var pos = GetRandomPointInChunk(chunk); 
             // Generate the bush's leaves
             var leavesPositions = new List<Vector2>() { new(0, 0) };
             var fruitsPositions = new List<Vector2>();

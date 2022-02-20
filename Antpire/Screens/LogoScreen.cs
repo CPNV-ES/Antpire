@@ -7,7 +7,6 @@ using MonoGame.Extended;
 
 namespace Antpire.Screens {
     internal class LogoScreen : GameScreen {
-        private SpriteBatch spriteBatch;
         private Texture2D logoSprite;
         private World world;
     

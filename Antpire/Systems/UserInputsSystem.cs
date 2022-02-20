@@ -54,10 +54,9 @@ namespace Antpire.Systems {
             }
     
             
-            if(scrollWheelLastValue != mouseState.ScrollWheelValue) {
+            if(Math.Abs(scrollWheelLastValue - mouseState.ScrollWheelValue) > float.Epsilon) {
                 simulationState.CurrentCameraState.Zoom += (mouseState.ScrollWheelValue - scrollWheelLastValue) / 10.0f * dt;
             }
-    
 
             scrollWheelLastValue = mouseState.ScrollWheelValue;
             mouseLastPosition = mouseState.Position;
