@@ -210,7 +210,7 @@ public class GardenGenerator {
             wanderingAnt.Attach(new Insect());
             wanderingAnt.Attach(new SimulationPosition { Position = pos, WorldSpace = WorldSpace.Garden });
             wanderingAnt.Attach(new Renderable {
-                RenderItem = new SpriteRenderable(new Point(40, 70), contentProvider.Get<Texture2D>(tex))
+                RenderItem = new SpriteRenderable(new Point(40, 70), contentProvider.Get<Texture2D>(tex), MathF.PI / 2)
             });
         }
 

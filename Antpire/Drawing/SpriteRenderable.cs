@@ -7,10 +7,13 @@ internal class SpriteRenderable : IRenderable{
     private Texture2D texture;
     private Point size;
     private int longestSide;
+
+    public float RotationOffset = 0.0f;
     
-    public SpriteRenderable(Point size, Texture2D texture) {
+    public SpriteRenderable(Point size, Texture2D texture, float rotationOffset = 0.0f) {
         this.texture = texture;
         this.size = size;
+        RotationOffset = rotationOffset;
         this.longestSide = Math.Max(size.X, size.Y);
     }
     
@@ -23,7 +26,7 @@ internal class SpriteRenderable : IRenderable{
             Vector2 origin = new Vector2(texture.Width / 2.0f, texture.Height / 2.0f);
             float angle = trans.Rotation;
 
-            spriteBatch.Draw(texture, location, sourceRectangle, Color.White, angle+MathF.PI/2, origin, 0.5f, SpriteEffects.None, 1);
+            spriteBatch.Draw(texture, location, sourceRectangle, Color.White, angle + RotationOffset, origin, 0.5f, SpriteEffects.None, 1);
         }
     }
 }
