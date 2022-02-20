@@ -12,29 +12,7 @@ using Myra.Graphics2D.UI;
 using Antpire.Screens.Windows;
 using static Antpire.Antpire;
 
-namespace Antpire.Screens; 
-
-internal record CameraState {
-    private float zoom = 1.0f;
-    public Vector2 Position { get; set; } = new();
-    public float Zoom {
-        get => zoom;
-        set {
-            if (value is <= 3f and >= 0.1f)
-                zoom = value;
-        }
-    }
-}
-
-internal class SimulationState {
-    public CameraState GardenCameraState { get; set; } = new();
-    public CameraState AnthillCameraState { get; set; } = new();
-    public CameraState CurrentCameraState => CurrentWorldSpace == WorldSpace.Anthill ? AnthillCameraState : GardenCameraState;
-    public WorldSpace CurrentWorldSpace;
-    public AnthillInteriorGridMap AnthillInteriorGridMap { get; set; }
-    public float TimeScale { get; set; } = 1.0f;
-    public GardenGenerator.GardenGenerationOptions GardenGenerationOptions { get; set; } = new();
-}
+namespace Antpire.Screens;
 
 internal class SimulationScreen : GameScreen {
     private World world;
