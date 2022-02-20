@@ -30,7 +30,7 @@ internal class SimulationScreen : GameScreen {
             .AddSystem(new SimulationRenderSystem(GraphicsDevice, SimulationState))
             .AddSystem(new UserInputsSystem(SimulationState))
             .AddSystem(new WalkingSystem(SimulationState))
-            .AddSystem(new AntLogicSystem())
+            .AddSystem(new AntLogicSystem(SimulationState))
             .Build();
         contentProvider = game.Services.GetService<ContentProvider>();
     }
@@ -78,8 +78,12 @@ internal class SimulationScreen : GameScreen {
                 mainPauseWindow.Visible = true;
         }
 
-        SimulationState.TimeScale = mainPauseWindow.Visible ? 0 : SimulationState.TimeScale;
+        SimulationState.Paused = mainPauseWindow.Visible;
 
+        
+        // TODO: Make it easier for Systems to use the SimulationState's TimeScale
+        //       Maybe inject TimeScale into a new 'ScaledGameTime' object, so that systems 
+        //       can use a single property to scale on delta time AND the time scale. 
         world.Update(gameTime);
     }
 

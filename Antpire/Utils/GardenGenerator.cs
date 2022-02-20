@@ -121,6 +121,8 @@ public class GardenGenerator {
         var anthillsToGenerate = GenerationOptions.Anthills > maxAnthills ? maxAnthills : GenerationOptions.Anthills;
         
        var inhabitedChunks = new List<Point>();
+       
+       // TODO: This could lead to infinite loop?
        do {
            var chunk = GetRandomCornerChunk();
            if(!inhabitedChunks.Contains(chunk) && inhabitedChunks.Count(x => ChunkDistance(x, chunk) <= 2) == 0) {
@@ -135,8 +137,6 @@ public class GardenGenerator {
            anthill.Attach(new Renderable {
                RenderItem = new SpriteRenderable(500, contentProvider.Get<Texture2D>("anthill/Anthill")),
            });
-
-
        }
     }
 

@@ -9,6 +9,11 @@ internal class SimulationState {
     public CameraState CurrentCameraState => CurrentWorldSpace == WorldSpace.Anthill ? AnthillCameraState : GardenCameraState;
     public WorldSpace CurrentWorldSpace;
     public AnthillInteriorGridMap AnthillInteriorGridMap { get; set; }
-    public float TimeScale { get; set; } = 1.0f;
+    private float timeScale = 1.0f;
+    public float TimeScale { 
+        get => Paused ? 0 : timeScale;
+        set => timeScale = value;
+    }
+    public bool Paused { get; set; } = false;
     public GardenGenerator.GardenGenerationOptions GardenGenerationOptions { get; set; } = new();
 }

@@ -10,9 +10,10 @@ internal class AntLogicSystem : EntityUpdateSystem {
     private ComponentMapper<SimulationPosition> simulationPosition;
 
     private Random rand = new Random();
+    private SimulationState simState;
 
-    public AntLogicSystem() : base(Aspect.All(typeof(Ant), typeof(Insect), typeof(SimulationPosition))) {
-
+    public AntLogicSystem(SimulationState simulationState) : base(Aspect.All(typeof(Ant), typeof(Insect), typeof(SimulationPosition))) {
+        simState = simulationState;
     }
 
     public override void Initialize(IComponentMapperService mapperService) {
@@ -27,7 +28,7 @@ internal class AntLogicSystem : EntityUpdateSystem {
             var ant = antMapper.Get(entityId);
             var insect = insectMapper.Get(entityId);
 
-            ant.TimeTilNextUpdate -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            ant.TimeTilNextUpdate -= (float)gameTime.ElapsedGameTime.TotalSeconds * simState.TimeScale;
 
             switch(ant.CurrentState) {
                 case Ant.State.Idle:

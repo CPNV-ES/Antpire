@@ -31,12 +31,12 @@ internal class WalkingSystem : EntityUpdateSystem
             insect.Velocity = Vector2.Subtract(insect.Destination, entity.Position);
             insect.Velocity.Normalize();
 
-            walk(entity, insect);
+            walk(entity, insect, (float)gameTime.ElapsedGameTime.TotalSeconds);
         }
     }
 
-    private void walk(SimulationPosition entity, Insect insect) {
-        var newPosition = entity.Position + Vector2.Multiply(insect.Velocity, 2f);
+    private void walk(SimulationPosition entity, Insect insect, float deltaTime) {
+        var newPosition = entity.Position + Vector2.Multiply(insect.Velocity, 120.0f * deltaTime * simState.TimeScale);
             
         // TODO: Clean this code up, maybe shouldn't be in this system
         // If trying to move out of the garden's bounds, turn around
