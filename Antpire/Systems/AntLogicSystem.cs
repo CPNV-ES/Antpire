@@ -2,60 +2,60 @@
 using MonoGame.Extended.Entities.Systems;
 using Antpire.Components;
 
-namespace Antpire.Systems {
-    internal class AntLogicSystem : EntityUpdateSystem {
-        private ComponentMapper<Ant> antMapper;
-        private ComponentMapper<Insect> insectMapper;
-        private ComponentMapper<SimulationPosition> simulationPosition;
+namespace Antpire.Systems; 
 
-        private Random rand = new Random();
+internal class AntLogicSystem : EntityUpdateSystem {
+    private ComponentMapper<Ant> antMapper;
+    private ComponentMapper<Insect> insectMapper;
+    private ComponentMapper<SimulationPosition> simulationPosition;
 
-        public AntLogicSystem() : base(Aspect.All(typeof(Ant), typeof(Insect), typeof(SimulationPosition))) {
+    private Random rand = new Random();
 
-        }
+    public AntLogicSystem() : base(Aspect.All(typeof(Ant), typeof(Insect), typeof(SimulationPosition))) {
 
-        public override void Initialize(IComponentMapperService mapperService) {
-            simulationPosition = mapperService.GetMapper<SimulationPosition>();
-            antMapper = mapperService.GetMapper<Ant>();
-            insectMapper = mapperService.GetMapper<Insect>();
-        }
+    }
 
-        public override void Update(GameTime gameTime) {
-            foreach(var entityId in ActiveEntities) {
-                var position = simulationPosition.Get(entityId);
-                var ant = antMapper.Get(entityId);
-                var insect = insectMapper.Get(entityId);
+    public override void Initialize(IComponentMapperService mapperService) {
+        simulationPosition = mapperService.GetMapper<SimulationPosition>();
+        antMapper = mapperService.GetMapper<Ant>();
+        insectMapper = mapperService.GetMapper<Insect>();
+    }
 
-                ant.TimeTilNextUpdate -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+    public override void Update(GameTime gameTime) {
+        foreach(var entityId in ActiveEntities) {
+            var position = simulationPosition.Get(entityId);
+            var ant = antMapper.Get(entityId);
+            var insect = insectMapper.Get(entityId);
 
-                switch(ant.CurrentState) {
-                    case Ant.State.Idle:
-                        break;
-                    case Ant.State.Scouting:
-                        scouting(ant, insect, position);
-                        break;
-                    case Ant.State.Attacking:
-                        break;
-                    case Ant.State.Dying:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+            ant.TimeTilNextUpdate -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            switch(ant.CurrentState) {
+                case Ant.State.Idle:
+                    break;
+                case Ant.State.Scouting:
+                    scouting(ant, insect, position);
+                    break;
+                case Ant.State.Attacking:
+                    break;
+                case Ant.State.Dying:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
+    }
 
-        private void scouting(Ant ant, Insect insect, SimulationPosition entity) {
-            // Every x seconds the ant changes its direction
-            if(ant.TimeTilNextUpdate < 0.0f) {
-                ant.TimeTilNextUpdate = ant.MinUpdateFrequency;     // Reset timer
+    private void scouting(Ant ant, Insect insect, SimulationPosition entity) {
+        // Every x seconds the ant changes its direction
+        if(ant.TimeTilNextUpdate < 0.0f) {
+            ant.TimeTilNextUpdate = ant.MinUpdateFrequency;     // Reset timer
 
-                var rot = (float)rand.NextDouble() * MathF.PI / 2;
-                rot = entity.Rotation + rot - MathF.PI / 4;
-                entity.Rotation = rot;
+            var rot = (float)rand.NextDouble() * MathF.PI / 2;
+            rot = entity.Rotation + rot - MathF.PI / 4;
+            entity.Rotation = rot;
 
-                var dest = new Vector2(MathF.Cos(rot), MathF.Sin(rot));
-                insect.Destination = entity.Position + dest * 100;
-            }
+            var dest = new Vector2(MathF.Cos(rot), MathF.Sin(rot));
+            insect.Destination = entity.Position + dest * 100;
         }
     }
 }

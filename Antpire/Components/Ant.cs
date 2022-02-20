@@ -1,15 +1,15 @@
-﻿namespace Antpire.Components {
-    internal class Ant {
-        public enum State {
-            Idle,
-            Attacking,
-            Scouting,
-            Dying
-        }   
+﻿namespace Antpire.Components; 
 
-        public State CurrentState = State.Scouting;
+internal class Ant {
+    public enum State {
+        Idle,
+        Attacking,
+        Scouting,
+        Dying
+    }   
 
-        public float MinUpdateFrequency = 0.5f;
-        public float TimeTilNextUpdate = 0.0f;
-    }
+    public State CurrentState = State.Scouting;
+
+    public float MinUpdateFrequency = 0.5f;
+    public float TimeTilNextUpdate = 0.0f;
 }

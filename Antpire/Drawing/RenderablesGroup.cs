@@ -2,12 +2,12 @@
 using MoreLinq;
 using MonoGame.Extended;
 
-namespace Antpire.Drawing {
-    internal class RenderablesGroup : IRenderable {
-        public (IRenderable, Point)[] Children;
+namespace Antpire.Drawing; 
 
-        public void Render(SpriteBatch spriteBatch, Transform2 trans, Rectangle viewRegion) {
-            Children.ForEach(child => child.Item1.Render(spriteBatch, new Transform2((trans.Position.ToPoint() + child.Item2).ToVector2()), viewRegion));
-        }
+internal class RenderablesGroup : IRenderable {
+    public (IRenderable, Point)[] Children;
+
+    public void Render(SpriteBatch spriteBatch, Transform2 trans, Rectangle viewRegion) {
+        Children.ForEach(child => child.Item1.Render(spriteBatch, new Transform2((trans.Position.ToPoint() + child.Item2).ToVector2()), viewRegion));
     }
 }

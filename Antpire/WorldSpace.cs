@@ -1,6 +1,6 @@
-﻿namespace Antpire {
-    internal enum WorldSpace {
-        Anthill, 
-        Garden
-    }
+﻿namespace Antpire; 
+
+internal enum WorldSpace {
+    Anthill, 
+    Garden
 }

@@ -5,58 +5,58 @@ using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using Antpire.Screens;
 
-namespace Antpire.Systems {
-    internal class SimulationRenderSystem : EntityDrawSystem {
-        private readonly GraphicsDevice graphicsDevice;
-        private readonly SpriteBatch spriteBatch;
-        private readonly SimulationState simulationState;
-        private readonly OrthographicCamera camera;
+namespace Antpire.Systems; 
 
-        private ComponentMapper<SimulationPosition> simPositionMapper; 
-        private ComponentMapper<Renderable> renderableMapper;
+internal class SimulationRenderSystem : EntityDrawSystem {
+    private readonly GraphicsDevice graphicsDevice;
+    private readonly SpriteBatch spriteBatch;
+    private readonly SimulationState simulationState;
+    private readonly OrthographicCamera camera;
 
-        public SimulationRenderSystem(GraphicsDevice graphicsDevice, SimulationState state) : base(Aspect.All(typeof(SimulationPosition), typeof(Renderable))) {
-            this.graphicsDevice = graphicsDevice;
-            simulationState = state;
-            spriteBatch = new SpriteBatch(graphicsDevice);
+    private ComponentMapper<SimulationPosition> simPositionMapper; 
+    private ComponentMapper<Renderable> renderableMapper;
 
-            camera = new OrthographicCamera(graphicsDevice);
-        }
+    public SimulationRenderSystem(GraphicsDevice graphicsDevice, SimulationState state) : base(Aspect.All(typeof(SimulationPosition), typeof(Renderable))) {
+        this.graphicsDevice = graphicsDevice;
+        simulationState = state;
+        spriteBatch = new SpriteBatch(graphicsDevice);
 
-        public override void Initialize(IComponentMapperService mapperService) {
-            simPositionMapper = mapperService.GetMapper<SimulationPosition>();
-            renderableMapper = mapperService.GetMapper<Renderable>();
-        }
-
-        public override void Draw(GameTime gameTime) {
-            camera.Position = simulationState.CurrentCameraState.Position;
-            camera.Zoom = simulationState.CurrentCameraState.Zoom;    
-
-            var transformMatrix = camera.GetViewMatrix();
-            spriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
-            if(simulationState.CurrentWorldSpace == WorldSpace.Anthill) {
-                graphicsDevice.Clear(Color.SaddleBrown);
-            }
-            else {
-                graphicsDevice.Clear(Color.ForestGreen);
-            }
-
-            var viewRegion = camera.BoundingRectangle.ToRectangle();
-            
-            foreach (var entityId in ActiveEntities) {
-                var pos = simPositionMapper.Get(entityId);
-                var render = renderableMapper.Get(entityId);
- 
-                if (pos.WorldSpace == WorldSpace.Anthill && simulationState.CurrentWorldSpace == WorldSpace.Anthill) {
-                    render.RenderItem.Render(spriteBatch, new Transform2(pos.Position), viewRegion);
-                }
-                else if (pos.WorldSpace == WorldSpace.Garden && simulationState.CurrentWorldSpace == WorldSpace.Garden) {
-                    render.RenderItem.Render(spriteBatch, new Transform2(pos.Position, pos.Rotation), viewRegion);
-                }
-            }
-
-            spriteBatch.End();
-        }
-
+        camera = new OrthographicCamera(graphicsDevice);
     }
+
+    public override void Initialize(IComponentMapperService mapperService) {
+        simPositionMapper = mapperService.GetMapper<SimulationPosition>();
+        renderableMapper = mapperService.GetMapper<Renderable>();
+    }
+
+    public override void Draw(GameTime gameTime) {
+        camera.Position = simulationState.CurrentCameraState.Position;
+        camera.Zoom = simulationState.CurrentCameraState.Zoom;    
+
+        var transformMatrix = camera.GetViewMatrix();
+        spriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
+        if(simulationState.CurrentWorldSpace == WorldSpace.Anthill) {
+            graphicsDevice.Clear(Color.SaddleBrown);
+        }
+        else {
+            graphicsDevice.Clear(Color.ForestGreen);
+        }
+
+        var viewRegion = camera.BoundingRectangle.ToRectangle();
+            
+        foreach (var entityId in ActiveEntities) {
+            var pos = simPositionMapper.Get(entityId);
+            var render = renderableMapper.Get(entityId);
+ 
+            if (pos.WorldSpace == WorldSpace.Anthill && simulationState.CurrentWorldSpace == WorldSpace.Anthill) {
+                render.RenderItem.Render(spriteBatch, new Transform2(pos.Position), viewRegion);
+            }
+            else if (pos.WorldSpace == WorldSpace.Garden && simulationState.CurrentWorldSpace == WorldSpace.Garden) {
+                render.RenderItem.Render(spriteBatch, new Transform2(pos.Position, pos.Rotation), viewRegion);
+            }
+        }
+
+        spriteBatch.End();
+    }
+
 }
