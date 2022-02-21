@@ -4,12 +4,13 @@ using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using Antpire.Screens;
+using Antpire.Drawing;
 
 namespace Antpire.Systems; 
 
 internal class SimulationRenderSystem : EntityDrawSystem {
     private readonly GraphicsDevice graphicsDevice;
-    private readonly SpriteBatch spriteBatch;
+    private readonly DrawBatch drawBatch;
     private readonly SimulationState simulationState;
     private readonly OrthographicCamera camera;
 
@@ -19,7 +20,7 @@ internal class SimulationRenderSystem : EntityDrawSystem {
     public SimulationRenderSystem(GraphicsDevice graphicsDevice, SimulationState state) : base(Aspect.All(typeof(SimulationPosition), typeof(Renderable))) {
         this.graphicsDevice = graphicsDevice;
         simulationState = state;
-        spriteBatch = new SpriteBatch(graphicsDevice);
+        drawBatch = new DrawBatch(graphicsDevice);
 
         camera = new OrthographicCamera(graphicsDevice);
     }
@@ -31,10 +32,10 @@ internal class SimulationRenderSystem : EntityDrawSystem {
 
     public override void Draw(GameTime gameTime) {
         camera.Position = simulationState.CurrentCameraState.Position;
-        camera.Zoom = simulationState.CurrentCameraState.Zoom;    
+        camera.Zoom = simulationState.CurrentCameraState.Zoom;
 
         var transformMatrix = camera.GetViewMatrix();
-        spriteBatch.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);
+        drawBatch.Begin(transformMatrix: transformMatrix);
         if(simulationState.CurrentWorldSpace == WorldSpace.Anthill) {
             graphicsDevice.Clear(Color.SaddleBrown);
         }
@@ -49,14 +50,14 @@ internal class SimulationRenderSystem : EntityDrawSystem {
             var render = renderableMapper.Get(entityId);
  
             if (pos.WorldSpace == WorldSpace.Anthill && simulationState.CurrentWorldSpace == WorldSpace.Anthill) {
-                render.RenderItem.Render(spriteBatch, new Transform2(pos.Position), viewRegion);
+                render.RenderItem.Render(drawBatch, new Transform2(pos.Position, pos.Rotation), viewRegion);
             }
             else if (pos.WorldSpace == WorldSpace.Garden && simulationState.CurrentWorldSpace == WorldSpace.Garden) {
-                render.RenderItem.Render(spriteBatch, new Transform2(pos.Position, pos.Rotation), viewRegion);
+                render.RenderItem.Render(drawBatch, new Transform2(pos.Position, pos.Rotation), viewRegion);
             }
         }
 
-        spriteBatch.End();
+        drawBatch.End();
     }
 
 }

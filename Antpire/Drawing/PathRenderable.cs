@@ -21,8 +21,8 @@ internal class PathRenderable : IRenderable {
     public Color Color = Color.White;
     public float Thickness = 2.0f;
 
-    public void Render(SpriteBatch spriteBatch, Transform2 trans, Rectangle viewRegion) {
+    public void Render(DrawBatch drawBatch, Transform2 trans, Rectangle viewRegion) {
         if(viewRegion.Intersects(boundingBox))
-            Segments.Window(2).ForEach(p => spriteBatch.DrawLine(p[0] + trans.Position, p[1] + trans.Position, Color, Thickness));
+            Segments.Window(2).ForEach(p => drawBatch.GetSpriteDrawBatch(0).DrawLine(p[0] + trans.Position, p[1] + trans.Position, Color, Thickness));
     }
 }

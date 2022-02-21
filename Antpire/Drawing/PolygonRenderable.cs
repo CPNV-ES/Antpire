@@ -18,8 +18,8 @@ internal class PolygonRenderable : IRenderable {
     public Color Color = Color.White;
     public float Thickness = 1.0f;
 
-    public void Render(SpriteBatch spriteBatch, Transform2 trans, Rectangle viewRegion) {
+    public void Render(DrawBatch drawBatch, Transform2 trans, Rectangle viewRegion) {
         if(viewRegion.Intersects(new Rectangle { Location = boundingBox.Location + trans.Position.ToPoint(), Size = boundingBox.Size }))
-            spriteBatch.DrawPolygon(trans.Position, Polygon, Color, Thickness);
+            drawBatch.GetSpriteDrawBatch(0).DrawPolygon(trans.Position, Polygon, Color, Thickness);
     }
 }

@@ -23,8 +23,8 @@ internal class RectangleRenderable : IRenderable {
         boundingBox = polygon.BoundingRectangle.ToRectangle();
     }
 
-    public void Render(SpriteBatch spriteBatch, Transform2 trans, Rectangle viewRegion) {
+    public void Render(DrawBatch drawBatch, Transform2 trans, Rectangle viewRegion) {
         if(viewRegion.Intersects(new Rectangle { Location = boundingBox.Location + trans.Position.ToPoint(), Size = boundingBox.Size }))
-            spriteBatch.DrawPolygon(trans.Position, polygon, Color, thickness);
+            drawBatch.GetSpriteDrawBatch(0).DrawPolygon(trans.Position, polygon, Color, thickness);
     }
 }
