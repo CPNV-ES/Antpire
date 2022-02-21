@@ -51,8 +51,8 @@ internal class AntLogicSystem : EntityUpdateSystem {
         if(ant.TimeTilNextUpdate < 0.0f) {
             ant.TimeTilNextUpdate = ant.MinUpdateFrequency;     // Reset timer
 
-            var rot = (float)rand.NextDouble() * MathF.PI / 2;
-            rot = entity.Rotation + rot - MathF.PI / 4;
+            var rot = (float)rand.NextDouble() * MathF.PI / 8;
+            rot = entity.Rotation + rot - MathF.PI / 16;
             entity.Rotation = rot;
 
             var dest = new Vector2(MathF.Cos(rot), MathF.Sin(rot));

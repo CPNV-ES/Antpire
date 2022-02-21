@@ -36,7 +36,7 @@ internal class WalkingSystem : EntityUpdateSystem
     }
 
     private void walk(SimulationPosition entity, Insect insect, float deltaTime) {
-        var newPosition = entity.Position + Vector2.Multiply(insect.Velocity, 120.0f * deltaTime * simState.TimeScale);
+        var newPosition = entity.Position + Vector2.Multiply(insect.Velocity, 140.0f * deltaTime * simState.TimeScale);
             
         // TODO: Clean this code up, maybe shouldn't be in this system
         // If trying to move out of the garden's bounds, turn around

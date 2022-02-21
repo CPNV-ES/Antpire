@@ -10,6 +10,6 @@ internal class Ant {
 
     public State CurrentState = State.Scouting;
 
-    public float MinUpdateFrequency = 0.5f;
+    public float MinUpdateFrequency = 1/60.0f*5.0f;
     public float TimeTilNextUpdate = 0.0f;
 }
