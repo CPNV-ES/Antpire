@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using LilyPath;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Shapes;
 
@@ -21,13 +22,13 @@ internal class RectangleRenderable : IRenderable {
         polygon.Rotate(rotation);
         this.thickness = thickness;
         var br = polygon.BoundingRectangle.ToRectangle();
-        boundingBox = new(br.Width, br.Height);
+        boundingBox = new(br.Width * 2, br.Height * 2); // TODO: Shouldn't be times two, but the BoundingRectangle can't account for vertices with negative positions. Should bring all vertices to have X and Y be positive.
     }
 
     public Point BoundingBox => boundingBox;
     public int Layer { get; init; }
     
     public void Render(DrawBatch drawBatch, Transform2 trans) {
-        drawBatch.GetSpriteDrawBatch((DrawBatch.Layer)Layer).DrawPolygon(trans.Position, polygon, Color, thickness);
+        drawBatch.GetShapeDrawBatch((DrawBatch.Layer)Layer).FillPath(new SolidColorBrush(Color), polygon.Vertices.Select(x => x + trans.Position + BoundingBox.ToVector2()/2).ToList());
     }
 }
