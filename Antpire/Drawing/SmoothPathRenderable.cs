@@ -1,17 +1,21 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Antpire.Utils;
+using LilyPath;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MoreLinq;
 
 namespace Antpire.Drawing; 
 
-internal class PathRenderable : IRenderable {
+internal class SmoothPathRenderable : IRenderable {
     private Vector2[] segments;
+    private Vector2[] bezierSegments;
     private Point boundingBox = new();
 
     public Vector2[] Segments {
         get => segments;
         set {
             segments = value;
+            bezierSegments = ShapeUtils.GetBezierApproximation(segments, segments.Length * 4);
             boundingBox.X = Math.Abs((int)segments.OrderBy(x => x.X).Last().X) + Math.Abs((int)segments.OrderBy(x => x.X).First().X);
             boundingBox.Y = Math.Abs((int)segments.OrderBy(x => x.Y).Last().Y) + Math.Abs((int)segments.OrderBy(x => x.Y).First().Y);
         }
@@ -23,6 +27,6 @@ internal class PathRenderable : IRenderable {
     public int Layer { get; init; }
     
     public void Render(DrawBatch drawBatch, Transform2 trans) {
-        Segments.Window(2).ForEach(p => drawBatch.GetSpriteDrawBatch((DrawBatch.Layer)Layer).DrawLine(p[0] + trans.Position, p[1] + trans.Position, Color, Thickness));
+        drawBatch.GetShapeDrawBatch((DrawBatch.Layer)2).DrawBeziers(new Pen(Color.Blue, 100.0f), bezierSegments, BezierType.Quadratic);
     }
 }

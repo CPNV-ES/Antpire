@@ -113,7 +113,7 @@ public class GardenGenerator {
         
         var river = world.CreateEntity();
         river.Attach(new SimulationPosition { Position = new (0, 0), WorldSpace = WorldSpace.Garden });
-        river.Attach(new Renderable { RenderItem = new PathRenderable { Color = Color.Blue, Segments = segments.ToArray(), Thickness = 50 } });
+        river.Attach(new Renderable { RenderItem = new SmoothPathRenderable { Color = Color.Blue, Segments = segments.ToArray(), Thickness = 50 } });
     }
 
     private void PlaceAnthills(World world) {

@@ -42,4 +42,28 @@ internal class ShapeUtils {
 
         return new Vector2((float)(r * Math.Cos(a)), (float)(r * Math.Sin(a)));
     }
+  
+    /// <summary>
+    /// Returns an approximated bezier spline from a set of points
+    /// </summary>
+    /// <param name="controlPoints"></param>
+    /// <param name="outputSegmentCount"></param>
+    /// <remarks>From: https://stackoverflow.com/a/13948059/7619126</remarks>
+    /// <returns></returns>
+    public static Vector2[] GetBezierApproximation(Vector2[] controlPoints, int outputSegmentCount) {
+        Vector2[] points = new Vector2[outputSegmentCount + 1];
+        for (int i = 0; i <= outputSegmentCount; i++) {
+            float t = (float)i / outputSegmentCount;
+            points[i] = GetBezierPoint(t, controlPoints, 0, controlPoints.Length);
+        }
+        return points;
+    }
+
+    private static Vector2 GetBezierPoint(float t, Vector2[] controlPoints, int index, int count) {
+        if (count == 1)
+            return controlPoints[index];
+        var P0 = GetBezierPoint(t, controlPoints, index, count - 1);
+        var P1 = GetBezierPoint(t, controlPoints, index + 1, count - 1);
+        return new Vector2((1 - t) * P0.X + t * P1.X, (1 - t) * P0.Y + t * P1.Y);
+    } 
 }

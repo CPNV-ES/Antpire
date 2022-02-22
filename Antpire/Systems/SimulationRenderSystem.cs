@@ -49,7 +49,9 @@ internal class SimulationRenderSystem : EntityDrawSystem {
             var pos = simPositionMapper.Get(entityId);
             var render = renderableMapper.Get(entityId);
 
-            if(pos.WorldSpace == simulationState.CurrentWorldSpace && viewRegion.Intersects(new Rectangle(pos.Position.ToPoint() - new Point(render.RenderItem.BoundingBox.X/2, render.RenderItem.BoundingBox.Y/2), render.RenderItem.BoundingBox))) {
+            if(pos.WorldSpace == simulationState.CurrentWorldSpace && 
+               viewRegion.Intersects(new Rectangle(pos.Position.ToPoint(), render.RenderItem.BoundingBox))) 
+            {
                 render.RenderItem.Render(drawBatch, new Transform2(pos.Position, pos.Rotation));
             }
         }

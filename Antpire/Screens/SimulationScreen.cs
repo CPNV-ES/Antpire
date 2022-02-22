@@ -296,7 +296,7 @@ internal class SimulationScreen : GameScreen {
         var riverSegments = new Vector2[] { new(550, 250), new(510, 330), new(520, 430), new(490, 500), new(480, 610), new(530, 720) };
         var river = world.CreateEntity();
         river.Attach(new SimulationPosition { Position = new(0, 0), WorldSpace = WorldSpace.Garden });
-        river.Attach(new Renderable { RenderItem = new PathRenderable { Color = Color.Blue, Segments = riverSegments, Thickness = 15 } });
+        river.Attach(new Renderable { RenderItem = new SmoothPathRenderable { Color = Color.Blue, Segments = riverSegments, Thickness = 15 } });
 
         // Init piles of twigs
         var twigPositions = new Vector2[] { new(140, 160), new(300, 300), new(850, 300) };
