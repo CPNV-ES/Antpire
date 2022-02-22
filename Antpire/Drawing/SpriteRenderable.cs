@@ -11,9 +11,10 @@ internal class SpriteRenderable : IRenderable{
 
     public float RotationOffset = 0.0f;
     
-    public SpriteRenderable(float scale, Texture2D texture, float rotationOffset = 0.0f) {
+    public SpriteRenderable(float scale, Texture2D texture, float rotationOffset = 0.0f, int layer = 0) {
         this.texture = texture;
         this.scale = scale;
+        this.Layer = layer;
         RotationOffset = rotationOffset;
         this.longestSide = (int)MathF.Max(texture.Height * scale, texture.Width * scale);
     }

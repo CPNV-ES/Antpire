@@ -188,7 +188,7 @@ public class GardenGenerator {
             var pos = GetRandomPointInGarden();
             aphid.Attach(new SimulationPosition { Position = new (pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
             aphid.Attach(new Renderable {
-                RenderItem = new SpriteRenderable(0.25f, contentProvider.Get<Texture2D>(tex))
+                RenderItem = new SpriteRenderable(0.25f, contentProvider.Get<Texture2D>(tex), 0.0f, (int)DrawBatch.Layer.Insect)
             });
         }
         
@@ -210,7 +210,7 @@ public class GardenGenerator {
             wanderingAnt.Attach(new Insect());
             wanderingAnt.Attach(new SimulationPosition { Position = pos, WorldSpace = WorldSpace.Garden });
             wanderingAnt.Attach(new Renderable {
-                RenderItem = new SpriteRenderable(0.25f, contentProvider.Get<Texture2D>(tex), MathF.PI / 2)
+                RenderItem = new SpriteRenderable(0.25f, contentProvider.Get<Texture2D>(tex), MathF.PI / 2, (int)DrawBatch.Layer.Insect)
             });
         }
 
