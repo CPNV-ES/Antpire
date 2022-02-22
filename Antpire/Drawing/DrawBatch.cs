@@ -33,7 +33,7 @@ public class DrawBatch {
 
     public void Begin(Matrix transformMatrix) {
         foreach(LilyDrawBatch b in lilyBatches) {
-            b.Begin(DrawSortMode.Deferred, (BlendState)null, (SamplerState)null, (DepthStencilState)null, (RasterizerState)null, (Effect)null, Matrix.Identity);
+            b.Begin(DrawSortMode.Deferred, (BlendState)null, (SamplerState)null, (DepthStencilState)null, (RasterizerState)null, (Effect)null, transformMatrix);
         }
         foreach(SpriteBatch b in spriteBatches) {
             b.Begin(transformMatrix: transformMatrix, samplerState: SamplerState.PointClamp);

@@ -8,7 +8,7 @@ internal class RectangleRenderable : IRenderable {
     public Color Color = Color.White;
     private Polygon polygon;
     private float thickness = 1.0f;
-    private Rectangle boundingBox;
+    private Point boundingBox;
 
     public RectangleRenderable(Vector2 size, float rotation, Color color, float thickness = 1.0f) {
         Color = color;
@@ -20,11 +20,14 @@ internal class RectangleRenderable : IRenderable {
         });
         polygon.Rotate(rotation);
         this.thickness = thickness;
-        boundingBox = polygon.BoundingRectangle.ToRectangle();
+        var br = polygon.BoundingRectangle.ToRectangle();
+        boundingBox = new(br.Width, br.Height);
     }
 
-    public void Render(DrawBatch drawBatch, Transform2 trans, Rectangle viewRegion) {
-        if(viewRegion.Intersects(new Rectangle { Location = boundingBox.Location + trans.Position.ToPoint(), Size = boundingBox.Size }))
-            drawBatch.GetSpriteDrawBatch(0).DrawPolygon(trans.Position, polygon, Color, thickness);
+    public Point BoundingBox => boundingBox;
+    public int Layer { get; init; }
+    
+    public void Render(DrawBatch drawBatch, Transform2 trans) {
+        drawBatch.GetSpriteDrawBatch((DrawBatch.Layer)Layer).DrawPolygon(trans.Position, polygon, Color, thickness);
     }
 }

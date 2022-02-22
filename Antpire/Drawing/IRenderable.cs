@@ -5,5 +5,8 @@ using Antpire.Drawing;
 namespace Antpire.Drawing; 
 
 internal interface IRenderable {
-    public void Render(DrawBatch drawBatch, Transform2 transform, Rectangle viewRegion);
+    public Point BoundingBox { get; }
+    public int Layer { get; init; }
+    
+    public void Render(DrawBatch drawBatch, Transform2 trans);
 }

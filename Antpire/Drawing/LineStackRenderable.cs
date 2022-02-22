@@ -9,8 +9,10 @@ internal class LineStackRenderable : IRenderable {
     public Color Color = Color.White;
     public float Thickness = 2.0f;
 
-    public void Render(DrawBatch drawBatch, Transform2 trans, Rectangle viewRegion) {
-        if(viewRegion.Intersects(new Rectangle { X = (int)trans.Position.X, Y = (int)trans.Position.Y, Height = 2, Width = 2}))
-            Segments.Chunk(2).ForEach(p => drawBatch.GetSpriteDrawBatch(0).DrawLine(p[0] + trans.Position, p[1] + trans.Position, Color, Thickness));
+    public Point BoundingBox => new(2, 2);   // TODO: Make this actual bounding box 
+    public int Layer { get; init; }
+    
+    public void Render(DrawBatch drawBatch, Transform2 trans) {
+        Segments.Chunk(2).ForEach(p => drawBatch.GetSpriteDrawBatch((DrawBatch.Layer)Layer).DrawLine(p[0] + trans.Position, p[1] + trans.Position, Color, Thickness));
     }
 }

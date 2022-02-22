@@ -48,16 +48,12 @@ internal class SimulationRenderSystem : EntityDrawSystem {
         foreach (var entityId in ActiveEntities) {
             var pos = simPositionMapper.Get(entityId);
             var render = renderableMapper.Get(entityId);
- 
-            if (pos.WorldSpace == WorldSpace.Anthill && simulationState.CurrentWorldSpace == WorldSpace.Anthill) {
-                render.RenderItem.Render(drawBatch, new Transform2(pos.Position, pos.Rotation), viewRegion);
-            }
-            else if (pos.WorldSpace == WorldSpace.Garden && simulationState.CurrentWorldSpace == WorldSpace.Garden) {
-                render.RenderItem.Render(drawBatch, new Transform2(pos.Position, pos.Rotation), viewRegion);
+
+            if(pos.WorldSpace == simulationState.CurrentWorldSpace && viewRegion.Intersects(new Rectangle(pos.Position.ToPoint() - new Point(render.RenderItem.BoundingBox.X/2, render.RenderItem.BoundingBox.Y/2), render.RenderItem.BoundingBox))) {
+                render.RenderItem.Render(drawBatch, new Transform2(pos.Position, pos.Rotation));
             }
         }
 
         drawBatch.End();
     }
-
 }
