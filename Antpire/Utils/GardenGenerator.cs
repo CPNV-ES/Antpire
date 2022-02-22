@@ -135,7 +135,7 @@ public class GardenGenerator {
            var anthill = world.CreateEntity();
            anthill.Attach(new SimulationPosition { Position = new (pos.X - 250, pos.Y - 250), WorldSpace = WorldSpace.Garden });
            anthill.Attach(new Renderable {
-               RenderItem = new SpriteRenderable(500, contentProvider.Get<Texture2D>("anthill/Anthill")),
+               RenderItem = new SpriteRenderable(2, contentProvider.Get<Texture2D>("anthill/Anthill")),
            });
        }
     }
@@ -188,7 +188,7 @@ public class GardenGenerator {
             var pos = GetRandomPointInGarden();
             aphid.Attach(new SimulationPosition { Position = new (pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
             aphid.Attach(new Renderable {
-                RenderItem = new SpriteRenderable(100, contentProvider.Get<Texture2D>(tex))
+                RenderItem = new SpriteRenderable(0.25f, contentProvider.Get<Texture2D>(tex))
             });
         }
         
@@ -210,7 +210,7 @@ public class GardenGenerator {
             wanderingAnt.Attach(new Insect());
             wanderingAnt.Attach(new SimulationPosition { Position = pos, WorldSpace = WorldSpace.Garden });
             wanderingAnt.Attach(new Renderable {
-                RenderItem = new SpriteRenderable(new Point(40, 70), contentProvider.Get<Texture2D>(tex), MathF.PI / 2)
+                RenderItem = new SpriteRenderable(0.25f, contentProvider.Get<Texture2D>(tex), MathF.PI / 2)
             });
         }
 

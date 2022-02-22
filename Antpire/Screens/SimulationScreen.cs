@@ -276,7 +276,7 @@ internal class SimulationScreen : GameScreen {
 
             wanderingAnt.Attach(new Renderable
             {
-                RenderItem = new SpriteRenderable(new Point(40/10, 70/10), contentProvider.Get<Texture2D>("ant/alivev2"))
+                RenderItem = new SpriteRenderable(1.0f, contentProvider.Get<Texture2D>("ant/alivev2"))
             });
         }
 
