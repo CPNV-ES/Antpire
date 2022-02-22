@@ -242,7 +242,7 @@ public class GardenGenerator {
                 
                // Generate fruits
                for (int f = 0; f < random.Next(1, 3); f++) {
-                    fruitsPositions.Add(ShapeUtils.GetRandomPointInCircle(20) + new Vector2(leaf.X, leaf.Y) + new Vector2(60, 60));                
+                    fruitsPositions.Add(ShapeUtils.GetRandomPointInCircle(20) + new Vector2(leaf.X, leaf.Y) + new Vector2(30, 30));                
                }
             }
             
