@@ -9,9 +9,9 @@ namespace Antpire.Utils;
 
 public class GardenGenerator {
     public struct GardenGenerationOptions {
-        public int ChunkSize = 768;
-        public int Width = 3;
-        public int Height = 3;
+        public int ChunkSize = 1025;
+        public int Width = 5;
+        public int Height = 5;
         public Range<int> RocksPerChunk = new(1, 1);
         public Range<int> RockSize = new(30, 100);
         public Range<int> RockVertices = new(5, 13);
@@ -226,40 +226,33 @@ public class GardenGenerator {
             var leavesPositions = new List<Vector2>() { new(0, 0) };
             var fruitsPositions = new List<Vector2>();
 
-            for (int b = 0; b < random.Next(6, 18); b++) {
+            var colors = new Color[] { Color.Red, Color.GreenYellow, Color.OrangeRed };
+            
+            for (int b = 0; b < random.Next(7, 13); b++) {
                 leavesPositions.Add(ShapeUtils.GetRandomPointInCircle(50));
+            }
+
+            foreach(var leaf in leavesPositions) {
+               var leafEntity = world.CreateEntity(); 
+               leafEntity.Attach(new SimulationPosition { Position = pos + new Vector2(leaf.X, leaf.Y), WorldSpace = WorldSpace.Garden });
+               leafEntity.Attach(new Renderable {
+                   RenderItem = new CircleRenderable { Sides = 32, Color = Color.DarkGreen, Thickness = 50.0f, Radius = 50 - (int)Math.Sqrt(leaf.X*leaf.X + leaf.Y*leaf.Y)/3 } as IRenderable,
+               });
+            
                 
-                // Generate fruits
-                for (int f = 0; f < random.Next(0, 5); f++) {
-                    fruitsPositions.Add(ShapeUtils.GetRandomPointInCircle(40) + leavesPositions.Last());                
-                }
+               // Generate fruits
+               for (int f = 0; f < random.Next(1, 3); f++) {
+                    fruitsPositions.Add(ShapeUtils.GetRandomPointInCircle(20) + new Vector2(leaf.X, leaf.Y) + new Vector2(60, 60));                
+               }
             }
             
-            var bush = world.CreateEntity();
-            var fruits = world.CreateEntity();
-            bush.Attach(new SimulationPosition { Position = pos, WorldSpace= WorldSpace.Garden });
-            bush.Attach(new Renderable {
-                RenderItem = new RenderablesGroup {
-                    Children = leavesPositions.Select(x => 
-                        (
-                            new CircleRenderable { Sides = 32, Color = Color.DarkGreen, Thickness = 50.0f, Radius = 50 - (int)Math.Sqrt(x.X*x.X + x.Y*x.Y)/3 } as IRenderable,
-                            x.ToPoint()
-                        )
-                    ).ToArray()
-                }
-            });
-            var colors = new Color[] { Color.Red, Color.GreenYellow, Color.OrangeRed };
-            fruits.Attach(new SimulationPosition { Position = pos, WorldSpace = WorldSpace.Garden });
-            fruits.Attach(new Renderable {
-                RenderItem = new RenderablesGroup {
-                    Children = fruitsPositions.Select(x =>
-                        (
-                            new CircleRenderable { Sides = 32, Color = colors[random.Next(0, 3)], Thickness = 8.0f, Radius = random.Next(4, 8) } as IRenderable,
-                            x.ToPoint()
-                        )
-                    ).ToArray()
-                }
-            });
+            foreach(var fruit in fruitsPositions) {
+               var fruitEntity = world.CreateEntity(); 
+               fruitEntity.Attach(new SimulationPosition { Position = pos + new Vector2(fruit.X, fruit.Y), WorldSpace = WorldSpace.Garden });
+               fruitEntity.Attach(new Renderable {
+                   RenderItem = new CircleRenderable { Sides = 32, Color = colors[random.Next(0, 3)], Thickness = 16.0f, Radius = random.Next(4, 8) } as IRenderable,
+               });
+            }
         }
     }
 }

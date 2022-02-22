@@ -1,5 +1,7 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using LilyPath;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
+using Myra.Graphics2D.Brushes;
 
 namespace Antpire.Drawing; 
 
@@ -9,10 +11,10 @@ internal class CircleRenderable : IRenderable {
     public Color Color = Color.White;
     public float Thickness = 1.0f;
 
-    public Point BoundingBox => new Point(Radius * 2, Radius * 2); 
+    public Point BoundingBox => new Point(Radius*2, Radius*2); 
     public int Layer { get; init; }
     
     public void Render(DrawBatch drawBatch, Transform2 trans) {
-        drawBatch.GetSpriteDrawBatch((DrawBatch.Layer)Layer).DrawCircle(new CircleF { Position = trans.Position, Radius = Radius}, Sides, Color, Thickness);
+        drawBatch.GetShapeDrawBatch((DrawBatch.Layer)Layer).FillCircle(new SolidColorBrush(Color), trans.Position + BoundingBox.ToVector2()/2, Radius, 64);
     }
 }
