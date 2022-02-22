@@ -23,6 +23,6 @@ internal class PolygonRenderable : IRenderable {
     public int Layer { get; init; }
     
     public void Render(DrawBatch drawBatch, Transform2 trans) {
-        drawBatch.GetSpriteDrawBatch((DrawBatch.Layer)Layer).DrawPolygon(trans.Position, Polygon, Color, Thickness);
+        drawBatch.GetShapeDrawBatch((DrawBatch.Layer)Layer).FillPath(new SolidColorBrush(Color), Polygon.Vertices.Reverse().ToList().Select(x => x + trans.Position).ToList()); 
     }
 }
