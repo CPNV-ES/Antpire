@@ -27,6 +27,6 @@ internal class SmoothPathRenderable : IRenderable {
     public int Layer { get; init; }
     
     public void Render(DrawBatch drawBatch, Transform2 trans) {
-        drawBatch.GetShapeDrawBatch((DrawBatch.Layer)2).DrawBeziers(new Pen(Color.Blue, 100.0f), bezierSegments, BezierType.Quadratic);
+        drawBatch.GetShapeDrawBatch((DrawBatch.Layer)0).DrawBeziers(new Pen(Color.Blue, 100.0f), bezierSegments, BezierType.Quadratic);
     }
 }
