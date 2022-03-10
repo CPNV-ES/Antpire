@@ -9,6 +9,8 @@ namespace Antpire.Utils;
 
 public class GardenGenerator {
     public struct GardenGenerationOptions {
+        public GardenGenerationOptions() { }
+
         public int ChunkSize = 768;
         public int Width = 3;
         public int Height = 3;
