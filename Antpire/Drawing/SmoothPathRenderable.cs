@@ -1,16 +1,22 @@
-﻿using Antpire.Utils;
+﻿using System.Runtime.Serialization;
+using Antpire.Utils;
 using LilyPath;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MoreLinq;
+using Newtonsoft.Json;
 
 namespace Antpire.Drawing; 
 
 internal class SmoothPathRenderable : IRenderable {
+    [JsonProperty]
     private Vector2[] segments;
+    [JsonProperty]
     private Vector2[] bezierSegments;
+    [JsonProperty]
     private Point boundingBox = new();
 
+    [IgnoreDataMember]
     public Vector2[] Segments {
         get => segments;
         set {
@@ -23,6 +29,7 @@ internal class SmoothPathRenderable : IRenderable {
     public Color Color = Color.White;
     public float Thickness = 2.0f;
 
+    [IgnoreDataMember]
     public Point BoundingBox => boundingBox;
     public int Layer { get; init; }
     

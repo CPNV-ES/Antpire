@@ -5,6 +5,7 @@ using Myra.Graphics2D.Brushes;
 
 namespace Antpire.Drawing; 
 
+[Serializable]
 internal class CircleRenderable : IRenderable {
     public int Radius;
     public int Sides = 64;

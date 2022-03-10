@@ -4,11 +4,12 @@ using MoreLinq;
 
 namespace Antpire.Drawing; 
 
+[Serializable]
 internal class LineStackRenderable : IRenderable {
     public Vector2[] Segments;
     public Color Color = Color.White;
     public float Thickness = 2.0f;
-
+    
     public Point BoundingBox => new(2, 2);   // TODO: Make this actual bounding box 
     public int Layer { get; init; }
     

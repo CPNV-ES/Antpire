@@ -1,6 +1,5 @@
 ﻿namespace Antpire;
-
-internal record CameraState {
+public record CameraState {
     private float zoom = 1.0f;
     public Vector2 Position { get; set; } = new();
     public float Zoom {
