@@ -1,4 +1,10 @@
-﻿using MonoGame.Extended.Screens;
+﻿using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
+using System.Text.Json;
+using MonoGame.Extended.Screens;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Entities;
 using Antpire.Systems;
@@ -10,29 +16,38 @@ using Microsoft.Xna.Framework.Input;
 using Antpire.Utils;
 using Myra.Graphics2D.UI;
 using Antpire.Screens.Windows;
+using MonoGame.Extended.Collections;
+using Newtonsoft.Json;
 using static Antpire.Antpire;
+using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace Antpire.Screens;
-
-internal class SimulationScreen : GameScreen {
+public class SimulationScreen : GameScreen {
     private World world;
     private Desktop desktop;
     private Window mainPauseWindow;
     private SimulationUI ui;
     private Panel mainPanel;
     private ContentProvider contentProvider;
-
+    private string lastSaveFileName;
+    private Antpire antpire;
+    
     public SimulationState SimulationState;
- 
-    public SimulationScreen(Game game) : base(game) {
+
+    public SimulationScreen(Antpire game) : base(game) {
+        antpire = game;
         SimulationState = new SimulationState { CurrentWorldSpace = WorldSpace.Garden };
+        initWorld();
+        contentProvider = game.Services.GetService<ContentProvider>();
+    }
+
+    private void initWorld() {
         world = new WorldBuilder()
             .AddSystem(new SimulationRenderSystem(GraphicsDevice, SimulationState))
             .AddSystem(new UserInputsSystem(SimulationState))
             .AddSystem(new WalkingSystem(SimulationState))
             .AddSystem(new AntLogicSystem(SimulationState))
             .Build();
-        contentProvider = game.Services.GetService<ContentProvider>();
     }
 
     public override void LoadContent() {
@@ -51,7 +66,7 @@ internal class SimulationScreen : GameScreen {
         mainPanel = new Panel();
         desktop.Root = mainPanel;
 
-        mainPauseWindow = new PauseWindow(desktop);
+        mainPauseWindow = new PauseWindow(desktop, this);
         mainPauseWindow.ZIndex = 1;
         mainPanel.AddChild(mainPauseWindow);
 
@@ -97,7 +112,118 @@ internal class SimulationScreen : GameScreen {
         initTestMapAnthill();
         initTestMapGarden();
     }
+
+    [Serializable]
+    public struct SaveFormat {
+        public SimulationState SimulationState;
+        public List<List<object>> Entities;
+    }
+    
+    /// <summary>
+    /// Saves the game state to a file.
+    /// </summary>
+    /// <param name="saveName"></param>
+    public void SaveWorld(string saveName) {
+        // Init property, field and method info
+        var pi_entityManager = typeof(World).GetProperty("EntityManager", BindingFlags.Instance | BindingFlags.NonPublic);
+        var pi_componentManager = typeof(Entity).GetField("_componentManager", BindingFlags.Instance | BindingFlags.NonPublic);
+        var fi_componentTypes = typeof(ComponentManager).GetField("_componentTypes", BindingFlags.Instance | BindingFlags.NonPublic);
+        var mi_getMapper = typeof(ComponentManager).GetMethods().First(x => x.Name == "GetMapper" && !x.IsGenericMethod);
         
+        var filePath = Path.Combine(SaveDataDir, $"{saveName}.json");
+        using var sf = File.CreateText(filePath);
+        
+        var output = new SaveFormat { SimulationState = this.SimulationState, Entities = new List<List<object>>() }; 
+        
+        // Get our World's EntityManager
+        var entityManager = pi_entityManager.GetValue(world) as EntityManager;
+        
+        foreach(var entityId in entityManager.Entities) {
+            var entity = world.GetEntity(entityId);
+            
+            if(entity == null) continue;
+            
+            var componentsList = new List<object>();    // List of components we're going to serialize
+            
+            var componentManager = pi_componentManager.GetValue(entity) as ComponentManager;
+            var componentTypes = fi_componentTypes.GetValue(componentManager) as Dictionary<Type, int>;
+
+            int c = 0;
+            foreach(var id in componentTypes.Values) {
+                if((entity.ComponentBits.Data >> c & 1) == 0) continue;
+                
+                // Get a ComponentMapper<T> where T is the type of the component
+                dynamic mapper = mi_getMapper.Invoke(componentManager, new object[] { id }); 
+                componentsList.Add(mapper.Components[entity.Id]);
+                
+                c++;
+            }
+            output.Entities.Add(componentsList);
+        }
+        
+        var serialized = JsonConvert.SerializeObject(output, Formatting.Indented , new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+        sf.Write(serialized);
+        lastSaveFileName = saveName;
+    }
+
+    /// <summary>
+    /// Save the game state to the latest used save file.
+    /// If the current game hasn't been saved yet, cancels the operation and returns false.                                                         
+    /// </summary>
+    /// <returns>False if there was no last save file to write to</returns>
+    public bool QuickSave() {
+        if(String.IsNullOrEmpty(lastSaveFileName)) return false;
+        SaveWorld(lastSaveFileName);
+        return true;
+    }
+
+    /// <summary>
+    /// Loads a game state from the specified file.
+    /// </summary>
+    /// <param name="saveName"></param>
+    /// <exception cref="FileNotFoundException"></exception>
+    public void LoadWorld(string saveName) {
+        var mi_attach = typeof(Entity).GetMethods().First(x => x.Name == "Attach" && x.IsGenericMethod);
+        
+        var filePath = Path.Combine(SaveDataDir, $"{saveName}.json");
+        if(!File.Exists(filePath)) throw new FileNotFoundException("The save file could not be found.");
+        
+        var s = File.ReadAllText(filePath);
+        SaveFormat save = JsonConvert.DeserializeObject<SaveFormat>(s, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
+
+        // Load the simulation state
+        SimulationState = save.SimulationState;
+        
+        // Reset the world and its systems
+        initWorld();
+
+        // Load the entities
+        foreach(var entity in save.Entities) {
+            var e = world.CreateEntity();
+            foreach(var component in entity) {
+                // Call implicit generic version of the method because it would be attached as an object otherwise
+                mi_attach.MakeGenericMethod(component.GetType()).Invoke(e, new object[] { component });   
+                
+                // Load the sprite if it's a SpriteRenderable
+                if(component is Renderable { RenderItem: SpriteRenderable sr }) {
+                    sr.Texture = contentProvider.Get<Texture2D>(sr.TexturePath.Replace("\\", "/"));
+                }
+            }
+        }
+        
+        lastSaveFileName = saveName;
+        antpire.LoadSimulationScreen();
+    }
+    
+    /// <summary>
+    /// Gets the all save files' FileInfos
+    /// </summary>
+    /// <returns></returns>
+    public FileInfo[] GetSaveNames() {
+        var files = Directory.GetFiles(SaveDataDir, "*.json").Select(x => new FileInfo(x));
+        return files.OrderByDescending(x => x.LastWriteTime).ToArray();
+    }
+    
     // Initialize the garden part of the test map with every kind of entity
     private void initTestMapAnthill() {
         var r = new Random();

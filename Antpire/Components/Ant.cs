@@ -1,5 +1,6 @@
 ﻿namespace Antpire.Components; 
 
+[Serializable]
 internal class Ant {
     public enum State {
         Idle,

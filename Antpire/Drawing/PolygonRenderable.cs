@@ -2,10 +2,13 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Shapes;
+using Newtonsoft.Json;
 
 namespace Antpire.Drawing; 
 
+[Serializable]
 internal class PolygonRenderable : IRenderable {
+    [JsonProperty]
     private Polygon polygon;
 
     public Polygon Polygon { 

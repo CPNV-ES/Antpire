@@ -5,6 +5,7 @@ using MonoGame.Extended;
 
 namespace Antpire.Drawing; 
 
+[Serializable]
 internal class AnthillInteriorGridmapRenderable : IRenderable {
     public AnthillInteriorGridMap GridMap { get; set; }
 

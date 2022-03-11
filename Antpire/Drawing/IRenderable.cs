@@ -2,9 +2,8 @@
 using MonoGame.Extended;
 using Antpire.Drawing;
 
-namespace Antpire.Drawing; 
-
-internal interface IRenderable {
+namespace Antpire.Drawing;
+public interface IRenderable {
     public Point BoundingBox { get; }
     public int Layer { get; init; }
     

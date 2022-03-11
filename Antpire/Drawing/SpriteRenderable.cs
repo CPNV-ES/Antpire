@@ -1,33 +1,41 @@
-﻿using LilyPath;
+﻿using System.Runtime.Serialization;
+using LilyPath;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 
 namespace Antpire.Drawing; 
 
-internal class SpriteRenderable : IRenderable{
-    private Texture2D texture;
-    private float scale;
-    private int longestSide;
+[Serializable]
+internal class SpriteRenderable : IRenderable {
+    [IgnoreDataMember]
+    public Texture2D Texture;
+    
+    public string TexturePath { get; private set; }
+    public float Scale;
+    public int LongestSide;
 
     public float RotationOffset = 0.0f;
     
-    public SpriteRenderable(float scale, Texture2D texture, float rotationOffset = 0.0f, int layer = 0) {
-        this.texture = texture;
-        this.scale = scale;
+    public SpriteRenderable(float scale, Texture2D texture, float rotationOffset = 0.0f, int layer = 0, string texturePath = "") {
+        this.Texture = texture;
+        this.Scale = scale;
         this.Layer = layer;
+        this.TexturePath = texture?.Name ?? texturePath;
         RotationOffset = rotationOffset;
-        this.longestSide = (int)MathF.Max(texture.Height * scale, texture.Width * scale);
+        this.LongestSide = texture == null ? 0 : (int)MathF.Max(texture.Height * scale, texture.Width * scale);
     }
     
-    public Point BoundingBox => new(longestSide, longestSide);
+    public Point BoundingBox => new(LongestSide, LongestSide);
     public int Layer { get; init; }
     
     public void Render(DrawBatch drawBatch, Transform2 trans) {
+        if(Texture == null) return;
+        
         Vector2 location = trans.Position;
-        Rectangle sourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
-        Vector2 origin = new Vector2(texture.Width / 2.0f, texture.Height / 2.0f);
+        Rectangle sourceRectangle = new Rectangle(0, 0, Texture.Width, Texture.Height);
+        Vector2 origin = new Vector2(Texture.Width / 2.0f, Texture.Height / 2.0f);
         float angle = trans.Rotation;
 
-        drawBatch.GetSpriteDrawBatch((DrawBatch.Layer)Layer).Draw(texture, location + BoundingBox.ToVector2()/2, sourceRectangle, Color.White, angle + RotationOffset, origin, scale, SpriteEffects.None, 1);
+        drawBatch.GetSpriteDrawBatch((DrawBatch.Layer)Layer).Draw(Texture, location + BoundingBox.ToVector2()/2, sourceRectangle, Color.White, angle + RotationOffset, origin, Scale, SpriteEffects.None, 1);
     }
 }
