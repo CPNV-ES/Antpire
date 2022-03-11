@@ -6,6 +6,7 @@ global using System.Collections.Generic;
 global using Microsoft.Xna.Framework;
 using System.IO;
 using Antpire.Utils;
+using CommandLine;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Screens.Transitions;
 using MoreLinq;
@@ -48,42 +49,36 @@ public class Antpire : Game {
         }
     }
 
+    public class Options {
+        [Option("loadSaveFile", Required = false)]
+        public string LoadSaveFile { get; set; } 
+        
+        [Option("testProcGen", Required = false)]
+        public bool TestProcGen { get; set; }
+    }
+
     protected override void Initialize() {
         base.Initialize();
-
+        
         graphics.PreferredBackBufferWidth = 1280;
         graphics.PreferredBackBufferHeight = 720;
         graphics.ApplyChanges();
         
         simulationScreen = new Screens.SimulationScreen(this);
         mainMenuScreen = new Screens.MainMenuScreen(this, simulationScreen);
-
-        var args = Environment.GetCommandLineArgs()[1..];
-        if(args.Contains("--start=test_anthill")) {
-            LoadSimulationScreen();
-            simulationScreen.LoadContent();
-            simulationScreen.InitTestMaps();
-            simulationScreen.SimulationState.CurrentWorldSpace = WorldSpace.Anthill;
-        }
-        if (args.Contains("--start=test_garden")) {
-            LoadSimulationScreen();
-            simulationScreen.LoadContent();
-            simulationScreen.InitTestMaps();
-            simulationScreen.SimulationState.CurrentWorldSpace = WorldSpace.Garden;
-        }
-        if (args.Contains("--start=test_proc_gen")) {
-            LoadSimulationScreen();
-            simulationScreen.InitProcGen();
-            simulationScreen.SimulationState.CurrentWorldSpace = WorldSpace.Garden;
-        }
-        if (args.Contains("--start=load")) {
-            LoadSimulationScreen();
-            var saveFile = args.Split(" ").Last().Last();   // lulwut
-            simulationScreen.LoadWorld(saveFile);
-        }
-        else {
-            screenManager.LoadScreen(mainMenuScreen);
-        }
+        
+        Parser.Default.ParseArguments<Options>(Environment.GetCommandLineArgs()[1..])
+            .WithParsed<Options>(options => {
+                if (!String.IsNullOrEmpty(options.LoadSaveFile)) {
+                    simulationScreen.LoadWorld(options.LoadSaveFile);
+                    LoadSimulationScreen();
+                }
+                else if (options.TestProcGen) {
+                    simulationScreen.InitProcGen();
+                    simulationScreen.SimulationState.CurrentWorldSpace = WorldSpace.Garden;
+                    LoadSimulationScreen();
+                }
+            });
     }
 
     protected override void LoadContent() {
