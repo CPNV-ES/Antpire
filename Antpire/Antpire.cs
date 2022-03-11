@@ -8,6 +8,7 @@ using System.IO;
 using Antpire.Utils;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Screens.Transitions;
+using MoreLinq;
 
 namespace Antpire;
 public class Antpire : Game {
@@ -74,6 +75,11 @@ public class Antpire : Game {
             LoadSimulationScreen();
             simulationScreen.InitProcGen();
             simulationScreen.SimulationState.CurrentWorldSpace = WorldSpace.Garden;
+        }
+        if (args.Contains("--start=load")) {
+            LoadSimulationScreen();
+            var saveFile = args.Split(" ").Last().Last();   // lulwut
+            simulationScreen.LoadWorld(saveFile);
         }
         else {
             screenManager.LoadScreen(mainMenuScreen);
