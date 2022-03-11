@@ -30,10 +30,12 @@ public class SimulationScreen : GameScreen {
     private Panel mainPanel;
     private ContentProvider contentProvider;
     private string lastSaveFileName;
+    private Antpire antpire;
     
     public SimulationState SimulationState;
-    
-    public SimulationScreen(Game game) : base(game) {
+
+    public SimulationScreen(Antpire game) : base(game) {
+        antpire = game;
         SimulationState = new SimulationState { CurrentWorldSpace = WorldSpace.Garden };
         initWorld();
         contentProvider = game.Services.GetService<ContentProvider>();
@@ -210,6 +212,7 @@ public class SimulationScreen : GameScreen {
         }
         
         lastSaveFileName = saveName;
+        antpire.LoadSimulationScreen();
     }
     
     /// <summary>

@@ -59,19 +59,19 @@ public class Antpire : Game {
 
         var args = Environment.GetCommandLineArgs()[1..];
         if(args.Contains("--start=test_anthill")) {
-            loadSimulationScreen();
+            LoadSimulationScreen();
             simulationScreen.LoadContent();
             simulationScreen.InitTestMaps();
             simulationScreen.SimulationState.CurrentWorldSpace = WorldSpace.Anthill;
         }
         if (args.Contains("--start=test_garden")) {
-            loadSimulationScreen();
+            LoadSimulationScreen();
             simulationScreen.LoadContent();
             simulationScreen.InitTestMaps();
             simulationScreen.SimulationState.CurrentWorldSpace = WorldSpace.Garden;
         }
         if (args.Contains("--start=test_proc_gen")) {
-            loadSimulationScreen();
+            LoadSimulationScreen();
             simulationScreen.InitProcGen();
             simulationScreen.SimulationState.CurrentWorldSpace = WorldSpace.Garden;
         }
@@ -105,16 +105,16 @@ public class Antpire : Game {
         base.Draw(gameTime);
     }
 
-    private void loadSimulationScreen() {
+    public void LoadSimulationScreen() {
         screenManager.LoadScreen(simulationScreen, new FadeTransition(GraphicsDevice, Color.Black));
     }
-
+    
     public void GoToMainMenu() {
         screenManager.LoadScreen(mainMenuScreen, new FadeTransition(GraphicsDevice, Color.Black, .33f));
     }
 
     public void StartNewGame(GardenGenerator.GardenGenerationOptions gardenGenerationOptions) {
-        loadSimulationScreen();
+        LoadSimulationScreen();
         simulationScreen.InitProcGen();
         simulationScreen.SimulationState.CurrentWorldSpace = WorldSpace.Garden;
     }
