@@ -29,6 +29,7 @@ public class SimulationScreen : GameScreen {
     private SimulationUI ui;
     private Panel mainPanel;
     private ContentProvider contentProvider;
+    private string lastSaveFileName;
     
     public SimulationState SimulationState;
     
@@ -160,6 +161,18 @@ public class SimulationScreen : GameScreen {
         
         var serialized = JsonConvert.SerializeObject(output, Formatting.Indented , new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
         sf.Write(serialized);
+        lastSaveFileName = saveName;
+    }
+
+    /// <summary>
+    /// Save the game state to the latest used save file.
+    /// If the current game hasn't been saved yet, cancels the operation and returns false.                                                         
+    /// </summary>
+    /// <returns>False if there was no last save file to write to</returns>
+    public bool QuickSave() {
+        if(String.IsNullOrEmpty(lastSaveFileName)) return false;
+        SaveWorld(lastSaveFileName);
+        return true;
     }
 
     /// <summary>
@@ -195,6 +208,8 @@ public class SimulationScreen : GameScreen {
                 }
             }
         }
+        
+        lastSaveFileName = saveName;
     }
     
     /// <summary>

@@ -29,7 +29,11 @@ public partial class PauseWindow {
 		};
 
 		Save.Click += (s, a) => {
-			simulationScreen.SaveWorld("save1");
+			var success = simulationScreen.QuickSave();
+			if(!success) {
+				var saveAsWindow = new GameSaveWindow(simulationScreen);
+				desktop.Widgets.Add(saveAsWindow);
+			}
 		};
 
 		Load.Click += (s, a) => {
@@ -38,11 +42,21 @@ public partial class PauseWindow {
 		};
 
 		SaveAs.Click += (s, a) => {
-			var test = new GameSaveWindow(simulationScreen);
-			desktop.Widgets.Add(test);
+			var saveAsWindow = new GameSaveWindow(simulationScreen);
+			desktop.Widgets.Add(saveAsWindow);
 		};
 
-		SaveAndQuit.Click += (s, a) => goToMainMenu();		
+		SaveAndQuit.Click += (s, a) => {
+			var success = simulationScreen.QuickSave();
+			if(!success) {
+				var saveAsWindow = new GameSaveWindow(simulationScreen);
+				desktop.Widgets.Add(saveAsWindow);
+				saveAsWindow.Closed += (sender, args) => goToMainMenu();
+			}
+			else {
+				goToMainMenu();
+			}
+		};		
 
 		Quit.Click += (s, a) => goToMainMenu();
 	}
