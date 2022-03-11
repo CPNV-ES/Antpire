@@ -67,18 +67,24 @@ public class Antpire : Game {
         simulationScreen = new Screens.SimulationScreen(this);
         mainMenuScreen = new Screens.MainMenuScreen(this, simulationScreen);
         
+        var hasLoadedScreen = false;
         Parser.Default.ParseArguments<Options>(Environment.GetCommandLineArgs()[1..])
             .WithParsed<Options>(options => {
                 if (!String.IsNullOrEmpty(options.LoadSaveFile)) {
                     simulationScreen.LoadWorld(options.LoadSaveFile);
                     LoadSimulationScreen();
+                    hasLoadedScreen = true;
                 }
                 else if (options.TestProcGen) {
                     simulationScreen.InitProcGen();
                     simulationScreen.SimulationState.CurrentWorldSpace = WorldSpace.Garden;
                     LoadSimulationScreen();
+                    hasLoadedScreen = true;
                 }
             });
+        
+        if(!hasLoadedScreen)
+            screenManager.LoadScreen(mainMenuScreen);
     }
 
     protected override void LoadContent() {
