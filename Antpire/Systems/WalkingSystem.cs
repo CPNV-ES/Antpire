@@ -42,7 +42,38 @@ internal class WalkingSystem : EntityUpdateSystem
         if(newPosition.X < 0 || newPosition.X > gardenWidth || newPosition.Y < 0 || newPosition.Y > gardenHeight) {
             newPosition = MoveAround(entity, insect);
         }
+
+        // If the entity collides an hitbox, it turns around
+        float circle = entity.Scale * MathF.PI;
+
+        //Get hitboxes from the collision system
+        
+        List<Hitbox> hitboxes = CollisionSystem.hitboxes;
+        foreach(Hitbox hitbox in hitboxes) {
+
+            float dx = newPosition.X - hitbox.position.X;
+            float dy = newPosition.Y - hitbox.position.Y;
             
+            var distance = Math.Sqrt(dx * dx + dy * dy);
+
+            if(distance < circle + hitbox.hitbox) {
+                newPosition = MoveAround(entity, insect);
+            }
+        }
+
+        /*
+        var circle1 = { radius: 20, x: 5, y: 5};
+        var circle2 = { radius: 12, x: 10, y: 5 };
+
+        var dx = circle1.x - circle2.x;
+        var dy = circle1.y - circle2.y;
+        var distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance<circle1.radius + circle2.radius) {
+            // collision détectée !
+        }*/
+
+
         entity.Position = newPosition;
     }
 
