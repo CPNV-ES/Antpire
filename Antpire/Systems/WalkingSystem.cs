@@ -38,17 +38,21 @@ internal class WalkingSystem : EntityUpdateSystem
     private void walk(SimulationPosition entity, Insect insect, float deltaTime) {
         var newPosition = entity.Position + Vector2.Multiply(insect.Velocity, 140.0f * deltaTime * simState.TimeScale);
             
-        // TODO: Clean this code up, maybe shouldn't be in this system
         // If trying to move out of the garden's bounds, turn around
         if(newPosition.X < 0 || newPosition.X > gardenWidth || newPosition.Y < 0 || newPosition.Y > gardenHeight) {
-            var rot = entity.Rotation + MathF.PI;   // 180 degrees turn
-            var vec = new Vector2(MathF.Cos(rot), MathF.Sin(rot));
-            var newTarget = entity.Position + vec*100;
-            insect.Destination = newTarget;
-            entity.Rotation = rot;
-            newPosition = entity.Position + Vector2.Multiply(insect.Velocity, 2f);
+            newPosition = MoveAround(entity, insect);
         }
             
         entity.Position = newPosition;
+    }
+
+    // [DHI] TODO: Clean this code up, maybe shouldn't be in this system
+    private Vector2 MoveAround(SimulationPosition position, Insect insect) {
+        var rot = position.Rotation + MathF.PI;   // 180 degrees turn
+        var vec = new Vector2(MathF.Cos(rot), MathF.Sin(rot));
+        var newTarget = position.Position + vec * 100;
+        insect.Destination = newTarget;
+        position.Rotation = rot;
+        return position.Position + Vector2.Multiply(insect.Velocity, 2f);
     }
 }
