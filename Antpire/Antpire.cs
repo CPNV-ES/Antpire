@@ -4,7 +4,7 @@ global using System.Linq;
 global using System.Threading.Tasks;
 global using System.Collections.Generic;
 global using Microsoft.Xna.Framework;
-
+using System.IO;
 using Antpire.Utils;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Screens.Transitions;
@@ -15,8 +15,14 @@ public class Antpire : Game {
     private readonly ScreenManager screenManager;
     private Screens.SimulationScreen simulationScreen;
     private Screens.MainMenuScreen mainMenuScreen;
+    
+    public static string DataDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Antpire");
+    public static string SaveDataDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Antpire/SaveData");
 
     public Antpire() {
+        Directory.CreateDirectory(DataDir);
+        Directory.CreateDirectory(SaveDataDir);
+        
         Window.AllowUserResizing = true;
         graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
@@ -49,7 +55,7 @@ public class Antpire : Game {
         graphics.ApplyChanges();
         
         simulationScreen = new Screens.SimulationScreen(this);
-        mainMenuScreen = new Screens.MainMenuScreen(this);
+        mainMenuScreen = new Screens.MainMenuScreen(this, simulationScreen);
 
         var args = Environment.GetCommandLineArgs()[1..];
         if(args.Contains("--start=test_anthill")) {

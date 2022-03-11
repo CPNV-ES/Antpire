@@ -33,13 +33,12 @@ public partial class PauseWindow {
 		};
 
 		Load.Click += (s, a) => {
-			simulationScreen.LoadWorld("save1");
-			//var test = new MainMenuScreenGameLoadWindow();
-			//desktop.Widgets.Add(test);
+			var loadWindow = new MainMenuScreenGameLoadWindow(simulationScreen);
+			desktop.Widgets.Add(loadWindow);
 		};
 
 		SaveAs.Click += (s, a) => {
-			var test = new GameSaveWindow();
+			var test = new GameSaveWindow(simulationScreen);
 			desktop.Widgets.Add(test);
 		};
 

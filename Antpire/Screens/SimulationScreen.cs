@@ -29,13 +29,10 @@ public class SimulationScreen : GameScreen {
     private SimulationUI ui;
     private Panel mainPanel;
     private ContentProvider contentProvider;
-    private string DataDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Antpire");
     
     public SimulationState SimulationState;
     
     public SimulationScreen(Game game) : base(game) {
-        Directory.CreateDirectory(DataDir);
-        
         SimulationState = new SimulationState { CurrentWorldSpace = WorldSpace.Garden };
         initWorld();
         contentProvider = game.Services.GetService<ContentProvider>();
@@ -130,7 +127,7 @@ public class SimulationScreen : GameScreen {
         var fi_componentTypes = typeof(ComponentManager).GetField("_componentTypes", BindingFlags.Instance | BindingFlags.NonPublic);
         var mi_getMapper = typeof(ComponentManager).GetMethods().First(x => x.Name == "GetMapper" && !x.IsGenericMethod);
         
-        var filePath = Path.Combine(DataDir, $"{saveName}.json");
+        var filePath = Path.Combine(SaveDataDir, $"{saveName}.json");
         using var sf = File.CreateText(filePath);
         
         var output = new SaveFormat { SimulationState = this.SimulationState, Entities = new List<List<object>>() }; 
@@ -173,7 +170,7 @@ public class SimulationScreen : GameScreen {
     public void LoadWorld(string saveName) {
         var mi_attach = typeof(Entity).GetMethods().First(x => x.Name == "Attach" && x.IsGenericMethod);
         
-        var filePath = Path.Combine(DataDir, $"{saveName}.json");
+        var filePath = Path.Combine(SaveDataDir, $"{saveName}.json");
         if(!File.Exists(filePath)) throw new FileNotFoundException("The save file could not be found.");
         
         var s = File.ReadAllText(filePath);
@@ -198,6 +195,15 @@ public class SimulationScreen : GameScreen {
                 }
             }
         }
+    }
+    
+    /// <summary>
+    /// Gets the all save files' FileInfos
+    /// </summary>
+    /// <returns></returns>
+    public FileInfo[] GetSaveNames() {
+        var files = Directory.GetFiles(SaveDataDir, "*.json").Select(x => new FileInfo(x));
+        return files.OrderByDescending(x => x.LastWriteTime).ToArray();
     }
     
     // Initialize the garden part of the test map with every kind of entity

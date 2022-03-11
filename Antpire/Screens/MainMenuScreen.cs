@@ -8,9 +8,11 @@ namespace Antpire.Screens;
 internal class MainMenuScreen : GameScreen {
     private Desktop desktop;
     private MainMenuScreenMainMenuWindow mainWindow;
+    private SimulationScreen simulationScreen;
 
-    public MainMenuScreen(Game game) : base(game) {
+    public MainMenuScreen(Game game, SimulationScreen simulationScreen) : base(game) {
         MyraEnvironment.Game = game;
+        this.simulationScreen = simulationScreen;
     }
 
     public override void LoadContent() {
@@ -21,7 +23,7 @@ internal class MainMenuScreen : GameScreen {
     }
 
     private void CreateMainWindow() {
-        mainWindow = new MainMenuScreenMainMenuWindow(desktop);
+        mainWindow = new MainMenuScreenMainMenuWindow(desktop, simulationScreen);
         mainWindow.Closed += (sender, args) => {
             CreateMainWindow();
         };
