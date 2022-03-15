@@ -20,6 +20,8 @@ public partial class MainMenuScreenGameConfigWindow {
 	}
 	
 	public struct ConfigData {
+		public ConfigData() { }
+		
         public int ChunkSize = 768;
         public int Width = 3;
         public int Height = 3;
