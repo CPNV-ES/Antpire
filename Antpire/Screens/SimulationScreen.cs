@@ -102,9 +102,10 @@ public class SimulationScreen : GameScreen {
         world.Update(gameTime);
     }
 
-    public void InitProcGen() {
-        var gg = new GardenGenerator(Game, SimulationState.GardenGenerationOptions); 
-
+    public void InitProcGen(GardenGenerator.GardenGenerationOptions options = default) {
+        SimulationState.GardenGenerationOptions = options;
+        initWorld();
+        var gg = new GardenGenerator(Game, SimulationState.GardenGenerationOptions);
         gg.GenerateGarden(world);
     }
 
@@ -222,6 +223,12 @@ public class SimulationScreen : GameScreen {
     public FileInfo[] GetSaveNames() {
         var files = Directory.GetFiles(SaveDataDir, "*.json").Select(x => new FileInfo(x));
         return files.OrderByDescending(x => x.LastWriteTime).ToArray();
+    }
+
+    public void InitializeNewGame(GardenGenerator.GardenGenerationOptions options) {
+        antpire.LoadSimulationScreen();
+        InitProcGen(options);
+        SimulationState.CurrentWorldSpace = WorldSpace.Garden;
     }
     
     // Initialize the garden part of the test map with every kind of entity

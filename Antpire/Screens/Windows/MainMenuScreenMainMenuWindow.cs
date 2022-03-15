@@ -14,7 +14,7 @@ public partial class MainMenuScreenMainMenuWindow {
 		this.simulationScreen = simulationScreen;
 
 		NewGameBtn.Click += (s, a) => {
-			var test = new MainMenuScreenGameConfigWindow();
+			var test = new MainMenuScreenGameConfigWindow(simulationScreen);
 			desktop.Widgets.Add(test);
 		};
             
