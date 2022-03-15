@@ -1,4 +1,5 @@
-﻿using Antpire.Components;
+﻿using System.Security.Cryptography;
+using Antpire.Components;
 using Antpire.Drawing;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -10,7 +11,8 @@ namespace Antpire.Utils;
 public class GardenGenerator {
     public struct GardenGenerationOptions {
         public GardenGenerationOptions() { }
-
+        
+        public string Seed = new Guid().ToString();
         public int ChunkSize = 768;
         public int Width = 3;
         public int Height = 3;
@@ -30,7 +32,7 @@ public class GardenGenerator {
     public GardenGenerationOptions GenerationOptions { get; init; }
     public Game Game { get; init; }
 
-    private readonly Random random = new Random();
+    private Random random;
     private readonly Antpire.ContentProvider contentProvider;
     
     public GardenGenerator(Game game, GardenGenerationOptions options) {
@@ -40,6 +42,8 @@ public class GardenGenerator {
     }
     
     public void GenerateGarden(World world) {
+        random = new Random(IntSeedFromString(GenerationOptions.Seed));
+        
         PlaceRiver(world);
         PlaceAnthills(world);
         PlaceAphids(world);
@@ -257,5 +261,10 @@ public class GardenGenerator {
                });
             }
         }
+    }
+    
+    private static int IntSeedFromString(string seed) {
+        using var algo = SHA1.Create();
+        return BitConverter.ToInt32(algo.ComputeHash(Encoding.UTF8.GetBytes(seed)));
     }
 }
