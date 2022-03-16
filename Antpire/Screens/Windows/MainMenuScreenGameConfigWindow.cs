@@ -19,12 +19,20 @@ public partial class MainMenuScreenGameConfigWindow {
 		public override string ToString() => "Super Anthill";
 	}
 
+	private enum GardenSize {
+		Tiny,
+		Small,
+		Medium,
+		Big,
+		Huge,
+		Gigantic,
+		Colossal,
+	}
+
 	private struct ConfigData {
 		public ConfigData() { }
 
-		public int ChunkSize = 768; 
-		public int Width = 3;
-		public int Height = 3;
+		public GardenSize GardenSize = GardenSize.Medium;
 		public string Seed = getSeed();
         
 		[Category("Obstacles")] public float RocksFrequency = 7.0f;
@@ -37,7 +45,6 @@ public partial class MainMenuScreenGameConfigWindow {
         [Category("Food Resources")] public float BushesFrequency = 10f;
         [Category("Food Resources")] public int MinBushSize = 25;
         [Category("Food Resources")] public int MaxBushSize = 50;
-        [Category("Food Resources")] public float FruitsFrequency = 33f;
         
         [Category("Build Resources")] public float TwigsFrequency = 10f;
         [Category("Build Resources")] public int TwigsMinSize = 10;
@@ -52,9 +59,30 @@ public partial class MainMenuScreenGameConfigWindow {
 		BuildUI();
 
 		propertyGrid.Object = new ConfigData();
-		
+
 		ConfirmGameParamsButton.Click += (o, e) => {
-			simulationScreen.InitializeNewGame(new GardenGenerator.GardenGenerationOptions());
+			var config = (ConfigData)propertyGrid.Object;
+			var chunkCount = getGardenChunkCount(config.GardenSize); 
+			simulationScreen.InitializeNewGame(new GardenGenerator.GardenGenerationOptions {
+				Seed = config.Seed,
+				Height = chunkCount,
+				Width = chunkCount,
+				ChunkSize = 768,
+				RockSize = new Range<int>(config.MinRockSize, config.MaxRockSize),
+				
+			});
 		};
 	}
+
+	private int getGardenChunkCount(GardenSize size) =>
+		size switch {
+			GardenSize.Tiny => 3,
+			GardenSize.Small => 4,
+			GardenSize.Medium => 5,
+			GardenSize.Big => 8,
+			GardenSize.Huge => 10,
+			GardenSize.Gigantic => 12,
+			GardenSize.Colossal => 15,
+			_ => throw new ArgumentOutOfRangeException(nameof(size), size, null)
+		};
 }

@@ -20,6 +20,7 @@ public class GardenGenerator {
         public Range<int> RockSize = new(30, 100);
         public Range<int> RockVertices = new(5, 13);
         public Range<int> TrunksPerChunk = new(1, 1);
+        public Range<int> TrunkSize = new(1, 1);
         public Range<int> TwigsPerChunk = new(1, 1);
         public Range<int> BushesPerChunk = new(1, 1);
         public Range<int> FruitsPerBush = new(1, 3);
