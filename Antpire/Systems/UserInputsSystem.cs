@@ -49,6 +49,30 @@ internal class UserInputsSystem : UpdateSystem {
             simulationState.CurrentCameraState.Position += new Vector2(0, 1) * dt * CAMERA_SPEED * (1 / simulationState.CurrentCameraState.Zoom);
         }
 
+        if(keyboardState.IsKeyDown(Keys.D1)) {
+            simulationState.TimeScale = 1.0f;
+        }
+        
+        if(keyboardState.IsKeyDown(Keys.D2)) {
+            simulationState.TimeScale = 3.0f;
+        }
+        
+        if(keyboardState.IsKeyDown(Keys.D3)) {
+            simulationState.TimeScale = 5.0f;
+        }
+        
+        if(keyboardState.IsKeyDown(Keys.D4)) {
+            simulationState.TimeScale = 10.0f;
+        }
+        
+        if(keyboardState.IsKeyDown(Keys.D5)) {
+            simulationState.TimeScale = 25.0f;
+        }
+        
+        if(keyboardState.IsKeyDown(Keys.D6)) {
+            simulationState.TimeScale = 100.0f;
+        }
+        
         var mouseState = Mouse.GetState();
         if(mouseState.RightButton == ButtonState.Pressed) {
             simulationState.CurrentCameraState.Position += (mouseLastPosition.ToVector2() - mouseState.Position.ToVector2()) * (1 / simulationState.CurrentCameraState.Zoom);
