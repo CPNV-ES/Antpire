@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Shapes;
+using System;
 
 namespace Antpire.Utils;
 
@@ -17,16 +18,18 @@ public class GardenGenerator {
         public Range<int> RocksPerChunk = new(1, 1);
         public Range<int> RockSize = new(30, 100);
         public Range<int> RockVertices = new(5, 13);
-        public Range<int> TrunksPerChunk = new(1, 1);
+        public Range<int> TrunksPerChunk = new(1, 5);
         public Range<int> TwigsPerChunk = new(1, 1);
         public Range<int> BushesPerChunk = new(1, 1);
         public Range<int> FruitsPerBush = new(1, 3);
         public int Anthills = 2;
         public Range<int> AliveAphids = new(1, 1);
         public Range<int> DeadAphids = new(1, 1);
-        public Range<int> WanderingAnts = new(4000, 5000);
-    }    
-    
+        //public Range<int> WanderingAnts = new(10, 10);
+        public Range<int> WanderingAnts = new(10000, 10000);
+    }
+
+
     public GardenGenerationOptions GenerationOptions { get; init; }
     public Game Game { get; init; }
 
@@ -162,15 +165,22 @@ public class GardenGenerator {
             var pos = GetRandomPointInChunk(chunk); 
             var trunk = world.CreateEntity();
             var trunkWidth = random.Next(20, 30);
-            trunk.Attach(new SimulationPosition { Position = new (pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+            var rotation = MathF.PI / 4; //(float)(random.NextDouble() * Math.PI * 2);
+            float trunkHeight = (float)(trunkWidth * (random.NextDouble() * 3 + 2));
+
+            trunk.Attach(new SimulationPosition { Scale = trunkWidth, Position = new (pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
             trunk.Attach(new Renderable {
                 RenderItem = new RectangleRenderable(
-                    size: new(trunkWidth, (float)(trunkWidth * (random.NextDouble()*3+2))), 
-                    rotation: (float)(random.NextDouble()*Math.PI*2), 
+                    size: new(trunkWidth, trunkHeight), 
+                    rotation: rotation, 
                     color: Color.SaddleBrown,
                     thickness: 30.0f
                 )
             });
+
+            Vector2 middlePoint = new Vector2(pos.X + trunkWidth , pos.Y + trunkHeight);
+            trunk.Attach(new Hitbox { position = middlePoint, hitbox = (float)trunkHeight, radius = trunkWidth / 2, rotation = rotation });
+
         }
     }
     
@@ -206,13 +216,14 @@ public class GardenGenerator {
         void createWanderingAnt() {
             var tex = "ant/alivev2";
             var pos = new Vector2(0,0);
-            
+            var scale = 0.25f;
+
             var wanderingAnt = world.CreateEntity();
             wanderingAnt.Attach(new Ant());
             wanderingAnt.Attach(new Insect());
             wanderingAnt.Attach(new SimulationPosition { Position = pos, WorldSpace = WorldSpace.Garden });
             wanderingAnt.Attach(new Renderable {
-                RenderItem = new SpriteRenderable(0.25f, contentProvider.Get<Texture2D>(tex), MathF.PI / 2, (int)DrawBatch.Layer.Insect)
+                RenderItem = new SpriteRenderable(scale, contentProvider.Get<Texture2D>(tex), MathF.PI / 2, (int)DrawBatch.Layer.Insect)
             });
         }
 

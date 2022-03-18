@@ -51,6 +51,9 @@ internal class WalkingSystem : EntityUpdateSystem
         List<Hitbox> hitboxes = CollisionSystem.hitboxes;
         foreach(Hitbox hitbox in hitboxes) {
 
+            //Matrix rot = Matrix.CreateRotationZ(hitbox.rotation);
+            //hitbox.position = Vector2.Transform(hitbox.position, hitbox.rotation);
+
             float dx = newPosition.X - hitbox.position.X;
             float dy = newPosition.Y - hitbox.position.Y;
             
@@ -60,18 +63,6 @@ internal class WalkingSystem : EntityUpdateSystem
                 newPosition = MoveAround(entity, insect);
             }
         }
-
-        /*
-        var circle1 = { radius: 20, x: 5, y: 5};
-        var circle2 = { radius: 12, x: 10, y: 5 };
-
-        var dx = circle1.x - circle2.x;
-        var dy = circle1.y - circle2.y;
-        var distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance<circle1.radius + circle2.radius) {
-            // collision détectée !
-        }*/
 
 
         entity.Position = newPosition;

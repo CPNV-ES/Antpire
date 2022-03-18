@@ -3,5 +3,6 @@
 internal class Hitbox {
     public float hitbox;
     public float radius;
-    public Point position;
+    public Vector2 position;
+    internal float rotation;
 }
