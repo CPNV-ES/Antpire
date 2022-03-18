@@ -9,11 +9,18 @@ internal class ShapeUtils {
     /// <returns></returns>
     public static Vector2[] GenerateConvexPolygon(int verticesCount, float radius) {
         var r = new Random();
-        return Enumerable.Repeat(0, verticesCount)
+        var vertices = Enumerable.Repeat(0, verticesCount)
             .Select(i => r.NextDouble()*Math.PI*2)
             .OrderBy(i => i)
             .Select(x => new Vector2((float)Math.Sin(x)*radius, (float)Math.Cos(x)*radius))
             .ToArray();
+
+        var minX = vertices.Min(x => x.X);
+        var minY = vertices.Min(x => x.Y);
+        
+        // Move to positive quadrant
+        var x = vertices.Select(x => new Vector2(x.X - minX, x.Y - minY)).ToArray();
+        return x;
     }
 
     /// <summary>
