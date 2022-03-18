@@ -149,14 +149,17 @@ public class GardenGenerator {
         for(var i = 0; i < random.Next(GenerationOptions.RocksPerChunk); i++) {
             var pos = GetRandomPointInChunk(chunk); 
             var rock = world.CreateEntity();
-            rock.Attach(new SimulationPosition { Position = new (pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+            var rr = new PolygonRenderable {
+                Color = Color.DarkGray,
+                Polygon = new Polygon(ShapeUtils.GenerateConvexPolygon(random.Next(GenerationOptions.RockVertices), random.Next(GenerationOptions.RockSize))),
+                Thickness = 5.0f
+            };
+            
+            rock.Attach(new SimulationPosition { Position = pos, WorldSpace = WorldSpace.Garden });
             rock.Attach(new Renderable {
-                RenderItem = new PolygonRenderable {
-                    Color = Color.DarkGray,
-                    Polygon = new Polygon(ShapeUtils.GenerateConvexPolygon(random.Next(GenerationOptions.RockVertices), random.Next(GenerationOptions.RockSize))),
-                    Thickness = 5.0f
-                }
+                RenderItem = rr 
             });
+            rock.Attach(new Hitbox { position = pos, polygon = rr.Polygon });
         }
     }
     
@@ -164,23 +167,20 @@ public class GardenGenerator {
         for(var i = 0; i < random.Next(GenerationOptions.TrunksPerChunk); i++) {
             var pos = GetRandomPointInChunk(chunk); 
             var trunk = world.CreateEntity();
-            var trunkWidth = random.Next(20, 30);
-            var rotation = MathF.PI / 4; //(float)(random.NextDouble() * Math.PI * 2);
+            var trunkWidth = random.Next(70, 160);
+            var rotation = (float)(random.NextDouble() * Math.PI * 2);
             float trunkHeight = (float)(trunkWidth * (random.NextDouble() * 3 + 2));
-
-            trunk.Attach(new SimulationPosition { Scale = trunkWidth, Position = new (pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+            var rr = new RectangleRenderable(
+                size: new(trunkWidth, trunkHeight),
+                rotation: rotation,
+                color: Color.SaddleBrown,
+                thickness: 30.0f
+            );
+            
+            trunk.Attach(new SimulationPosition { Scale = 1, Position = new (pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
             trunk.Attach(new Renderable {
-                RenderItem = new RectangleRenderable(
-                    size: new(trunkWidth, trunkHeight), 
-                    rotation: rotation, 
-                    color: Color.SaddleBrown,
-                    thickness: 30.0f
-                )
+                RenderItem = rr
             });
-
-            Vector2 middlePoint = new Vector2(pos.X + trunkWidth , pos.Y + trunkHeight);
-            trunk.Attach(new Hitbox { position = middlePoint, hitbox = (float)trunkHeight, radius = trunkWidth / 2, rotation = rotation });
-
         }
     }
     

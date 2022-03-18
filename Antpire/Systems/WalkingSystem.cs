@@ -2,6 +2,7 @@
 using MonoGame.Extended.Entities.Systems;
 using Antpire.Components;
 using Antpire.Screens;
+using MonoGame.Extended;
 
 namespace Antpire.Systems; 
 
@@ -40,27 +41,17 @@ internal class WalkingSystem : EntityUpdateSystem
             
         // If trying to move out of the garden's bounds, turn around
         if(newPosition.X < 0 || newPosition.X > gardenWidth || newPosition.Y < 0 || newPosition.Y > gardenHeight) {
-            newPosition = MoveAround(entity, insect);
+            entity.Position = MoveAround(entity, insect);
+            return;
         }
 
         // If the entity collides an hitbox, it turns around
         float circle = entity.Scale * MathF.PI;
-
-        //Get hitboxes from the collision system
-        
         List<Hitbox> hitboxes = CollisionSystem.hitboxes;
         foreach(Hitbox hitbox in hitboxes) {
-
-            //Matrix rot = Matrix.CreateRotationZ(hitbox.rotation);
-            //hitbox.position = Vector2.Transform(hitbox.position, hitbox.rotation);
-
-            float dx = newPosition.X - hitbox.position.X;
-            float dy = newPosition.Y - hitbox.position.Y;
-            
-            var distance = Math.Sqrt(dx * dx + dy * dy);
-
-            if(distance < circle + hitbox.hitbox) {
-                newPosition = MoveAround(entity, insect);
+            if(hitbox.polygon.Contains(newPosition)) {
+                entity.Position = MoveAround(entity, insect);
+                return;
             }
         }
 
