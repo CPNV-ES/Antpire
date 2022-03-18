@@ -41,7 +41,7 @@ internal class WalkingSystem : EntityUpdateSystem
             
         // If trying to move out of the garden's bounds, turn around
         if(newPosition.X < 0 || newPosition.X > gardenWidth || newPosition.Y < 0 || newPosition.Y > gardenHeight) {
-            entity.Position = MoveAround(entity, insect);
+            entity.Position = TurnAround(entity, insect);
             return;
         }
 
@@ -50,7 +50,7 @@ internal class WalkingSystem : EntityUpdateSystem
         List<Hitbox> hitboxes = CollisionSystem.hitboxes;
         foreach(Hitbox hitbox in hitboxes) {
             if(hitbox.polygon.Contains(newPosition)) {
-                entity.Position = MoveAround(entity, insect);
+                entity.Position = TurnAround(entity, insect);
                 return;
             }
         }
@@ -60,7 +60,7 @@ internal class WalkingSystem : EntityUpdateSystem
     }
 
     // [DHI] TODO: Clean this code up, maybe shouldn't be in this system
-    private Vector2 MoveAround(SimulationPosition position, Insect insect) {
+    private Vector2 TurnAround(SimulationPosition position, Insect insect) {
         var rot = position.Rotation + MathF.PI;   // 180 degrees turn
         var vec = new Vector2(MathF.Cos(rot), MathF.Sin(rot));
         var newTarget = position.Position + vec * 100;
