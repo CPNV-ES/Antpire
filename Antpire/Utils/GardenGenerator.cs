@@ -9,22 +9,40 @@ using MonoGame.Extended.Shapes;
 namespace Antpire.Utils;
 
 public class GardenGenerator {
+    public struct AnthillOptions {
+		public int Scouts = 8; 
+		public int Soldiers = 4; 
+		public int Workers = 16;  
+		public int Farmers = 16;
+    }
+
     public struct GardenGenerationOptions {
+        
         public GardenGenerationOptions() { }
         
         public string Seed = new Guid().ToString();
         public int ChunkSize = 768;
         public int Width = 3;
         public int Height = 3;
+        
         public Range<int> RocksPerChunk = new(1, 1);
         public Range<int> RockSize = new(30, 100);
         public Range<int> RockVertices = new(5, 13);
+        
         public Range<int> TrunksPerChunk = new(1, 1);
         public Range<int> TrunkSize = new(1, 1);
+        
         public Range<int> TwigsPerChunk = new(1, 1);
+        public Range<int> TwigSize = new(1, 1);
+        
         public Range<int> BushesPerChunk = new(1, 1);
-        public Range<int> FruitsPerBush = new(1, 3);
-        public int Anthills = 2;
+        public Range<int> BushSize = new(7, 13);
+        public Range<int> FruitsPerLeaf = new(1, 3);
+        
+        public List<AnthillOptions> Anthills = new List<AnthillOptions> {
+            new AnthillOptions(), new AnthillOptions(),
+        };
+        
         public Range<int> AliveAphids = new(1, 1);
         public Range<int> DeadAphids = new(1, 1);
         public Range<int> WanderingAnts = new(4000, 5000);
@@ -48,7 +66,7 @@ public class GardenGenerator {
         PlaceRiver(world);
         PlaceAnthills(world);
         PlaceAphids(world);
-        PlaceWanderingAnts(world);
+        //PlaceWanderingAnts(world, new(0,0), random.Next(GenerationOptions.WanderingAnts));
 
         for(var y = 0; y < GenerationOptions.Height; y++) {
             for(var x = 0; x < GenerationOptions.Width; x++) {
@@ -113,8 +131,8 @@ public class GardenGenerator {
         
         // TODO: This could lead to infinite loop?
         do {
-            riverHeading += random.NextDouble(-Math.PI/4, Math.PI/4);
-            currentPoint += new Vector2(256).Rotate((float)riverHeading);
+            riverHeading += random.NextDouble(-Math.PI/2, Math.PI/2);
+            currentPoint += new Vector2(1024).Rotate((float)riverHeading);
             segments.Add(currentPoint);
         } while(!IsPointOutsideBoundaries(currentPoint.ToPoint()));
         
@@ -125,27 +143,35 @@ public class GardenGenerator {
     }
 
     private void PlaceAnthills(World world) {
-        var maxAnthills = (GenerationOptions.Width * 2 + GenerationOptions.Height * 2 - 4);
-        var anthillsToGenerate = GenerationOptions.Anthills > maxAnthills ? maxAnthills : GenerationOptions.Anthills;
-        
-       var inhabitedChunks = new List<Point>();
+        var maxAnthills = (GenerationOptions.Width * 2 + GenerationOptions.Height * 2 - 4); 
+        var anthillsToGenerate = Math.Min(maxAnthills, GenerationOptions.Anthills.Count);
+
+        Point getFurtestUninhabitedChunk(List<Point> inhabitedChunks) {
+            return new Point();
+        };
+
+        var distanceMap = new List<int>();
+        var inhabitedChunks = new List<Point>();
        
-       // TODO: This could lead to infinite loop?
-       do {
+        // TODO: This could lead to infinite loop?
+        do {
            var chunk = GetRandomCornerChunk();
-           if(!inhabitedChunks.Contains(chunk) && inhabitedChunks.Count(x => ChunkDistance(x, chunk) <= 2) == 0) {
+           if(!inhabitedChunks.Contains(chunk) && inhabitedChunks.Count(x => ChunkDistance(x, chunk) <= 1) == 0) {
                inhabitedChunks.Add(chunk);
            }
-       } while(inhabitedChunks.Count < anthillsToGenerate);
-       
-       foreach(var chunk in inhabitedChunks) {
-           var pos = GetRandomPointInChunk(chunk);
-           var anthill = world.CreateEntity();
-           anthill.Attach(new SimulationPosition { Position = new (pos.X - 250, pos.Y - 250), WorldSpace = WorldSpace.Garden });
-           anthill.Attach(new Renderable {
-               RenderItem = new SpriteRenderable(2, contentProvider.Get<Texture2D>("anthill/Anthill")),
-           });
-       }
+        } while(inhabitedChunks.Count < anthillsToGenerate);
+
+        for(var index = 0; index < inhabitedChunks.Count; index++) {
+            var chunk = inhabitedChunks[index];
+            var pos = GetRandomPointInChunk(chunk);
+            var anthill = world.CreateEntity();
+            anthill.Attach(new SimulationPosition { Position = new(pos.X - 250, pos.Y - 250), WorldSpace = WorldSpace.Garden });
+            anthill.Attach(new Renderable {
+                RenderItem = new SpriteRenderable(2, contentProvider.Get<Texture2D>("anthill/Anthill")),
+            });
+            
+            PlaceWanderingAnts(world, pos, GenerationOptions.Anthills[index].Scouts);
+        }
     }
 
     private void PlaceRocksInChunk(Point chunk, World world) {
@@ -208,10 +234,9 @@ public class GardenGenerator {
         }
     }
 
-    private void PlaceWanderingAnts(World world) {
+    private void PlaceWanderingAnts(World world, Vector2 pos = default, int number = 1) {
         void createWanderingAnt() {
             var tex = "ant/alivev2";
-            var pos = new Vector2(0,0);
             
             var wanderingAnt = world.CreateEntity();
             wanderingAnt.Attach(new Ant());
@@ -222,7 +247,7 @@ public class GardenGenerator {
             });
         }
 
-        for (var i = 0; i < random.Next(GenerationOptions.WanderingAnts); i++) {
+        for (var i = 0; i < number; i++) {
             createWanderingAnt();
         }
     }
@@ -236,7 +261,7 @@ public class GardenGenerator {
 
             var colors = new Color[] { Color.Red, Color.GreenYellow, Color.OrangeRed };
             
-            for (int b = 0; b < random.Next(7, 13); b++) {
+            for (int b = 0; b < random.Next(GenerationOptions.BushSize); b++) {
                 leavesPositions.Add(ShapeUtils.GetRandomPointInCircle(50));
             }
 
@@ -247,9 +272,8 @@ public class GardenGenerator {
                    RenderItem = new CircleRenderable { Sides = 32, Color = Color.DarkGreen, Thickness = 50.0f, Radius = 50 - (int)Math.Sqrt(leaf.X*leaf.X + leaf.Y*leaf.Y)/3 } as IRenderable,
                });
             
-                
                // Generate fruits
-               for (int f = 0; f < random.Next(1, 3); f++) {
+               for (int f = 0; f < random.Next(GenerationOptions.FruitsPerLeaf); f++) {
                     fruitsPositions.Add(ShapeUtils.GetRandomPointInCircle(20) + new Vector2(leaf.X, leaf.Y) + new Vector2(30, 30));                
                }
             }

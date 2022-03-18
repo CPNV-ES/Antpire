@@ -1,22 +1,24 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Dynamic;
 using Antpire.Utils;
 using MonoGame.Extended;
+using MoreLinq.Extensions;
 using Myra;
 
 namespace Antpire.Screens.Windows;
 
 public partial class MainMenuScreenGameConfigWindow {
 	private struct AnthillConfigData {
-		public bool IsPlayer;
-		public Color Color;
+		public string Name = "New Anthill";
+		public Color Color = Color.Azure;
 		
-		public int Scouts; 
-		public int Soldiers; 
-		public int Workers;  
-		public int Farmers;
-
-		public override string ToString() => "Super Anthill";
+		[Category("Ants")] public int Scouts = 8; 
+		[Category("Ants")] public int Soldiers = 4; 
+		[Category("Ants")] public int Workers = 16;  
+		[Category("Ants")] public int Farmers = 16;
+		
+		public override string ToString() => Name;
 	}
 
 	private enum GardenSize {
@@ -29,28 +31,41 @@ public partial class MainMenuScreenGameConfigWindow {
 		Colossal,
 	}
 
+	private enum Size {
+		Small,
+		Medium,
+		Big
+	}
+
+	private enum Frequency {
+		Desert,
+		Sparse,
+		Normal,
+		Plentiful,
+		Extreme,
+	}
+
 	private struct ConfigData {
 		public ConfigData() { }
 
 		public GardenSize GardenSize = GardenSize.Medium;
 		public string Seed = getSeed();
         
-		[Category("Obstacles")] public float RocksFrequency = 7.0f;
-		[Category("Obstacles")] public int MinRockSize = 30;
-		[Category("Obstacles")] public int MaxRockSize = 120;
-        [Category("Obstacles")] public float TrunksFrequency = 3.0f;
-        [Category("Obstacles")] public int MinTrunkSize = 40;
-		[Category("Obstacles")] public int MaxTrunkSize = 70;
+		[Category("Obstacles")] public Frequency RocksFrequency = Frequency.Sparse;
+		[Category("Obstacles")] public Size RockSize = Size.Medium;
+        [Category("Obstacles")] public Frequency TrunksFrequency = Frequency.Desert;
+		[Category("Obstacles")] public Size TrunkSize = Size.Medium;
         
-        [Category("Food Resources")] public float BushesFrequency = 10f;
-        [Category("Food Resources")] public int MinBushSize = 25;
-        [Category("Food Resources")] public int MaxBushSize = 50;
+        [Category("Food Resources")] public Frequency BushesFrequency = Frequency.Normal;
+		[Category("Food Resources")] public Size BushSize = Size.Medium;
         
-        [Category("Build Resources")] public float TwigsFrequency = 10f;
-        [Category("Build Resources")] public int TwigsMinSize = 10;
-        [Category("Build Resources")] public int TwigsMaxSize = 15;
+        [Category("Construction Resources")] public Frequency TwigsFrequency = Frequency.Normal;
+		[Category("Construction Resources")] public Size TwigSize = Size.Medium;
         
-        public List<AnthillConfigData> Anthills { get; } = new List<AnthillConfigData>();
+        public List<AnthillConfigData> Anthills { get; } = new List<AnthillConfigData> {
+	        new AnthillConfigData { Name = "Player Anthill" },
+	        new AnthillConfigData { Name = "Opponent Anthill 1" },
+        };
         
         private static string getSeed() => Guid.NewGuid().GetHashCode().ToString();
 	}
@@ -62,19 +77,33 @@ public partial class MainMenuScreenGameConfigWindow {
 
 		ConfirmGameParamsButton.Click += (o, e) => {
 			var config = (ConfigData)propertyGrid.Object;
-			var chunkCount = getGardenChunkCount(config.GardenSize); 
+			var chunkCount = getGardenChunkCountFromSize(config.GardenSize);
+			var rockSize = getRangeFromSize(config.RockSize);
+
 			simulationScreen.InitializeNewGame(new GardenGenerator.GardenGenerationOptions {
 				Seed = config.Seed,
 				Height = chunkCount,
 				Width = chunkCount,
-				ChunkSize = 768,
-				RockSize = new Range<int>(config.MinRockSize, config.MaxRockSize),
-				
+				ChunkSize = 1024,
+				RockSize = new(rockSize.Min*5, rockSize.Max*10),
+				TrunkSize = getRangeFromSize(config.TrunkSize),
+				BushSize = getRangeFromSize(config.BushSize),
+				TwigSize = getRangeFromSize(config.TwigSize),
+				BushesPerChunk = getRangeFromFrequency(config.BushesFrequency),
+				TwigsPerChunk = getRangeFromFrequency(config.TwigsFrequency),
+				RocksPerChunk = getRangeFromFrequency(config.RocksFrequency),
+				TrunksPerChunk = getRangeFromFrequency(config.TrunksFrequency),
+				Anthills = config.Anthills.Select(x => new GardenGenerator.AnthillOptions {
+					Farmers	= x.Farmers,
+					Scouts = x.Scouts,
+					Soldiers = x.Soldiers,
+					Workers = x.Workers,
+				}).ToList(),
 			});
 		};
 	}
 
-	private int getGardenChunkCount(GardenSize size) =>
+	private int getGardenChunkCountFromSize(GardenSize size) =>
 		size switch {
 			GardenSize.Tiny => 3,
 			GardenSize.Small => 4,
@@ -84,5 +113,23 @@ public partial class MainMenuScreenGameConfigWindow {
 			GardenSize.Gigantic => 12,
 			GardenSize.Colossal => 15,
 			_ => throw new ArgumentOutOfRangeException(nameof(size), size, null)
+		};
+
+	private Range<int> getRangeFromSize(Size size) =>
+		size switch {
+			Size.Small => new(3, 5),
+			Size.Medium => new(7, 13),
+			Size.Big => new(8, 20),
+			_ => throw new ArgumentOutOfRangeException(nameof(size), size, null)
+		};
+	
+	private Range<int> getRangeFromFrequency(Frequency frequency) =>
+		frequency switch {
+			Frequency.Desert => new(0, 2),
+			Frequency.Sparse=> new(0, 3),
+			Frequency.Normal => new(1, 3),
+			Frequency.Plentiful => new(3, 4),
+			Frequency.Extreme => new(4, 5),
+			_ => throw new ArgumentOutOfRangeException(nameof(frequency), frequency, null)
 		};
 }
