@@ -1,6 +1,8 @@
 ﻿using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using Antpire.Components;
+using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
 
 namespace Antpire.Systems; 
 
@@ -30,7 +32,9 @@ internal class AntLogicSystem : EntityUpdateSystem {
 
             ant.TimeTilNextUpdate -= (float)gameTime.ElapsedGameTime.TotalSeconds * simState.TimeScale;
 
-            switch(ant.CurrentState) {
+  
+
+            switch (ant.CurrentState) {
                 case Ant.State.Idle:
                     break;
                 case Ant.State.Scouting:
@@ -41,8 +45,28 @@ internal class AntLogicSystem : EntityUpdateSystem {
                 case Ant.State.Dying:
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    break;
             }
+
+            /* Dev : Test the feature Go_To */
+
+            var keyboardState = Keyboard.GetState();
+            var r = new Random();
+
+            if (keyboardState.IsKeyDown(Keys.T)) {
+                //Vector3 rotated = Quaternion.AngleAxis(-45, Vector3.up) * vector;
+                //transform.rotation = Quaternion.FromToRotation(transform.position, newVector);
+
+                //Quaternion ptest = Quaternion.CreateFromAxisAngle(Vector3.Up, 2f);
+
+                //var rotation = Quaternion.FromToRotation(transform.position, newVector);
+
+
+                insect.Destination = new Vector2(100, 100);
+
+                ant.CurrentState = Ant.State.GoTo;
+            }
+
         }
     }
 
