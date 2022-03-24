@@ -179,8 +179,9 @@ public class GardenGenerator {
             
             trunk.Attach(new SimulationPosition { Scale = 1, Position = new (pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
             trunk.Attach(new Renderable {
-                RenderItem = rr
+                RenderItem = rr 
             });
+            trunk.Attach(new Hitbox { position = pos, polygon = rr.Polygon });
         }
     }
     
