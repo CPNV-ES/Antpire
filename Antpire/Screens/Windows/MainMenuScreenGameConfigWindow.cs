@@ -10,6 +10,7 @@ namespace Antpire.Screens.Windows;
 
 public partial class MainMenuScreenGameConfigWindow {
 	private struct AnthillConfigData {
+		public AnthillConfigData() { }
 		public string Name = "New Anthill";
 		public Color Color = Color.Azure;
 		

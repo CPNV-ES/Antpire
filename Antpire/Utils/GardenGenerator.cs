@@ -10,7 +10,8 @@ namespace Antpire.Utils;
 
 public class GardenGenerator {
     public struct AnthillOptions {
-		public int Scouts = 8; 
+        public AnthillOptions() { }
+        public int Scouts = 8; 
 		public int Soldiers = 4; 
 		public int Workers = 16;  
 		public int Farmers = 16;
