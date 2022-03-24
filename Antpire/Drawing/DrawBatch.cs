@@ -9,8 +9,8 @@ namespace Antpire.Drawing;
 public class DrawBatch {
     public enum Layer {
         Background,
-        Insect,
         BelowInsect,
+        Insect,
         AboveInsect,
     }
 

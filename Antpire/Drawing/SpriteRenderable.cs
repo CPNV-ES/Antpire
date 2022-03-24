@@ -28,6 +28,6 @@ internal class SpriteRenderable : IRenderable{
         Vector2 origin = new Vector2(texture.Width / 2.0f, texture.Height / 2.0f);
         float angle = trans.Rotation;
 
-        drawBatch.GetSpriteDrawBatch((DrawBatch.Layer)Layer).Draw(texture, location + BoundingBox.ToVector2()/2, sourceRectangle, Color.White, angle + RotationOffset, origin, scale, SpriteEffects.None, 1);
+        drawBatch.GetSpriteDrawBatch((DrawBatch.Layer)Layer).Draw(texture, location, sourceRectangle, Color.White, angle + RotationOffset, origin, scale, SpriteEffects.None, 1);
     }
 }

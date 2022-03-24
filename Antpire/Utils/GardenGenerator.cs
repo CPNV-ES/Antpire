@@ -167,7 +167,7 @@ public class GardenGenerator {
         for(var i = 0; i < random.Next(GenerationOptions.TrunksPerChunk); i++) {
             var pos = GetRandomPointInChunk(chunk); 
             var trunk = world.CreateEntity();
-            var trunkWidth = random.Next(70, 160);
+            var trunkWidth = random.Next(20, 60);
             var rotation = (float)(random.NextDouble() * Math.PI * 2);
             float trunkHeight = (float)(trunkWidth * (random.NextDouble() * 3 + 2));
             var rr = new RectangleRenderable(
