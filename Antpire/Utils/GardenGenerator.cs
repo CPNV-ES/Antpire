@@ -237,10 +237,18 @@ public class GardenGenerator {
             var tex = dead ? "aphid/dead" : "aphid/alive";
             var aphid = world.CreateEntity();
             var pos = GetRandomPointInGarden();
+            // TODO: Make this a circle instead of a square
+            var colPolygon = new Polygon(new[] { 
+                new Vector2(-50, -50),
+                new Vector2(50, -50),
+                new Vector2(50, 50),
+                new Vector2(-50, 50),
+            });
             aphid.Attach(new SimulationPosition { Position = new (pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
             aphid.Attach(new Renderable {
                 RenderItem = new SpriteRenderable(0.25f, contentProvider.Get<Texture2D>(tex), 0.0f, (int)DrawBatch.Layer.Insect)
             });
+            aphid.Attach(new Hitbox{ polygon = colPolygon });
         }
         
         for(var i = 0; i < random.Next(GenerationOptions.AliveAphids); i++) {
@@ -277,6 +285,14 @@ public class GardenGenerator {
             // Generate the bush's leaves
             var leavesPositions = new List<Vector2>() { new(0, 0) };
             var fruitsPositions = new List<Vector2>();
+            
+            // TODO: Make this a circle instead of a square
+            var fruitColPoly = new Polygon(new[] { 
+                new Vector2(0, 0),
+                new Vector2(5, 0),
+                new Vector2(5, 5),
+                new Vector2(0, 5),
+            });
 
             var colors = new Color[] { Color.Red, Color.GreenYellow, Color.OrangeRed };
             
@@ -303,6 +319,7 @@ public class GardenGenerator {
                fruitEntity.Attach(new Renderable {
                    RenderItem = new CircleRenderable { Sides = 32, Color = colors[random.Next(0, 3)], Thickness = 16.0f, Radius = random.Next(4, 8) } as IRenderable,
                });
+               fruitEntity.Attach(new Hitbox { polygon = fruitColPoly });
             }
         }
     }
