@@ -116,9 +116,13 @@ public class GardenGenerator {
             segments.Add(currentPoint);
         } while(!IsPointOutsideBoundaries(currentPoint.ToPoint()));
         
+        var pathRenderable = new SmoothPathRenderable { Color = Color.Blue, Segments = segments.ToArray(), Thickness = 50, Layer = 2};
+        var col = ShapeUtils.GeneratePolygonFromLine(pathRenderable.BezierSegments, 50.0f).Reverse().ToArray();
+        
         var river = world.CreateEntity();
-        river.Attach(new SimulationPosition { Position = new (0, 0), WorldSpace = WorldSpace.Garden });
-        river.Attach(new Renderable { RenderItem = new SmoothPathRenderable { Color = Color.Blue, Segments = segments.ToArray(), Thickness = 50 } });
+        river.Attach(new SimulationPosition { Position = Vector2.Zero, WorldSpace = WorldSpace.Garden });
+        river.Attach(new Renderable { RenderItem = pathRenderable });
+        river.Attach(new Hitbox { position = Vector2.Zero, polygon = new Polygon(col) });
     }
 
     private void PlaceAnthills(World world) {
