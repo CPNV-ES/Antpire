@@ -6,7 +6,8 @@ internal class Ant {
         Idle,
         Attacking,
         Scouting,
-        Dying
+        Dying,
+        GoTo
     }   
 
     public State CurrentState = State.Scouting;
