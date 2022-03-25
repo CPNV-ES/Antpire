@@ -38,7 +38,7 @@ internal class WalkingSystem : EntityUpdateSystem
 
     private void walk(SimulationPosition entity, Insect insect, float deltaTime) {
         var newPosition = entity.Position + Vector2.Multiply(insect.Velocity, 140.0f * deltaTime * simState.TimeScale); // TODO: Replace the hard coded value with a speed variable
-        var ahead = entity.Position + Vector2.Multiply(insect.Velocity, 20.0f); // TODO: Replace the hard coded value with a length/hitbox radius variable
+        var ahead = entity.Position + Vector2.Multiply(insect.Velocity, 25.0f); // TODO: Replace the hard coded value with a length/hitbox radius variable
             
         // If trying to move out of the garden's bounds, turn around
         if(newPosition.X < 0 || newPosition.X > gardenWidth || newPosition.Y < 0 || newPosition.Y > gardenHeight) {
@@ -50,7 +50,7 @@ internal class WalkingSystem : EntityUpdateSystem
         float circle = entity.Scale * MathF.PI;
         List<Hitbox> hitboxes = CollisionSystem.hitboxes;
         foreach(Hitbox hitbox in hitboxes) {
-            if(hitbox.polygon.Contains(ahead)) {
+            if((hitbox.polygon.Contains(ahead) || hitbox.polygon.Contains(newPosition)) && !hitbox.polygon.Contains(entity.Position)) {
                 entity.Position = TurnAround(entity, insect);
                 return;
             }
