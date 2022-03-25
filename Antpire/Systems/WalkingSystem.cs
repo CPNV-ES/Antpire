@@ -50,7 +50,7 @@ internal class WalkingSystem : EntityUpdateSystem
         float circle = entity.Scale * MathF.PI;
         List<Hitbox> hitboxes = CollisionSystem.hitboxes;
         foreach(Hitbox hitbox in hitboxes) {
-            if((hitbox.polygon.Contains(ahead) || hitbox.polygon.Contains(newPosition)) && !hitbox.polygon.Contains(entity.Position)) {
+            if((hitbox.Polygon.Contains(ahead) || hitbox.Polygon.Contains(newPosition)) && !hitbox.Polygon.Contains(entity.Position)) {
                 entity.Position = TurnAround(entity, insect);
                 return;
             }

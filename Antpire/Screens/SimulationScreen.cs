@@ -150,15 +150,14 @@ public class SimulationScreen : GameScreen {
             var componentManager = pi_componentManager.GetValue(entity) as ComponentManager;
             var componentTypes = fi_componentTypes.GetValue(componentManager) as Dictionary<Type, int>;
 
-            int c = 0;
+            int c = -1;
             foreach(var id in componentTypes.Values) {
+                c++;
                 if((entity.ComponentBits.Data >> c & 1) == 0) continue;
-                
+              
                 // Get a ComponentMapper<T> where T is the type of the component
                 dynamic mapper = mi_getMapper.Invoke(componentManager, new object[] { id }); 
                 componentsList.Add(mapper.Components[entity.Id]);
-                
-                c++;
             }
             output.Entities.Add(componentsList);
         }

@@ -31,7 +31,7 @@ internal class CollisionSystem : EntityUpdateSystem {
 
             if(!registeredEntities.Contains(entityId)) {
                 var pos = simPosMapper.Get(entityId);
-                hitbox.polygon = hitbox.polygon.TransformedCopy(pos.Position, 0.0f, Vector2.One);
+                hitbox.Polygon = hitbox.Polygon.TransformedCopy(pos.Position, 0.0f, Vector2.One);
                 hitboxes.Add(hitbox);
                 registeredEntities.Add(entityId);
             }

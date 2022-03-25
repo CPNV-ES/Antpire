@@ -147,7 +147,7 @@ public class GardenGenerator {
         river.Attach(new SimulationPosition { Position = Vector2.Zero, WorldSpace = WorldSpace.Garden });
         river.Attach(new Renderable { RenderItem = pathRenderable });
         river.Attach(new Hitbox {
-            polygon = new Polygon(col) });
+            Polygon = new Polygon(col) });
     }
 
     private void PlaceAnthills(World world) {
@@ -197,7 +197,7 @@ public class GardenGenerator {
                 RenderItem = rr 
             });
             rock.Attach(new Hitbox {
-                polygon = rr.Polygon });
+                Polygon = rr.Polygon });
         }
     }
     
@@ -220,7 +220,7 @@ public class GardenGenerator {
                 RenderItem = rr 
             });
             trunk.Attach(new Hitbox {
-                polygon = rr.Polygon });
+                Polygon = rr.Polygon });
         }
     }
     
@@ -249,7 +249,7 @@ public class GardenGenerator {
             aphid.Attach(new Renderable {
                 RenderItem = new SpriteRenderable(0.25f, contentProvider.Get<Texture2D>(tex), 0.0f, (int)DrawBatch.Layer.Insect)
             });
-            aphid.Attach(new Hitbox{ polygon = colPolygon });
+            aphid.Attach(new Hitbox{ Polygon = colPolygon });
         }
         
         for(var i = 0; i < random.Next(GenerationOptions.AliveAphids); i++) {
@@ -320,7 +320,7 @@ public class GardenGenerator {
                fruitEntity.Attach(new Renderable {
                    RenderItem = new CircleRenderable { Sides = 32, Color = colors[random.Next(0, 3)], Thickness = 16.0f, Radius = random.Next(4, 8) } as IRenderable,
                });
-               fruitEntity.Attach(new Hitbox { polygon = fruitColPoly });
+               fruitEntity.Attach(new Hitbox { Polygon = fruitColPoly });
             }
         }
     }
