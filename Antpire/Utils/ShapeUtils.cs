@@ -1,4 +1,8 @@
-﻿namespace Antpire.Utils; 
+﻿using ClipperLib;
+using MonoGame.Extended;
+using MoreLinq.Extensions;
+
+namespace Antpire.Utils; 
 
 internal class ShapeUtils {
     /// <summary>
@@ -9,11 +13,18 @@ internal class ShapeUtils {
     /// <returns></returns>
     public static Vector2[] GenerateConvexPolygon(int verticesCount, float radius) {
         var r = new Random();
-        return Enumerable.Repeat(0, verticesCount)
+        var vertices = Enumerable.Repeat(0, verticesCount)
             .Select(i => r.NextDouble()*Math.PI*2)
             .OrderBy(i => i)
             .Select(x => new Vector2((float)Math.Sin(x)*radius, (float)Math.Cos(x)*radius))
             .ToArray();
+
+        var minX = vertices.Min(x => x.X);
+        var minY = vertices.Min(x => x.Y);
+        
+        // Move to positive quadrant
+        var x = vertices.Select(x => new Vector2(x.X - minX, x.Y - minY)).ToArray();
+        return x;
     }
 
     /// <summary>
@@ -57,6 +68,38 @@ internal class ShapeUtils {
             points[i] = GetBezierPoint(t, controlPoints, 0, controlPoints.Length);
         }
         return points;
+    }
+
+    /// <summary>
+    /// Generates a thick line polygon from a list of points 
+    /// </summary>
+    /// <param name="points">A list of points</param>
+    /// <param name="thickness">The thickness of the polygon (from center to edge, so it will be 2*thickness from edge to edge)</param>
+    /// <returns></returns>
+    public static Vector2[] GeneratePolygonFromLine(Vector2[] points, float thickness) {
+        var pts = points.ToList();
+        
+        for(int i = points.Length - 1; i >= 1; i--) {
+            pts.Add(points[i]);
+        }
+
+        var co = new ClipperOffset();
+        co.AddPath(
+            pts.Select(x => new IntPoint((long)Math.Round(x.X), (long)Math.Round(x.Y))).ToList(),
+            ClipperLib.JoinType.jtSquare,
+            ClipperLib.EndType.etClosedPolygon
+        );
+        var solution = new List<List<IntPoint>>();
+        co.Execute(ref solution, thickness);
+
+        var poly = new List<Vector2>();
+        
+        foreach (var offsetPath in solution) {
+            foreach (var offsetPathPoint in offsetPath) {
+                poly.Add(new Vector2(Convert.ToInt32(offsetPathPoint.X), Convert.ToInt32(offsetPathPoint.Y)));
+            }
+        }
+        return poly.ToArray();
     }
 
     private static Vector2 GetBezierPoint(float t, Vector2[] controlPoints, int index, int count) {

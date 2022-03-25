@@ -5,6 +5,7 @@ using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using Antpire.Screens;
 using Antpire.Drawing;
+using MonoGame.Extended.Shapes;
 
 namespace Antpire.Systems; 
 
@@ -50,7 +51,7 @@ internal class SimulationRenderSystem : EntityDrawSystem {
             var render = renderableMapper.Get(entityId);
 
             if(pos.WorldSpace == simulationState.CurrentWorldSpace && 
-               viewRegion.Intersects(new Rectangle(pos.Position.ToPoint(), render.RenderItem.BoundingBox))) 
+               viewRegion.Intersects(new Rectangle(pos.Position.ToPoint() - new Point(render.RenderItem.BoundingBox.X/2, render.RenderItem.BoundingBox.Y/2), render.RenderItem.BoundingBox))) 
             {
                 render.RenderItem.Render(drawBatch, new Transform2(pos.Position, pos.Rotation));
             }

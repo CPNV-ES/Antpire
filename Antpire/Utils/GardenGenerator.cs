@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Shapes;
+using System;
 
 namespace Antpire.Utils;
 
@@ -45,9 +46,11 @@ public class GardenGenerator {
         
         public Range<int> AliveAphids = new(1, 1);
         public Range<int> DeadAphids = new(1, 1);
-        public Range<int> WanderingAnts = new(4000, 5000);
-    }    
-    
+        //public Range<int> WanderingAnts = new(10, 10);
+        public Range<int> WanderingAnts = new(10000, 10000);
+    }
+
+
     public GardenGenerationOptions GenerationOptions { get; init; }
     public Game Game { get; init; }
 
@@ -136,10 +139,14 @@ public class GardenGenerator {
             segments.Add(currentPoint);
         } while(!IsPointOutsideBoundaries(currentPoint.ToPoint()));
         
+        var pathRenderable = new SmoothPathRenderable { Color = Color.Blue, Segments = segments.ToArray(), Thickness = 50, Layer = 2};
+        var col = ShapeUtils.GeneratePolygonFromLine(pathRenderable.BezierSegments, 50.0f).Reverse().ToArray();
+        
         var river = world.CreateEntity();
-        river.Attach(new SimulationPosition { Position = new (0, 0), WorldSpace = WorldSpace.Garden });
-        river.Attach(new Renderable { RenderItem = new SmoothPathRenderable { Color = Color.Blue, Segments = segments.ToArray(), Thickness = 50 } });
-        river.Attach(new Random());
+        river.Attach(new SimulationPosition { Position = Vector2.Zero, WorldSpace = WorldSpace.Garden });
+        river.Attach(new Renderable { RenderItem = pathRenderable });
+        river.Attach(new Hitbox {
+            polygon = new Polygon(col) });
     }
 
     private void PlaceAnthills(World world) {
@@ -178,14 +185,18 @@ public class GardenGenerator {
         for(var i = 0; i < random.Next(GenerationOptions.RocksPerChunk); i++) {
             var pos = GetRandomPointInChunk(chunk); 
             var rock = world.CreateEntity();
-            rock.Attach(new SimulationPosition { Position = new (pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+            var rr = new PolygonRenderable {
+                Color = Color.DarkGray,
+                Polygon = new Polygon(ShapeUtils.GenerateConvexPolygon(random.Next(GenerationOptions.RockVertices), random.Next(GenerationOptions.RockSize))),
+                Thickness = 5.0f
+            };
+            
+            rock.Attach(new SimulationPosition { Position = pos, WorldSpace = WorldSpace.Garden });
             rock.Attach(new Renderable {
-                RenderItem = new PolygonRenderable {
-                    Color = Color.DarkGray,
-                    Polygon = new Polygon(ShapeUtils.GenerateConvexPolygon(random.Next(GenerationOptions.RockVertices), random.Next(GenerationOptions.RockSize))),
-                    Thickness = 5.0f
-                }
+                RenderItem = rr 
             });
+            rock.Attach(new Hitbox {
+                polygon = rr.Polygon });
         }
     }
     
@@ -193,16 +204,22 @@ public class GardenGenerator {
         for(var i = 0; i < random.Next(GenerationOptions.TrunksPerChunk); i++) {
             var pos = GetRandomPointInChunk(chunk); 
             var trunk = world.CreateEntity();
-            var trunkWidth = random.Next(20, 30);
-            trunk.Attach(new SimulationPosition { Position = new (pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
+            var trunkWidth = random.Next(20, 60);
+            var rotation = (float)(random.NextDouble() * Math.PI * 2);
+            float trunkHeight = (float)(trunkWidth * (random.NextDouble() * 3 + 2));
+            var rr = new RectangleRenderable(
+                size: new(trunkWidth, trunkHeight),
+                rotation: rotation,
+                color: Color.SaddleBrown,
+                thickness: 30.0f
+            );
+            
+            trunk.Attach(new SimulationPosition { Scale = 1, Position = new (pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
             trunk.Attach(new Renderable {
-                RenderItem = new RectangleRenderable(
-                    size: new(trunkWidth, (float)(trunkWidth * (random.NextDouble()*3+2))), 
-                    rotation: (float)(random.NextDouble()*Math.PI*2), 
-                    color: Color.SaddleBrown,
-                    thickness: 30.0f
-                )
+                RenderItem = rr 
             });
+            trunk.Attach(new Hitbox {
+                polygon = rr.Polygon });
         }
     }
     
@@ -237,13 +254,15 @@ public class GardenGenerator {
     private void PlaceWanderingAnts(World world, Vector2 pos = default, int number = 1) {
         void createWanderingAnt() {
             var tex = "ant/alivev2";
-            
+            var pos = new Vector2(0,0);
+            var scale = 0.25f;
+
             var wanderingAnt = world.CreateEntity();
             wanderingAnt.Attach(new Ant());
             wanderingAnt.Attach(new Insect());
             wanderingAnt.Attach(new SimulationPosition { Position = pos, WorldSpace = WorldSpace.Garden });
             wanderingAnt.Attach(new Renderable {
-                RenderItem = new SpriteRenderable(0.25f, contentProvider.Get<Texture2D>(tex), MathF.PI / 2, (int)DrawBatch.Layer.Insect)
+                RenderItem = new SpriteRenderable(scale, contentProvider.Get<Texture2D>(tex), MathF.PI / 2, (int)DrawBatch.Layer.Insect)
             });
         }
 

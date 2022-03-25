@@ -26,6 +26,8 @@ internal class SmoothPathRenderable : IRenderable {
             boundingBox.Y = Math.Abs((int)segments.OrderBy(x => x.Y).Last().Y) + Math.Abs((int)segments.OrderBy(x => x.Y).First().Y);
         }
     }
+    public Vector2[] BezierSegments => bezierSegments;
+    
     public Color Color = Color.White;
     public float Thickness = 2.0f;
 
