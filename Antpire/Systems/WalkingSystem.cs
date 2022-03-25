@@ -47,13 +47,9 @@ internal class WalkingSystem : EntityUpdateSystem
         }
 
         // If the entity collides an hitbox, it turns around
-        float circle = entity.Scale * MathF.PI;
-        List<Hitbox> hitboxes = CollisionSystem.hitboxes;
-        foreach(Hitbox hitbox in hitboxes) {
-            if((hitbox.Polygon.Contains(ahead) || hitbox.Polygon.Contains(newPosition)) && !hitbox.Polygon.Contains(entity.Position)) {
-                entity.Position = TurnAround(entity, insect);
-                return;
-            }
+        if(CollisionSystem.CheckCollision(ahead) || CollisionSystem.CheckCollision(newPosition)) {
+            entity.Position = TurnAround(entity, insect);
+            return;
         }
 
         entity.Position = newPosition;

@@ -286,15 +286,6 @@ public class GardenGenerator {
             // Generate the bush's leaves
             var leavesPositions = new List<Vector2>() { new(0, 0) };
             var fruitsPositions = new List<Vector2>();
-            
-            // TODO: Make this a circle instead of a square
-            var fruitColPoly = new Polygon(new[] { 
-                new Vector2(0, 0),
-                new Vector2(5, 0),
-                new Vector2(5, 5),
-                new Vector2(0, 5),
-            });
-
             var colors = new Color[] { Color.Red, Color.GreenYellow, Color.OrangeRed };
             
             for (int b = 0; b < random.Next(GenerationOptions.BushSize); b++) {
@@ -320,7 +311,6 @@ public class GardenGenerator {
                fruitEntity.Attach(new Renderable {
                    RenderItem = new CircleRenderable { Sides = 32, Color = colors[random.Next(0, 3)], Thickness = 16.0f, Radius = random.Next(4, 8) } as IRenderable,
                });
-               fruitEntity.Attach(new Hitbox { Polygon = fruitColPoly });
             }
         }
     }
