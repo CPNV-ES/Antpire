@@ -48,25 +48,6 @@ internal class AntLogicSystem : EntityUpdateSystem {
                     break;
             }
 
-            /* Dev : Test the feature Go_To */
-
-            var keyboardState = Keyboard.GetState();
-            var r = new Random();
-
-            if (keyboardState.IsKeyDown(Keys.T)) {
-                //Vector3 rotated = Quaternion.AngleAxis(-45, Vector3.up) * vector;
-                //transform.rotation = Quaternion.FromToRotation(transform.position, newVector);
-
-                //Quaternion ptest = Quaternion.CreateFromAxisAngle(Vector3.Up, 2f);
-
-                //var rotation = Quaternion.FromToRotation(transform.position, newVector);
-
-
-                insect.Destination = new Vector2(100, 100);
-
-                ant.CurrentState = Ant.State.GoTo;
-            }
-
         }
     }
 
