@@ -26,6 +26,6 @@ internal class PolygonRenderable : IRenderable {
     public int Layer { get; init; }
     
     public void Render(DrawBatch drawBatch, Transform2 trans) {
-        drawBatch.GetShapeDrawBatch((DrawBatch.Layer)Layer).FillPath(new SolidColorBrush(Color), Polygon.Vertices.Reverse().ToList().Select(x => x + trans.Position).ToList()); 
+        drawBatch.GetShapeDrawBatch((DrawBatch.Layer)Layer).FillPath(new SolidColorBrush(Color), Polygon.Vertices.Reverse().ToList().Select(x => x + trans.Position - BoundingBox.ToVector2() / 2).ToList()); 
     }
 }

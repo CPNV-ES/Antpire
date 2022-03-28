@@ -16,6 +16,6 @@ internal class CircleRenderable : IRenderable {
     public int Layer { get; init; }
     
     public void Render(DrawBatch drawBatch, Transform2 trans) {
-        drawBatch.GetShapeDrawBatch((DrawBatch.Layer)Layer).FillCircle(new SolidColorBrush(Color), trans.Position + BoundingBox.ToVector2()/2, Radius, 64);
+        drawBatch.GetShapeDrawBatch((DrawBatch.Layer)Layer).FillCircle(new SolidColorBrush(Color), trans.Position, Radius, 64);
     }
 }

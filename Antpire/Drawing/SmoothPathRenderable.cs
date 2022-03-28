@@ -22,8 +22,8 @@ internal class SmoothPathRenderable : IRenderable {
         set {
             segments = value;
             bezierSegments = ShapeUtils.GetBezierApproximation(segments, segments.Length * 4);
-            boundingBox.X = Math.Abs((int)segments.OrderBy(x => x.X).Last().X) + Math.Abs((int)segments.OrderBy(x => x.X).First().X);
-            boundingBox.Y = Math.Abs((int)segments.OrderBy(x => x.Y).Last().Y) + Math.Abs((int)segments.OrderBy(x => x.Y).First().Y);
+            boundingBox.X = int.MaxValue;   // TODO: Quick hack, shouldn't impact perfs too much but it's not very nice 
+            boundingBox.Y = int.MaxValue;
         }
     }
     public Vector2[] BezierSegments => bezierSegments;

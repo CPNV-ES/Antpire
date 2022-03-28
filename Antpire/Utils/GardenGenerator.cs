@@ -146,8 +146,7 @@ public class GardenGenerator {
         var river = world.CreateEntity();
         river.Attach(new SimulationPosition { Position = Vector2.Zero, WorldSpace = WorldSpace.Garden });
         river.Attach(new Renderable { RenderItem = pathRenderable });
-        river.Attach(new Hitbox {
-            Polygon = new Polygon(col) });
+        river.Attach(new Hitbox { Polygon = new Polygon(col) });
     }
 
     private void PlaceAnthills(World world) {
@@ -301,7 +300,7 @@ public class GardenGenerator {
             
                // Generate fruits
                for (int f = 0; f < random.Next(GenerationOptions.FruitsPerLeaf); f++) {
-                    fruitsPositions.Add(ShapeUtils.GetRandomPointInCircle(20) + new Vector2(leaf.X, leaf.Y) + new Vector2(30, 30));                
+                    fruitsPositions.Add(ShapeUtils.GetRandomPointInCircle(20) + new Vector2(leaf.X, leaf.Y));                
                }
             }
             
