@@ -190,13 +190,16 @@ public class GardenGenerator {
                 Polygon = new Polygon(ShapeUtils.GenerateConvexPolygon(random.Next(GenerationOptions.RockVertices), random.Next(GenerationOptions.RockSize))),
                 Thickness = 5.0f
             };
+
+            var shiftedVortices = rr.Polygon.Vertices.Select(x => x - new Vector2(rr.Polygon.BoundingRectangle.Width / 2.0f, rr.Polygon.BoundingRectangle.Height / 2.0f)).ToArray();
             
             rock.Attach(new SimulationPosition { Position = pos, WorldSpace = WorldSpace.Garden });
             rock.Attach(new Renderable {
                 RenderItem = rr 
             });
             rock.Attach(new Hitbox {
-                Polygon = rr.Polygon });
+                Polygon = new Polygon(shiftedVortices)
+            });
         }
     }
     
@@ -214,12 +217,15 @@ public class GardenGenerator {
                 thickness: 30.0f
             );
             
+            var shiftedVortices = rr.Polygon.Vertices.Select(x => x - new Vector2(rr.Polygon.BoundingRectangle.Width / 2.0f, rr.Polygon.BoundingRectangle.Height / 2.0f)).ToArray();
+            
             trunk.Attach(new SimulationPosition { Scale = 1, Position = new (pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
             trunk.Attach(new Renderable {
                 RenderItem = rr 
             });
             trunk.Attach(new Hitbox {
-                Polygon = rr.Polygon });
+                Polygon = new Polygon(shiftedVortices)
+            });
         }
     }
     
