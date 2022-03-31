@@ -4,6 +4,7 @@ using Antpire.Components;
 using Antpire.Screens;
 using MonoGame.Extended;
 using Microsoft.Xna.Framework.Input;
+using System.Diagnostics;
 
 namespace Antpire.Systems; 
 
@@ -22,14 +23,18 @@ internal class LoggerSystem : EntityUpdateSystem
         antMapper = mapperService.GetMapper<Ant>();
     }
 
+    public void Signale(Ant ant, GameTime gameTime, int entityId = 0) {
+        Signalings.Add(createSignage(ant, gameTime, entityId));
+    }
+
     public override void Update(GameTime gameTime) {
         foreach (var entityId in ActiveEntities) {
             var ant = antMapper.Get(entityId);
 
             if (stateHasChanged(ant)) {
                 // new signaling !
-
-                Signalings.Add(createSignage(entityId,ant, gameTime));
+                Signalings.Add(createSignage(ant, gameTime, entityId));
+                Debug.WriteLine(Signalings.Last().content);
             }
 
 
@@ -41,21 +46,27 @@ internal class LoggerSystem : EntityUpdateSystem
                 ant.CurrentState = Ant.State.Attacking;
             }
 
+            if (keyboardState.IsKeyDown(Keys.L)) {
+                Debug.WriteLine("List of Signalings : ");
+
+                foreach (Signaling s in Signalings.Distinct())
+                    Debug.WriteLine(s.content);
+            }
         }
     }
 
-    private Signaling createSignage(int entityId, Ant ant, GameTime gameTime) {
+    private Signaling createSignage(Ant ant, GameTime gameTime, int entityId = 0) {
         String content = "";
         Signaling.Channel channel;
 
         switch (ant.CurrentState) { 
             /* Here you could add any signage that you want */
             case Ant.State.Idle:
-                channel = Signaling.Channel.Working;
+                channel = Signaling.Channel.Job;
                 content = String.Format("The ant {0} is actually making nothing instead of beeing an {1}.", entityId, ant.type);
                 break;
             case Ant.State.Scouting:
-                channel = Signaling.Channel.Working;
+                channel = Signaling.Channel.Job;
                 content = String.Format("The {0} ant number {1} is now wandering around the garden.", ant.type, entityId);
                 break;
             case Ant.State.Attacking:
@@ -67,7 +78,7 @@ internal class LoggerSystem : EntityUpdateSystem
                 content = String.Format("The {0} ant number {1} is Dead. RIP Little ant..", ant.type, entityId);
                 break;            
             case Ant.State.Gathering:
-                channel = Signaling.Channel.Working;
+                channel = Signaling.Channel.Job;
                 content = String.Format("The {0} ant number {1} is Gathering ressources.", ant.type, entityId);
                 break;
             default:
@@ -76,9 +87,8 @@ internal class LoggerSystem : EntityUpdateSystem
                 break;
         }
         
-        
         return new Signaling {
-            channel = Signaling.Channel.Working,
+            channel = Signaling.Channel.Job,
             ant = ant,
             content = String.Format("[ * * {0} * * ]({1}) - {2}", channel, gameTime.TotalGameTime, content),
             timestamp = gameTime.TotalGameTime

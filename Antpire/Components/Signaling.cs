@@ -5,10 +5,11 @@ internal class Signaling {
     public enum Channel {
         Info,
         Fight,
-        Working,
+        Job,
+        Ressources,
         LifeCycle,
         EggsManagement,
-        EnemySpotted
+        Sight
     }
 
     public Channel channel;
