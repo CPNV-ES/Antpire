@@ -30,7 +30,6 @@ internal class LoggerSystem : EntityUpdateSystem
                 // new signaling !
 
                 Signalings.Add(createSignage(entityId,ant, gameTime));
-                //Exemple = [Timestamp] [Combat] [Worker][ID45] : La fourmi 45 est attaquée par [...] !
             }
 
 
