@@ -41,7 +41,7 @@ internal class SimulationRenderSystem : EntityDrawSystem {
             graphicsDevice.Clear(Color.SaddleBrown);
         }
         else {
-            graphicsDevice.Clear(Color.ForestGreen);
+            graphicsDevice.Clear(new Color(0, 87, 0));
         }
 
         var viewRegion = camera.BoundingRectangle.ToRectangle();

@@ -66,6 +66,23 @@ public class GardenGenerator {
     
     public void GenerateGarden(World world) {
         random = new Random(IntSeedFromString(GenerationOptions.Seed));
+
+        var gardenBg = world.CreateEntity();
+        gardenBg.Attach(new SimulationPosition {
+            Position = new Vector2(GenerationOptions.Width*GenerationOptions.ChunkSize/2, GenerationOptions.Height*GenerationOptions.ChunkSize/2), WorldSpace = WorldSpace.Garden
+        });
+        gardenBg.Attach(new Renderable {
+            RenderItem = new PolygonRenderable {
+                Color = Color.ForestGreen,
+                Layer = 0,
+                Polygon = new Polygon((new[] {
+                    new Vector2(0, 0),
+                    new Vector2(0, GenerationOptions.Height * GenerationOptions.ChunkSize),
+                    new Vector2(GenerationOptions.Width * GenerationOptions.ChunkSize, GenerationOptions.Height * GenerationOptions.ChunkSize),
+                    new Vector2(GenerationOptions.Width * GenerationOptions.ChunkSize, 0),
+                })),
+            }
+        });
         
         PlaceRiver(world);
         PlaceAnthills(world);
