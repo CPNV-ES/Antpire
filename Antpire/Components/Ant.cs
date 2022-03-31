@@ -7,6 +7,7 @@ internal class Ant {
         Attacking,
         Scouting,
         Dying,
+        Gathering,
         GoTo
     }   
     

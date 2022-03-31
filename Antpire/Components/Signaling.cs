@@ -2,13 +2,16 @@
 
 [Serializable]
 internal class Signaling {
-    public enum Channels {
+    public enum Channel {
+        Info,
         Fight,
         Working,
         LifeCycle,
         EggsManagement,
         EnemySpotted
     }
+
+    public Channel channel;
 
     public Ant ant;
 
