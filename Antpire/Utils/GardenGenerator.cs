@@ -67,23 +67,16 @@ public class GardenGenerator {
     public void GenerateGarden(World world) {
         random = new Random(IntSeedFromString(GenerationOptions.Seed));
 
-        var gardenBg = world.CreateEntity();
-        gardenBg.Attach(new SimulationPosition {
-            Position = new Vector2(GenerationOptions.Width*GenerationOptions.ChunkSize/2, GenerationOptions.Height*GenerationOptions.ChunkSize/2), WorldSpace = WorldSpace.Garden
-        });
-        gardenBg.Attach(new Renderable {
-            RenderItem = new PolygonRenderable {
-                Color = Color.ForestGreen,
-                Layer = 0,
-                Polygon = new Polygon((new[] {
-                    new Vector2(0, 0),
-                    new Vector2(0, GenerationOptions.Height * GenerationOptions.ChunkSize),
-                    new Vector2(GenerationOptions.Width * GenerationOptions.ChunkSize, GenerationOptions.Height * GenerationOptions.ChunkSize),
-                    new Vector2(GenerationOptions.Width * GenerationOptions.ChunkSize, 0),
-                })),
-            }
-        });
+        var w = GenerationOptions.Width * GenerationOptions.ChunkSize;
+        var h = GenerationOptions.Height* GenerationOptions.ChunkSize;
+        var outsideColor = new Color(0, 87, 0);
         
+        AddBgRect(new Rectangle(0, 0, w, h), Color.ForestGreen, world);
+        AddBgRect(new Rectangle(-w, 0, w, h), outsideColor, world, (int)DrawBatch.Layer.BelowInsect);
+        AddBgRect(new Rectangle(w, 0, w, h), outsideColor, world, (int)DrawBatch.Layer.BelowInsect);
+        AddBgRect(new Rectangle(0, h, w, h), outsideColor, world, (int)DrawBatch.Layer.BelowInsect);
+        AddBgRect(new Rectangle(0, -h, w, h), outsideColor, world, (int)DrawBatch.Layer.BelowInsect);
+
         PlaceRiver(world);
         PlaceAnthills(world);
         PlaceAphids(world);
@@ -99,10 +92,24 @@ public class GardenGenerator {
         }
     }
 
-    private Vector2 GetRandomPointInChunk(Point chunk) => 
+    private void AddBgRect(Rectangle r, Color c, World world, int layer = 0) {
+        var gardenBg = world.CreateEntity();
+        gardenBg.Attach(new SimulationPosition {
+            Position = new Vector2(r.Width/2.0f, r.Height/2.0f), WorldSpace = WorldSpace.Garden
+        });
+        gardenBg.Attach(new Renderable {
+            RenderItem = new PolygonRenderable {
+                Color = c,
+                Layer = layer,
+                Polygon = ShapeUtils.GetRectanglePolygon(r),
+            }
+        });
+    }
+
+    private Vector2 GetRandomPointInChunk(Point chunk, int margin = 0) => 
         new Vector2(
-            random.Next(chunk.X * GenerationOptions.ChunkSize, (chunk.X + 1) * GenerationOptions.ChunkSize),
-            random.Next(chunk.Y * GenerationOptions.ChunkSize, (chunk.Y + 1) * GenerationOptions.ChunkSize)
+            random.Next(chunk.X * GenerationOptions.ChunkSize + margin/2, (chunk.X + 1) * GenerationOptions.ChunkSize - margin/2),
+            random.Next(chunk.Y * GenerationOptions.ChunkSize + margin/2, (chunk.Y + 1) * GenerationOptions.ChunkSize - margin/2)
         );
 
     private Vector2 GetRandomPointInGarden() =>
@@ -187,9 +194,9 @@ public class GardenGenerator {
 
         for(var index = 0; index < inhabitedChunks.Count; index++) {
             var chunk = inhabitedChunks[index];
-            var pos = GetRandomPointInChunk(chunk);
+            var pos = GetRandomPointInChunk(chunk, 200);
             var anthill = world.CreateEntity();
-            anthill.Attach(new SimulationPosition { Position = new(pos.X - 250, pos.Y - 250), WorldSpace = WorldSpace.Garden });
+            anthill.Attach(new SimulationPosition { Position = new(pos.X, pos.Y), WorldSpace = WorldSpace.Garden });
             anthill.Attach(new Renderable {
                 RenderItem = new SpriteRenderable(2, contentProvider.Get<Texture2D>("anthill/Anthill")),
             });
@@ -200,7 +207,7 @@ public class GardenGenerator {
 
     private void PlaceRocksInChunk(Point chunk, World world) {
         for(var i = 0; i < random.Next(GenerationOptions.RocksPerChunk); i++) {
-            var pos = GetRandomPointInChunk(chunk); 
+            var pos = GetRandomPointInChunk(chunk, 200); 
             var rock = world.CreateEntity();
             var rr = new PolygonRenderable {
                 Color = Color.DarkGray,
@@ -222,7 +229,7 @@ public class GardenGenerator {
     
     private void PlaceTrunksInChunk(Point chunk, World world) {
         for(var i = 0; i < random.Next(GenerationOptions.TrunksPerChunk); i++) {
-            var pos = GetRandomPointInChunk(chunk); 
+            var pos = GetRandomPointInChunk(chunk, 200); 
             var trunk = world.CreateEntity();
             var trunkWidth = random.Next(20, 60);
             var rotation = (float)(random.NextDouble() * Math.PI * 2);
@@ -248,7 +255,7 @@ public class GardenGenerator {
     
     private void PlaceTwigsInChunk(Point chunk, World world) {
         for(var i = 0; i < random.Next(GenerationOptions.TwigsPerChunk); i++) {
-            var pos = GetRandomPointInChunk(chunk); 
+            var pos = GetRandomPointInChunk(chunk, 200); 
             var t = world.CreateEntity();
             t.Attach(new SimulationPosition { Position = pos, WorldSpace = WorldSpace.Garden });
             t.Attach(new Renderable { RenderItem = new LineStackRenderable { Segments = ShapeUtils.GenerateLineStack(20, 25), Color = Color.SandyBrown, Thickness = 1.0f } });
@@ -304,7 +311,7 @@ public class GardenGenerator {
 
     private void PlaceBushesInChunk(Point chunk, World world) {
         for(var i = 0; i < random.Next(GenerationOptions.BushesPerChunk); i++) {
-            var pos = GetRandomPointInChunk(chunk); 
+            var pos = GetRandomPointInChunk(chunk, 200); 
             // Generate the bush's leaves
             var leavesPositions = new List<Vector2>() { new(0, 0) };
             var fruitsPositions = new List<Vector2>();

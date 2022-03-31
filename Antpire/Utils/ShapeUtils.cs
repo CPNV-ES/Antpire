@@ -1,5 +1,6 @@
 ﻿using ClipperLib;
 using MonoGame.Extended;
+using MonoGame.Extended.Shapes;
 using MoreLinq.Extensions;
 
 namespace Antpire.Utils; 
@@ -101,6 +102,13 @@ internal class ShapeUtils {
         }
         return poly.ToArray();
     }
+
+    public static Polygon GetRectanglePolygon(Rectangle r) => new Polygon( new []{
+        new Vector2(r.Left, r.Top),
+        new Vector2(r.Left, r.Width + r.Top),
+        new Vector2(r.Height + r.Left, r.Width + r.Top),
+        new Vector2(r.Height + r.Left, r.Top),
+    });
 
     private static Vector2 GetBezierPoint(float t, Vector2[] controlPoints, int index, int count) {
         if (count == 1)
