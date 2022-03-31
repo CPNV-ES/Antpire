@@ -48,6 +48,7 @@ public class SimulationScreen : GameScreen {
             .AddSystem(new WalkingSystem(SimulationState))
             .AddSystem(new AntLogicSystem(SimulationState))
             .AddSystem(new CollisionSystem(SimulationState))
+            .AddSystem(new LoggerSystem(SimulationState))
             .Build();
     }
 

@@ -14,5 +14,5 @@ internal class Signaling {
 
     public String content;
 
-    public DateTime timestamp;
+    public TimeSpan timestamp;
 }
