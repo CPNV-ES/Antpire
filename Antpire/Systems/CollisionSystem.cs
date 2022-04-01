@@ -62,7 +62,7 @@ internal class CollisionSystem : EntityUpdateSystem {
         if(bodies == null) return false;
         
         foreach(var body in bodies) {
-            if(body.Polygon.Contains(position)) {
+            if(body.Polygon.Contains(position) && body.BlocksMovement) {
                 return true;
             }
         }

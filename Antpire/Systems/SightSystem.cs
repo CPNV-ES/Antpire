@@ -33,7 +33,7 @@ internal class SightSystem : EntityUpdateSystem {
             var entity = simulationPosition.Get(entityId);
             var insect = insectMapper.Get(entityId);
 
-            var hboxAround = CollisionSystem.GetHitboxesInRadius(entity.Position, 512.0f);
+            var hboxAround = CollisionSystem.GetHitboxesInRadius(entity.Position, 250.0f);
             var lastSeen = insect.HitboxesInSight;
             insect.HitboxesInSight = hboxAround.ToList();
             insect.NewHitboxesInSight = insect.HitboxesInSight.Except(lastSeen).ToList();  
