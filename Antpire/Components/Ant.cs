@@ -11,7 +11,7 @@ internal class Ant {
         GoTo
     }   
     
-    public enum Type {
+    public enum AntType {
         Worker,
         Farmer,
         Nurse,
@@ -23,7 +23,7 @@ internal class Ant {
     public State OldState = State.Idle;
     public State CurrentState = State.Scouting;
 
-    public Type type = Type.Scout;
+    public AntType Type = AntType.Scout;
 
     public float MinUpdateFrequency = 1/60.0f*5.0f;
     public float TimeTilNextUpdate = 0.0f;

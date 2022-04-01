@@ -13,7 +13,7 @@ internal class LoggerSystem : EntityUpdateSystem
     private ComponentMapper<Ant> antMapper;
     private SimulationState simState;
 
-    private static List<Signaling> Signalings = new List<Signaling>();
+    private static List<LogMessage> LogMessages = new List<LogMessage>();
 
     public LoggerSystem(SimulationState simState) : base(Aspect.All(typeof(Ant))) {
         this.simState = simState;
@@ -23,18 +23,14 @@ internal class LoggerSystem : EntityUpdateSystem
         antMapper = mapperService.GetMapper<Ant>();
     }
 
-    public void Signale(Ant ant, GameTime gameTime, int entityId = 0) {
-        Signalings.Add(createSignage(ant, gameTime, entityId));
-    }
-
     public override void Update(GameTime gameTime) {
         foreach (var entityId in ActiveEntities) {
             var ant = antMapper.Get(entityId);
 
             if (stateHasChanged(ant)) {
-                // new signaling !
-                Signalings.Add(createSignage(ant, gameTime, entityId));
-                Debug.WriteLine(Signalings.Last().content);
+                // Log the state change
+                LogMessages.Add(createSignage(ant, gameTime, entityId));
+                Debug.WriteLine(LogMessages.Last().Content);
             }
 
 
@@ -49,61 +45,61 @@ internal class LoggerSystem : EntityUpdateSystem
             if (keyboardState.IsKeyDown(Keys.L)) {
                 Debug.WriteLine("List of Signalings : ");
 
-                foreach (Signaling s in Signalings.Distinct())
-                    Debug.WriteLine(s.content);
+                foreach (LogMessage s in LogMessages.Distinct())
+                    Debug.WriteLine(s.Content);
             }
         }
     }
 
-    public static void Signal(Ant ant, int entityId, string message, Signaling.Channel channel) {
+    public static void Signal(Ant ant, int entityId, string message, LogMessage.LogChannel logChannel) {
         var time = new TimeSpan(DateTimeOffset.Now.ToUnixTimeSeconds()); 
-        Signalings.Add(new Signaling {
-           timestamp = time,
-           ant = ant,
-           channel = channel,
-           content = $"[ * * {channel} * * ]({time}) {entityId} - {message}"
+        LogMessages.Add(new LogMessage {
+           Timestamp = time,
+           Ant = ant,
+           Channel = logChannel,
+           Content = $"[ * * {logChannel} * * ]({time}) {entityId} - {message}"
        }); 
         
-       Debug.WriteLine(Signalings.Last().content);
+       Debug.WriteLine(LogMessages.Last().Content);
     } 
     
-    private Signaling createSignage(Ant ant, GameTime gameTime, int entityId = 0) {
+    private LogMessage createSignage(Ant ant, GameTime gameTime, int entityId = 0) {
         String content = "";
-        Signaling.Channel channel;
+        LogMessage.LogChannel logChannel;
 
         switch (ant.CurrentState) { 
-            /* Here you could add any signage that you want */
             case Ant.State.Idle:
-                channel = Signaling.Channel.Job;
-                content = String.Format("The ant {0} is actually making nothing instead of beeing an {1}.", entityId, ant.type);
+                logChannel = LogMessage.LogChannel.Job;
+                content = $"The ant {entityId} is actually making nothing instead of beeing an {ant.Type}.";
                 break;
             case Ant.State.Scouting:
-                channel = Signaling.Channel.Job;
-                content = String.Format("The {0} ant number {1} is now wandering around the garden.", ant.type, entityId);
+                logChannel = LogMessage.LogChannel.Job;
+                content = $"The {ant.Type} ant number {entityId} is now wandering around the garden.";
                 break;
             case Ant.State.Attacking:
-                channel = Signaling.Channel.Fight;
-                content = String.Format("The {0} ant number {1} is fighting !", ant.type, entityId);
+                logChannel = LogMessage.LogChannel.Fight;
+                content = $"The {ant.Type} ant number {entityId} is fighting !";
                 break;
             case Ant.State.Dying:
-                channel = Signaling.Channel.LifeCycle;
-                content = String.Format("The {0} ant number {1} is Dead. RIP Little ant..", ant.type, entityId);
+                logChannel = LogMessage.LogChannel.LifeCycle;
+                content = $"The {ant.Type} ant number {entityId} is Dead. RIP Little ant..";
                 break;            
             case Ant.State.Gathering:
-                channel = Signaling.Channel.Job;
-                content = String.Format("The {0} ant number {1} is Gathering ressources.", ant.type, entityId);
+                logChannel = LogMessage.LogChannel.Job;
+                content = $"The {ant.Type} ant number {entityId} is Gathering resources.";
                 break;
+            case Ant.State.GoTo:
             default:
-                channel = Signaling.Channel.Info;
-                content = String.Format("The state of the {0} ant number {1} has changed to {2}.", ant.type, entityId, ant.CurrentState);
+                logChannel = LogMessage.LogChannel.Info;
+                content = $"The state of the {ant.Type} ant number {entityId} has changed to {ant.CurrentState}.";
                 break;
         }
         
-        return new Signaling {
-            channel = Signaling.Channel.Job,
-            ant = ant,
-            content = String.Format("[ * * {0} * * ]({1}) - {2}", channel, gameTime.TotalGameTime, content),
-            timestamp = gameTime.TotalGameTime
+        return new LogMessage {
+            Channel = LogMessage.LogChannel.Job,
+            Ant = ant,
+            Content = $"[ * * {logChannel} * * ]({gameTime.TotalGameTime}) - {content}",
+            Timestamp = gameTime.TotalGameTime
         };
     }
 

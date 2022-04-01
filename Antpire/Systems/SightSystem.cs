@@ -45,7 +45,7 @@ internal class SightSystem : EntityUpdateSystem {
                 var ant = antMapper.Get(entityId);
                 if(insect.NewHitboxesInSight.Count != 0) {
                     foreach(var h in insect.NewHitboxesInSight) {
-                        LoggerSystem.Signal(ant, entityId, $"Just sighted a {h.Name}", Signaling.Channel.Sight);
+                        LoggerSystem.Signal(ant, entityId, $"Just sighted a {h.Name}", LogMessage.LogChannel.Sight);
                     }
                 }
             }
