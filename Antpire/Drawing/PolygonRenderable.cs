@@ -19,13 +19,23 @@ internal class PolygonRenderable : IRenderable {
             BoundingBox = new(br.Width, br.Height);
         }
     }
-    public Color Color = Color.White;
+    
+    private Color color = Color.White;
+    public Color Color {
+        get => color;
+        set {
+            brush = new SolidColorBrush(value);
+            color = value;
+        }
+    }
+    private SolidColorBrush brush;
+    
     public float Thickness = 1.0f;
 
     public Point BoundingBox { get; private set; }
     public int Layer { get; init; }
     
     public void Render(DrawBatch drawBatch, Transform2 trans) {
-        drawBatch.GetShapeDrawBatch((DrawBatch.Layer)Layer).FillPath(new SolidColorBrush(Color), Polygon.Vertices.Reverse().ToList().Select(x => x + trans.Position - BoundingBox.ToVector2() / 2).ToList()); 
+        drawBatch.GetShapeDrawBatch((DrawBatch.Layer)Layer).FillPath(brush, Polygon.Vertices.Reverse().ToList().Select(x => x + trans.Position - BoundingBox.ToVector2() / 2).ToList()); 
     }
 }

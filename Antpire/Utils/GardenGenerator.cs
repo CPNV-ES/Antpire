@@ -164,7 +164,7 @@ public class GardenGenerator {
             segments.Add(currentPoint);
         } while(!IsPointOutsideBoundaries(currentPoint.ToPoint()));
         
-        var pathRenderable = new SmoothPathRenderable { Color = Color.Blue, Segments = segments.ToArray(), Thickness = 50, Layer = 2};
+        var pathRenderable = new SmoothPathRenderable { Color = Color.Blue, Segments = segments.ToArray(), Thickness = 100, Layer = 2};
         var col = ShapeUtils.GeneratePolygonFromLine(pathRenderable.BezierSegments, 50.0f).Reverse().ToArray();
         
         var river = world.CreateEntity();

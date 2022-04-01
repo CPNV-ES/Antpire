@@ -28,14 +28,22 @@ internal class SmoothPathRenderable : IRenderable {
     }
     public Vector2[] BezierSegments => bezierSegments;
     
-    public Color Color = Color.White;
-    public float Thickness = 2.0f;
+    private Color color = Color.White;
+    public Color Color {
+        get => color;
+        set {
+            pen = new Pen(value, Thickness);
+            color = value;
+        }
+    }
+    private Pen pen;
+    public float Thickness = 100.0f;
 
     [IgnoreDataMember]
     public Point BoundingBox => boundingBox;
     public int Layer { get; init; }
     
     public void Render(DrawBatch drawBatch, Transform2 trans) {
-        drawBatch.GetShapeDrawBatch((DrawBatch.Layer)0).DrawBeziers(new Pen(Color.Blue, 100.0f), bezierSegments, BezierType.Quadratic);
+        drawBatch.GetShapeDrawBatch((DrawBatch.Layer)0).DrawBeziers(pen, bezierSegments, BezierType.Quadratic);
     }
 }

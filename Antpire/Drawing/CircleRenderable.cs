@@ -9,13 +9,23 @@ namespace Antpire.Drawing;
 internal class CircleRenderable : IRenderable {
     public int Radius;
     public int Sides = 64;
-    public Color Color = Color.White;
+    
+    private Color color = Color.White;
+    public Color Color {
+        get => color;
+        set {
+            brush = new SolidColorBrush(value);
+            color = value;
+        }
+    }
+    private SolidColorBrush brush;
+    
     public float Thickness = 1.0f;
 
     public Point BoundingBox => new Point(Radius*2, Radius*2); 
     public int Layer { get; init; }
     
     public void Render(DrawBatch drawBatch, Transform2 trans) {
-        drawBatch.GetShapeDrawBatch((DrawBatch.Layer)Layer).FillCircle(new SolidColorBrush(Color), trans.Position, Radius, 64);
+        drawBatch.GetShapeDrawBatch((DrawBatch.Layer)Layer).FillCircle(brush, trans.Position, Radius, 64);
     }
 }
