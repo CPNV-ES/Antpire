@@ -39,7 +39,7 @@ internal class WalkingSystem : EntityUpdateSystem
 
     private void walk(SimulationPosition entity, Insect insect, float deltaTime) {
         var newPosition = entity.Position + Vector2.Multiply(insect.Velocity, 140.0f * deltaTime * simState.TimeScale); // TODO: Replace the hard coded value with a speed variable
-        var ahead = entity.Position + Vector2.Multiply(insect.Velocity, 25.0f); // TODO: Replace the hard coded value with a length/hitbox radius variable
+        var ahead = entity.Position + Vector2.Multiply(insect.Velocity, 25.0f); // TODO: Replace the hard coded value
             
         // If trying to move out of the garden's bounds, turn around
         if(newPosition.X < 0 || newPosition.X > gardenWidth || newPosition.Y < 0 || newPosition.Y > gardenHeight) {
@@ -47,8 +47,8 @@ internal class WalkingSystem : EntityUpdateSystem
             return;
         }
 
-        // If the entity collides an hitbox, it turns around
-        if(CollisionSystem.CheckCollision(ahead) || CollisionSystem.CheckCollision(newPosition)) {
+        // If the entity collides an solid collision body, it turns around
+        if(CollisionSystem.CheckSolidCollision(ahead) || CollisionSystem.CheckSolidCollision(newPosition)) {
             entity.Position = TurnAround(entity, insect);
             return;
         }

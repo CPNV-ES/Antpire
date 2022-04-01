@@ -35,16 +35,16 @@ internal class SightSystem : EntityUpdateSystem {
             var entity = simulationPosition.Get(entityId);
             var insect = insectMapper.Get(entityId);
 
-            var hboxAround = CollisionSystem.GetHitboxesInRadius(entity.Position, 250.0f);
-            var lastSeen = insect.HitboxesInSight;
-            insect.HitboxesInSight = hboxAround.ToList();
-            insect.NewHitboxesInSight = insect.HitboxesInSight.Except(lastSeen).ToList();
+            var hboxAround = CollisionSystem.GetCollisionBodiesOverlappingCircle(new CircleF(entity.Position.ToPoint(), 250.0f));
+            var lastSeen = insect.CollisionBodiesInSight;
+            insect.CollisionBodiesInSight = hboxAround.ToList();
+            insect.NewCollisionBodiesInSight = insect.CollisionBodiesInSight.Except(lastSeen).ToList();
             
             // Only log for ants
             if(antMapper.Has(entityId)) {
                 var ant = antMapper.Get(entityId);
-                if(insect.NewHitboxesInSight.Count != 0) {
-                    foreach(var h in insect.NewHitboxesInSight) {
+                if(insect.NewCollisionBodiesInSight.Count != 0) {
+                    foreach(var h in insect.NewCollisionBodiesInSight) {
                         LoggerSystem.Signal(ant, entityId, $"Just sighted a {h.Name}", LogMessage.LogChannel.Sight);
                     }
                 }

@@ -170,7 +170,7 @@ public class GardenGenerator {
         var river = world.CreateEntity();
         river.Attach(new SimulationPosition { Position = Vector2.Zero, WorldSpace = WorldSpace.Garden });
         river.Attach(new Renderable { RenderItem = pathRenderable });
-        river.Attach(new Hitbox { 
+        river.Attach(new CollisionBody { 
             Name = "River",
             BlocksMovement = true,
             Polygon = new Polygon(col) 
@@ -225,7 +225,7 @@ public class GardenGenerator {
             rock.Attach(new Renderable {
                 RenderItem = rr 
             });
-            rock.Attach(new Hitbox {
+            rock.Attach(new CollisionBody {
                 Name = "Rock",
                 BlocksMovement = true,
                 Polygon = new Polygon(shiftedVortices)
@@ -253,7 +253,7 @@ public class GardenGenerator {
             trunk.Attach(new Renderable {
                 RenderItem = rr 
             });
-            trunk.Attach(new Hitbox {
+            trunk.Attach(new CollisionBody {
                 Name = "Trunk",
                 BlocksMovement = true,
                 Polygon = new Polygon(shiftedVortices)
@@ -267,7 +267,7 @@ public class GardenGenerator {
             var t = world.CreateEntity();
             t.Attach(new SimulationPosition { Position = pos, WorldSpace = WorldSpace.Garden });
             t.Attach(new Renderable { RenderItem = new LineStackRenderable { Segments = ShapeUtils.GenerateLineStack(20, 25), Color = Color.SandyBrown, Thickness = 1.0f } });
-            t.Attach(new Hitbox { 
+            t.Attach(new CollisionBody { 
                 Name = "Twig",
                 BlocksMovement = false,
                 Polygon = ShapeUtils.GetRectanglePolygon(new Rectangle(0, 0, 20, 20)) // TODO: Make this a circle
@@ -291,7 +291,7 @@ public class GardenGenerator {
             aphid.Attach(new Renderable {
                 RenderItem = new SpriteRenderable(0.25f, contentProvider.Get<Texture2D>(tex), 0.0f, (int)DrawBatch.Layer.Insect)
             });
-            aphid.Attach(new Hitbox {
+            aphid.Attach(new CollisionBody {
                 Name = "Aphid", 
                 BlocksMovement = true,
                 Polygon = colPolygon
@@ -361,7 +361,7 @@ public class GardenGenerator {
 
             var bush = world.CreateEntity();
             bush.Attach(new SimulationPosition { Position = pos, WorldSpace = WorldSpace.Garden });
-            bush.Attach(new Hitbox {  
+            bush.Attach(new CollisionBody {  
                 Name = "Bush", 
                 BlocksMovement = false,
                 Polygon = ShapeUtils.GetRectanglePolygon(new Rectangle(0, 0, 100, 100)) // TODO: Make this a circle
