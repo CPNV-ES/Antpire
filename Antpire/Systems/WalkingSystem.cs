@@ -1,4 +1,5 @@
-﻿using MonoGame.Extended.Entities;
+﻿using System.Diagnostics;
+using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using Antpire.Components;
 using Antpire.Screens;

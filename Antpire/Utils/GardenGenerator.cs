@@ -164,13 +164,17 @@ public class GardenGenerator {
             segments.Add(currentPoint);
         } while(!IsPointOutsideBoundaries(currentPoint.ToPoint()));
         
-        var pathRenderable = new SmoothPathRenderable { Color = Color.Blue, Segments = segments.ToArray(), Thickness = 50, Layer = 2};
+        var pathRenderable = new SmoothPathRenderable { Color = Color.Blue, Segments = segments.ToArray(), Thickness = 100, Layer = 2};
         var col = ShapeUtils.GeneratePolygonFromLine(pathRenderable.BezierSegments, 50.0f).Reverse().ToArray();
         
         var river = world.CreateEntity();
         river.Attach(new SimulationPosition { Position = Vector2.Zero, WorldSpace = WorldSpace.Garden });
         river.Attach(new Renderable { RenderItem = pathRenderable });
-        river.Attach(new Hitbox { Polygon = new Polygon(col) });
+        river.Attach(new Hitbox { 
+            Name = "River",
+            BlocksMovement = true,
+            Polygon = new Polygon(col) 
+        });
     }
 
     private void PlaceAnthills(World world) {
@@ -222,6 +226,8 @@ public class GardenGenerator {
                 RenderItem = rr 
             });
             rock.Attach(new Hitbox {
+                Name = "Rock",
+                BlocksMovement = true,
                 Polygon = new Polygon(shiftedVortices)
             });
         }
@@ -248,6 +254,8 @@ public class GardenGenerator {
                 RenderItem = rr 
             });
             trunk.Attach(new Hitbox {
+                Name = "Trunk",
+                BlocksMovement = true,
                 Polygon = new Polygon(shiftedVortices)
             });
         }
@@ -259,6 +267,11 @@ public class GardenGenerator {
             var t = world.CreateEntity();
             t.Attach(new SimulationPosition { Position = pos, WorldSpace = WorldSpace.Garden });
             t.Attach(new Renderable { RenderItem = new LineStackRenderable { Segments = ShapeUtils.GenerateLineStack(20, 25), Color = Color.SandyBrown, Thickness = 1.0f } });
+            t.Attach(new Hitbox { 
+                Name = "Twig",
+                BlocksMovement = false,
+                Polygon = ShapeUtils.GetRectanglePolygon(new Rectangle(0, 0, 20, 20)) // TODO: Make this a circle
+            });
         }
     }
     
@@ -278,7 +291,11 @@ public class GardenGenerator {
             aphid.Attach(new Renderable {
                 RenderItem = new SpriteRenderable(0.25f, contentProvider.Get<Texture2D>(tex), 0.0f, (int)DrawBatch.Layer.Insect)
             });
-            aphid.Attach(new Hitbox{ Polygon = colPolygon });
+            aphid.Attach(new Hitbox {
+                Name = "Aphid", 
+                BlocksMovement = true,
+                Polygon = colPolygon
+            });
         }
         
         for(var i = 0; i < random.Next(GenerationOptions.AliveAphids); i++) {
@@ -341,6 +358,14 @@ public class GardenGenerator {
                    RenderItem = new CircleRenderable { Sides = 32, Color = colors[random.Next(0, 3)], Thickness = 16.0f, Radius = random.Next(4, 8) } as IRenderable,
                });
             }
+
+            var bush = world.CreateEntity();
+            bush.Attach(new SimulationPosition { Position = pos, WorldSpace = WorldSpace.Garden });
+            bush.Attach(new Hitbox {  
+                Name = "Bush", 
+                BlocksMovement = false,
+                Polygon = ShapeUtils.GetRectanglePolygon(new Rectangle(0, 0, 100, 100)) // TODO: Make this a circle
+            });
         }
     }
     
