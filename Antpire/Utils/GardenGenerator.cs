@@ -170,7 +170,7 @@ public class GardenGenerator {
         var river = world.CreateEntity();
         river.Attach(new SimulationPosition { Position = Vector2.Zero, WorldSpace = WorldSpace.Garden });
         river.Attach(new Renderable { RenderItem = pathRenderable });
-        river.Attach(new Hitbox { Polygon = new Polygon(col) });
+        river.Attach(new Hitbox { Name = "River", Polygon = new Polygon(col) });
     }
 
     private void PlaceAnthills(World world) {
@@ -222,6 +222,7 @@ public class GardenGenerator {
                 RenderItem = rr 
             });
             rock.Attach(new Hitbox {
+                Name = "Rock",
                 Polygon = new Polygon(shiftedVortices)
             });
         }
@@ -248,6 +249,7 @@ public class GardenGenerator {
                 RenderItem = rr 
             });
             trunk.Attach(new Hitbox {
+                Name = "Trunk",
                 Polygon = new Polygon(shiftedVortices)
             });
         }
@@ -278,7 +280,7 @@ public class GardenGenerator {
             aphid.Attach(new Renderable {
                 RenderItem = new SpriteRenderable(0.25f, contentProvider.Get<Texture2D>(tex), 0.0f, (int)DrawBatch.Layer.Insect)
             });
-            aphid.Attach(new Hitbox{ Polygon = colPolygon });
+            aphid.Attach(new Hitbox{ Name = "Aphid", Polygon = colPolygon });
         }
         
         for(var i = 0; i < random.Next(GenerationOptions.AliveAphids); i++) {

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using MonoGame.Extended.Entities;
+﻿using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using Antpire.Components;
 using MonoGame.Extended;
@@ -70,9 +69,50 @@ internal class CollisionSystem : EntityUpdateSystem {
         
         return false;
     }
+    
+    public static IEnumerable<Hitbox> GetHitboxesInRadius(Vector2 position, float radius) {
+        return GetHitboxesOverlappingCircle(new CircleF(position, radius));
+    }
 
     private static Point getPartitionFromPosition(Vector2 position) => new(
         Math.Clamp((int)Math.Floor(position.X / partitionSize), 0, simState.GardenGenerationOptions.Width - 1),
         Math.Clamp((int)Math.Floor(position.Y / partitionSize), 0, simState.GardenGenerationOptions.Height - 1)
     );
+
+    private static IEnumerable<Hitbox> GetHitboxesOverlappingCircle(CircleF circle) {
+        var partitions = getPartitionsOverlappingCircle(circle);
+        var bodies = new List<Hitbox>();
+        
+        foreach(var part in partitions) {
+            foreach(var body in partitionedCollisionBodies[part.X, part.Y] ?? new List<Hitbox>()) {
+                var inRange = body.Polygon.Vertices.Any(v => Math.Sqrt(Math.Pow(v.X - circle.Center.X, 2) + Math.Pow(v.Y - circle.Center.Y, 2)) <= circle.Radius);
+                if(inRange) {
+                    bodies.Add(body);
+                    break;
+                }
+            }
+        }
+        
+        return bodies.Distinct();
+    }
+
+    private static IEnumerable<Point> getPartitionsOverlappingCircle(CircleF circle) {
+        var position = circle.Center;
+        var radius = circle.Radius;
+        var centerPart = getPartitionFromPosition(position);
+        var partitions = new List<Point>();
+        var x = centerPart.X;
+        var y = centerPart.Y;
+        var r = (int)Math.Ceiling(radius / partitionSize);
+         
+        // Approximates that the circle is at the center of the partition,
+        // so it may include partitions that are not actually touching the circle
+        for(var i = -r; i <= r; i++) {
+            for(var j = -r; j <= r; j++) {
+                partitions.Add(new Point(x + i, y + j));
+            }
+        }
+        
+        return partitions.Where(p => p.X >= 0 && p.X < partitionedCollisionBodies.GetLength(0) && p.Y >= 0 && p.Y < partitionedCollisionBodies.GetLength(1));
+    }
 }
