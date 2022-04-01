@@ -13,7 +13,7 @@ internal class LoggerSystem : EntityUpdateSystem
     private ComponentMapper<Ant> antMapper;
     private SimulationState simState;
 
-    private List<Signaling> Signalings = new List<Signaling>();
+    private static List<Signaling> Signalings = new List<Signaling>();
 
     public LoggerSystem(SimulationState simState) : base(Aspect.All(typeof(Ant))) {
         this.simState = simState;
@@ -55,6 +55,18 @@ internal class LoggerSystem : EntityUpdateSystem
         }
     }
 
+    public static void Signal(Ant ant, int entityId, string message, Signaling.Channel channel) {
+        var time = new TimeSpan(DateTimeOffset.Now.ToUnixTimeSeconds()); 
+        Signalings.Add(new Signaling {
+           timestamp = time,
+           ant = ant,
+           channel = channel,
+           content = $"[ * * {channel} * * ]({time}) {entityId} - {message}"
+       }); 
+        
+       Debug.WriteLine(Signalings.Last().content);
+    } 
+    
     private Signaling createSignage(Ant ant, GameTime gameTime, int entityId = 0) {
         String content = "";
         Signaling.Channel channel;
